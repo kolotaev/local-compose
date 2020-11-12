@@ -12,11 +12,11 @@ if __name__ == '__main__':
         license="MIT",
         # url='http://github.com/kolotaev/local-compose',
         long_description='Like docker-compose but for locally installed services',
-        # entry_points={
-        #     'console_scripts': [
-        #         'aaa = main:run',
-        #     ],
-        # },
+        entry_points={
+            'console_scripts': [
+                'local-compose = main:run',
+            ],
+        },
         # py_modules=['app', 'resources', 'main'],
         # python_requires='>=3.6',
         # install_requires=[
