@@ -9,7 +9,7 @@ if __name__ == '__main__':
         version='0.0.1',
         author='Egor Kolotaev',
         author_email='ekolotaev@gmail.com',
-        license="MIT",
+        license='MIT',
         # url='http://github.com/kolotaev/local-compose',
         long_description='Like docker-compose but for locally installed services',
         entry_points={
