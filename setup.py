@@ -10,19 +10,19 @@ if __name__ == '__main__':
         author='Egor Kolotaev',
         author_email='ekolotaev@gmail.com',
         license='MIT',
-        # url='http://github.com/kolotaev/local-compose',
+        url='http://github.com/kolotaev/local-compose',
         long_description='Like docker-compose but for locally installed services',
         entry_points={
             'console_scripts': [
                 'local-compose = main:run',
             ],
         },
-        # py_modules=['app', 'resources', 'main'],
-        # python_requires='>=3.6',
-        # install_requires=[
-        #     'google_speech',
-        #     'googletrans',
-        # ],
+        py_modules=['app', 'main'],
+        python_requires='>=3.6',
+        install_requires=[
+            'watchdog>=0.10',
+            'delegator.py>=0.1',
+        ],
         extras_require={},
         packages=find_packages(exclude='tests'),
         classifiers=[],
