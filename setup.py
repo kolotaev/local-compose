@@ -18,13 +18,31 @@ if __name__ == '__main__':
             ],
         },
         py_modules=['app', 'main'],
-        python_requires='>=3.6',
+        python_requires='>=2.7',
         install_requires=[
             'watchdog>=0.10',
             # 'delegator.py>=0.1',
             'click>=7.0',
         ],
         extras_require={},
+        test_requirements = [
+            'pytest>=3'
+        ],
         packages=find_packages(exclude='tests'),
-        classifiers=[],
+        classifiers=[
+            'Intended Audience :: Developers',
+            'Natural Language :: English',
+            'License :: OSI Approved :: MIT',
+            'Programming Language :: Python',
+            'Programming Language :: Python :: 2',
+            'Programming Language :: Python :: 2.7',
+            'Programming Language :: Python :: 3',
+            'Programming Language :: Python :: 3.5',
+            'Programming Language :: Python :: 3.6',
+            'Programming Language :: Python :: 3.7',
+            'Programming Language :: Python :: 3.8',
+            'Programming Language :: Python :: 3.9',
+            'Programming Language :: Python :: Implementation :: CPython',
+            'Programming Language :: Python :: Implementation :: PyPy'
+        ],
     )
