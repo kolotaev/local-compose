@@ -1,6 +1,7 @@
+from app.cli import root
 
 def run():
-    print('hold on')
+    root()
 
 
 if __name__ == '__main__':

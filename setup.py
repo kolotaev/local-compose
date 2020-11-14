@@ -21,7 +21,8 @@ if __name__ == '__main__':
         python_requires='>=3.6',
         install_requires=[
             'watchdog>=0.10',
-            'delegator.py>=0.1',
+            # 'delegator.py>=0.1',
+            'click>=7.0',
         ],
         extras_require={},
         packages=find_packages(exclude='tests'),
