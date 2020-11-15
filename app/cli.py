@@ -3,16 +3,16 @@ import click
 
 @click.group()
 def root():
-    """
+    '''
     Local-compose is a local services orchestrator.
-    """
+    '''
     pass
 
 @root.command()
-@click.option('--count', default=1, help='Number of greetings.')
-@click.option('--name', prompt='Your name',
-              help='The person to greet.')
-def hello(count, name):
-    """Simple program that greets NAME for a total of COUNT times."""
-    for x in range(count):
+@click.option('-d', '--detached', default=True, help='Attach stdout/stderr to current console')
+def up(detached):
+    '''
+    Run services
+    '''
+    for x in range(1):
         click.echo('Hello %s!' % name)

@@ -20,9 +20,10 @@ if __name__ == '__main__':
         py_modules=['app', 'main'],
         python_requires='>=2.7',
         install_requires=[
-            'watchdog>=0.10',
-            # 'delegator.py>=0.1',
-            'click>=7.0',
+            'watchdog~=0.10',
+            # 'delegator.py~=0.1',
+            'PyYAML~=5.3'
+            'click~=7.0',
         ],
         extras_require={},
         test_requirements = [
