@@ -2,17 +2,16 @@ import click
 
 
 @click.group()
+@click.option('-f', '--file', help='Specify compose file')
 def root():
     '''
     Local-compose is a local services orchestrator.
     '''
-    pass
 
 @root.command()
-@click.option('-d', '--detached', default=True, help='Attach stdout/stderr to current console')
-def up(detached):
+@click.option('-d', '--detach', is_flag=True, help='Detached mode: Run services in the background')
+def up(detach):
     '''
     Run services
     '''
-    for x in range(1):
-        click.echo('Hello %s!' % name)
+    click.echo(detached)
