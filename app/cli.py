@@ -1,17 +1,28 @@
 import click
 
+from .config import Config
+from .version import VERSION
+
 
 @click.group()
-@click.option('-f', '--file', help='Specify compose file')
 def root():
-    '''
-    Local-compose is a local services orchestrator.
-    '''
+    pass
+
 
 @root.command()
-@click.option('-d', '--detach', is_flag=True, help='Detached mode: Run services in the background')
-def up(detach):
+def version():
     '''
-    Run services
+    Version of the tool
     '''
-    click.echo(detached)
+    click.echo(VERSION)
+
+
+@root.command()
+@click.option('-d', '--detach', is_flag=True, show_default=True, help='Detached mode: Run services in the background.')
+@click.pass_context
+def up(ctx, detach):
+    '''
+    Start services
+    '''
+    click.echo(detach)
+    click.echo(ctx.obj)

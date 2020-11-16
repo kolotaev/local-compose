@@ -1,12 +1,14 @@
 from setuptools import setup, find_packages
 
+from .app.version import VERSION
+
 
 if __name__ == '__main__':
     setup(
         name='local-compose',
         description='Like docker-compose but for locally installed services',
         # keywords='',
-        version='0.0.1',
+        version=VERSION,
         author='Egor Kolotaev',
         author_email='ekolotaev@gmail.com',
         license='MIT',
@@ -23,6 +25,7 @@ if __name__ == '__main__':
             'six~=1.15',
             'watchdog~=0.10',
             # 'delegator.py~=0.1',
+            # 'colorama', # Colorama is only required for Windows
             'PyYAML~=5.3'
             'click~=7.0',
         ],

@@ -15,3 +15,24 @@ class Config(with_metaclass(Singleton, object)):
             except Exception as e:
                 print('Config file is malformed. Error: %s' % e)
                 return None
+
+    @staticmethod
+    def colors():
+        return (
+            "black",
+            "red",
+            "green",
+            "yellow",
+            "blue",
+            "magenta",
+            "cyan",
+            "white",
+            "bright_black",
+            "bright_red",
+            "bright_green",
+            "bright_yellow",
+            "bright_blue",
+            "bright_magenta",
+            "bright_cyan",
+            "bright_white",
+        )
