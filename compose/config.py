@@ -3,6 +3,7 @@ from six import with_metaclass
 
 from .utils import Singleton
 
+
 class Config(with_metaclass(Singleton, object)):
     def __init__(filename):
         self._filename = filename
@@ -16,23 +17,30 @@ class Config(with_metaclass(Singleton, object)):
                 print('Config file is malformed. Error: %s' % e)
                 return None
 
+    def validate(self):
+        pass
+
+    @staticmethod
+    def example():
+        pass
+
     @staticmethod
     def colors():
         return (
-            "black",
-            "red",
-            "green",
-            "yellow",
-            "blue",
-            "magenta",
-            "cyan",
-            "white",
-            "bright_black",
-            "bright_red",
-            "bright_green",
-            "bright_yellow",
-            "bright_blue",
-            "bright_magenta",
-            "bright_cyan",
-            "bright_white",
+            'black',
+            'red',
+            'green',
+            'yellow',
+            'blue',
+            'magenta',
+            'cyan',
+            'white',
+            'bright_black',
+            'bright_red',
+            'bright_green',
+            'bright_yellow',
+            'bright_blue',
+            'bright_magenta',
+            'bright_cyan',
+            'bright_white',
         )
