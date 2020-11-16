@@ -1,4 +1,4 @@
-from app.cli import root
+from compose.cli import root
 
 def run():
     root()
