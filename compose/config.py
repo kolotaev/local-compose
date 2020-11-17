@@ -1,14 +1,13 @@
 import yaml
 import jsonschema
-import jsonschema.exceptions
-from six import with_metaclass
+# from six import with_metaclass
 
-from .utils import Singleton
+# from .utils import Singleton
 from .schema import JSON_SCHEMA
 
 
-class Config(with_metaclass(Singleton, object)):
-    def __init__(filename):
+class Config(object):
+    def __init__(self, filename):
         self._filename = filename
 
     @staticmethod
@@ -44,14 +43,14 @@ class Config(with_metaclass(Singleton, object)):
     def validate(self, data):
         try:
             jsonschema.validate(instance=data, schema=JSON_SCHEMA)
-        except jsonschema.exceptions.ValidationError as e:
-            raise e
+        except Exception as e:
+            raise Exception('Configuration file %s is invalid.\nErrors found: %s' % (self._filename, e))
 
     def _read_data(self):
+        data = None
         with open(self._filename) as file:
             try:
-                data = yaml.parse(self._filename)
-                return data
+                data = yaml.safe_load(file)
             except Exception as e:
-                print('Config file structure is malformed. Error: %s' % e)
-                return None
+                print('Config yaml file structure is malformed.\nError: %s' % e)
+        return data

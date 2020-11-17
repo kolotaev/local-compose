@@ -19,11 +19,16 @@ def version():
 
 
 @root.command()
+@click.option('-f', '--file', show_default=True, default='local-compose.yaml', help='Configuration file.')
 @click.option('-d', '--detach', is_flag=True, show_default=True, help='Detached mode: Run services in the background.')
 @click.pass_context
-def up(ctx, detach):
+def up(ctx, file, detach):
     '''
     Start services
     '''
-    secho(str(detach), fg='red')
-    click.echo(ctx.obj)
+    try:
+        conf = Config(file).parse()
+    except Exception as e:
+        secho(str(e))
+        return
+    secho(str(conf))

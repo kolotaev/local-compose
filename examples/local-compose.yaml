@@ -1,0 +1,11 @@
+version: 1.0
+
+global:
+  foo: 12
+
+services:
+  - name: cat service
+    run: cat
+
+  - name: echo service
+    run: echo "OK"
