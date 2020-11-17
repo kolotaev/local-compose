@@ -1,6 +1,11 @@
+from os import path
 from setuptools import setup, find_packages
 
-from .app.version import VERSION
+
+about = {}
+here = path.abspath(path.dirname(__file__))
+with open(path.join(here, 'compose', 'version.py'), mode='r') as f:
+    exec(f.read(), about)
 
 
 if __name__ == '__main__':
@@ -8,7 +13,7 @@ if __name__ == '__main__':
         name='local-compose',
         description='Like docker-compose but for locally installed services',
         # keywords='',
-        version=VERSION,
+        version=about['VERSION'],
         author='Egor Kolotaev',
         author_email='ekolotaev@gmail.com',
         license='MIT',
@@ -27,13 +32,15 @@ if __name__ == '__main__':
             'jsonschema~=3.2',
             # 'delegator.py~=0.1',
             # 'colorama', # Colorama is only required for Windows
-            'PyYAML~=5.3'
+            'PyYAML~=5.3',
             'click~=7.0',
         ],
-        extras_require={},
-        test_requirements = [
-            'pytest>=3'
-        ],
+        extras_require={
+            'dev': [
+                'pytest~=4.6',
+            ],
+        },
+        # test_requirements = [],
         packages=find_packages(exclude='tests'),
         classifiers=[
             'Intended Audience :: Developers',
