@@ -24,6 +24,7 @@ if __name__ == '__main__':
         install_requires=[
             'six~=1.15',
             'watchdog~=0.10',
+            'jsonschema~=3.2',
             # 'delegator.py~=0.1',
             # 'colorama', # Colorama is only required for Windows
             'PyYAML~=5.3'
