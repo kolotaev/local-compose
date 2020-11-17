@@ -1,4 +1,5 @@
 import click
+from click.termui import secho
 
 from .config import Config
 from .version import VERSION
@@ -24,5 +25,5 @@ def up(ctx, detach):
     '''
     Start services
     '''
-    click.echo(detach)
+    secho(str(detach), fg='red')
     click.echo(ctx.obj)

@@ -4,11 +4,8 @@ import jsonschema.exceptions
 from six import with_metaclass
 
 from .utils import Singleton
+from .schema import JSON_SCHEMA
 
-
-schema = {
-
-}
 
 class Config(with_metaclass(Singleton, object)):
     def __init__(filename):
@@ -46,7 +43,7 @@ class Config(with_metaclass(Singleton, object)):
 
     def validate(self, data):
         try:
-            jsonschema.validate(instance=data, schema=schema)
+            jsonschema.validate(instance=data, schema=JSON_SCHEMA)
         except jsonschema.exceptions.ValidationError as e:
             raise e
 
