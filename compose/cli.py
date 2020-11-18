@@ -26,9 +26,5 @@ def up(ctx, file, detach):
     '''
     Start services
     '''
-    try:
-        conf = Config(file).parse()
-    except Exception as e:
-        secho(str(e))
-        return
+    conf = Config(file).try_parse()
     secho(str(conf))

@@ -1,4 +1,7 @@
+import sys
+
 import yaml
+import six
 import jsonschema
 # from six import with_metaclass
 
@@ -36,15 +39,34 @@ class Config(object):
         )
 
     def parse(self):
+        """
+        Parses the config file.
+        Validates it.
+        Returns a configuration dict.
+        """
         data = self._read_data()
         error = self.validate(data)
         return data
 
+    def try_parse(self):
+        """
+        Like parse but exits with error if errors are found.
+        """
+        data = None
+        try:
+            return self.parse()
+        except Exception as e:
+            six.print_(e)
+            sys.exit(1)
+
     def validate(self, data):
+        """
+        Validates the config.
+        """
         try:
             jsonschema.validate(instance=data, schema=JSON_SCHEMA)
         except Exception as e:
-            raise Exception('Configuration file %s is invalid.\nErrors found: %s' % (self._filename, e))
+            raise Exception('Configuration file "%s" is invalid.\nErrors found:\n%s' % (self._filename, e))
 
     def _read_data(self):
         data = None
@@ -52,5 +74,5 @@ class Config(object):
             try:
                 data = yaml.safe_load(file)
             except Exception as e:
-                print('Config yaml file structure is malformed.\nError: %s' % e)
+                raise Exception('Config yaml file structure is malformed.\nError found: %s' % e)
         return data
