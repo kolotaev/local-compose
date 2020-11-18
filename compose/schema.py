@@ -58,6 +58,11 @@ JSON_SCHEMA = {
                     },
                     'additionalProperties': False,
                 },
+                'watch': {
+                    'description': 'Watch files by patterns and if anything changes re-run build and run',
+                    'type': 'array',
+                    'items': { 'type': 'string' },
+                },
                 'color': {
                     'description': 'Color that is associated with service output',
                     'type': 'string',

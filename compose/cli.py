@@ -3,7 +3,7 @@ from click.termui import secho
 
 from .config import Config
 from .executor import Executor
-from .version import VERSION
+from .info import version
 
 
 @click.group()
@@ -16,7 +16,7 @@ def version():
     '''
     Version of the tool
     '''
-    click.echo(VERSION)
+    click.echo(version)
 
 
 @root.command()

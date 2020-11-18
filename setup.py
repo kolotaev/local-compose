@@ -4,16 +4,16 @@ from setuptools import setup, find_packages
 
 about = {}
 here = path.abspath(path.dirname(__file__))
-with open(path.join(here, 'compose', 'version.py'), mode='r') as f:
+with open(path.join(here, 'compose', 'info.py'), mode='r') as f:
     exec(f.read(), about)
 
 
 if __name__ == '__main__':
     setup(
-        name='local-compose',
+        name=about['name'],
         description='Like docker-compose but for locally installed services',
         # keywords='',
-        version=about['VERSION'],
+        version=about['version'],
         author='Egor Kolotaev',
         author_email='ekolotaev@gmail.com',
         license='MIT',
@@ -21,7 +21,7 @@ if __name__ == '__main__':
         long_description='Like docker-compose but for locally installed services',
         entry_points={
             'console_scripts': [
-                'local-compose = main:run',
+                '%s = main:run' % about['name'],
             ],
         },
         py_modules=['app', 'main'],
