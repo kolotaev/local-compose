@@ -2,6 +2,7 @@ import click
 from click.termui import secho
 
 from .config import Config
+from .executor import Executor
 from .version import VERSION
 
 
@@ -27,4 +28,6 @@ def up(ctx, file, detach):
     Start services
     '''
     conf = Config(file).try_parse()
+    executor = Executor(conf)
+    executor.run_all_services()
     secho(str(conf))

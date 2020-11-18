@@ -4,8 +4,8 @@ global:
   foo: 12
 
 services:
-  - name: cat service
+  cat:
     run: cat
-
-  - name: echo service
-    run: echo "OK"
+    color: black
+  echo:
+    run: echo 'OK'

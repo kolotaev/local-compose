@@ -39,20 +39,19 @@ class Config(object):
         )
 
     def parse(self):
-        """
+        '''
         Parses the config file.
         Validates it.
         Returns a configuration dict.
-        """
+        '''
         data = self._read_data()
         error = self.validate(data)
         return data
 
     def try_parse(self):
-        """
+        '''
         Like parse but exits with error if errors are found.
-        """
-        data = None
+        '''
         try:
             return self.parse()
         except Exception as e:
@@ -60,9 +59,9 @@ class Config(object):
             sys.exit(1)
 
     def validate(self, data):
-        """
+        '''
         Validates the config.
-        """
+        '''
         try:
             jsonschema.validate(instance=data, schema=JSON_SCHEMA)
         except Exception as e:
@@ -74,5 +73,5 @@ class Config(object):
             try:
                 data = yaml.safe_load(file)
             except Exception as e:
-                raise Exception('Config yaml file structure is malformed.\nError found: %s' % e)
+                raise Exception('Config yaml file structure is malformed.\nError found:\n%s' % e)
         return data

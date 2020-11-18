@@ -1,5 +1,5 @@
 JSON_SCHEMA = {
-    "$id": "https://github.com/kolotaev/local-compose.schema.json",
+    '$id': 'https://github.com/kolotaev/local-compose.schema.json',
     '$schema': 'http://json-schema.org/draft-07/schema#',
     'title': 'Local-compose tool schema',
     'type': 'object',
@@ -22,8 +22,12 @@ JSON_SCHEMA = {
         },
         'services': {
             'description': 'Services to run list',
-            'type': 'array',
-            'items': { '$ref': '#/definitions/service' }
+            'type': 'object',
+              'patternProperties': {
+                '^[a-zA-Z0-9._-]+$': {
+                    '$ref': '#/definitions/service'
+                },
+            },
         },
     },
 
@@ -32,15 +36,51 @@ JSON_SCHEMA = {
             'type': 'object',
             'required': ['run'],
             'properties': {
-                'name': {
-                    'description': 'Custom name of the service to be displayed and referenced by',
+                'comment': {
+                    'description': 'Custom comment of the service',
                     'type': 'string',
                 },
                 'run': {
                     'description': 'Command to run the service',
                     'type': 'string',
                 },
+                'build': {
+                    'description': 'Command to build the service',
+                    'type': 'string',
+                },
+                'environment': {
+                    'description': 'Environment variables for command run',
+                    'type': 'object',
+                    'patternProperties': {
+                        '.+': {
+                            'type': ['string', 'number', 'null']
+                        },
+                    },
+                    'additionalProperties': False,
+                },
+                'color': {
+                    'description': 'Color that is associated with service output',
+                    'type': 'string',
+                    'enum': [
+                        'black',
+                        'red',
+                        'green',
+                        'yellow',
+                        'blue',
+                        'magenta',
+                        'cyan',
+                        'white',
+                        'bright_black',
+                        'bright_red',
+                        'bright_green',
+                        'bright_yellow',
+                        'bright_blue',
+                        'bright_magenta',
+                        'bright_cyan',
+                        'bright_white',
+                    ],
+                },
             },
-        }
+        },
     },
 }

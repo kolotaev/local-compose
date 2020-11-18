@@ -1,5 +1,6 @@
 from compose.cli import root
 
+
 def run():
     root()
 
