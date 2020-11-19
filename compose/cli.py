@@ -21,9 +21,9 @@ def version():
 
 @root.command()
 @click.option('-f', '--file', show_default=True, default='local-compose.yaml', help='Configuration file.')
-@click.option('-d', '--detach', is_flag=True, show_default=True, help='Detached mode: Run services in the background.')
+@click.option('-b', '--build', is_flag=True, show_default=True, help='Build services before run.')
 @click.pass_context
-def up(ctx, file, detach):
+def up(ctx, file, build):
     '''
     Start services
     '''
@@ -31,3 +31,4 @@ def up(ctx, file, detach):
     executor = Executor(conf)
     executor.run_all_services()
     secho(str(conf))
+    click.echo()
