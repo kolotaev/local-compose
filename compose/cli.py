@@ -29,6 +29,6 @@ def up(ctx, file, build):
     '''
     conf = Config(file).try_parse()
     executor = Executor(conf)
-    executor.run_all_services()
+    executor.start()
     secho(str(conf))
     click.echo()

@@ -23,7 +23,7 @@ JSON_SCHEMA = {
         'services': {
             'description': 'Services to run list',
             'type': 'object',
-              'patternProperties': {
+            'patternProperties': {
                 '^[a-zA-Z0-9._-]+$': {
                     '$ref': '#/definitions/service'
                 },
