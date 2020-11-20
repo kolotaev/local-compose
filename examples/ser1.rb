@@ -7,7 +7,7 @@ puts "started on 9010"
 
 while session = server.accept
   request = session.gets
-  puts request + "egor 1"
+  puts request + "proc 1"
 
   session.print "HTTP/1.1 200\r\n" # 1
   session.print "Content-Type: text/html\r\n" # 2

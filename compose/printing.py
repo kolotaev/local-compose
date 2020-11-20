@@ -1,13 +1,24 @@
-from collections import namedtuple
+from __future__ import print_function
+
 import sys
+from collections import namedtuple
 
 
 Message = namedtuple('Message', 'type data time name color')
 
 
-class ClickEchoWriter():
+class PrintWriter(object):
     def write(self, message, color=None):
-        pass
+        print(message)
+
+
+class ClickEchoWriter(object):
+    def __init__(self):
+        import click
+        self._click_module = click
+
+    def write(self, message, color=None):
+        self._click_module.echo(message, color=color)
 
 
 class Printer(object):
@@ -15,7 +26,6 @@ class Printer(object):
         self.writer = writer
         self.time_format = time_format
         self.width = width
-        self.color = color
         self.prefix = prefix
 
     def write(self, message):
@@ -25,7 +35,7 @@ class Printer(object):
         name = message.name if message.name is not None else ''
         name = name.ljust(self.width)
         if name:
-            name += " "
+            name += ' '
 
         # Replace the unrecognisable bytes with Unicode replacement character (U+FFFD).
         if isinstance(message.data, bytes):
@@ -38,4 +48,4 @@ class Printer(object):
             if self.prefix:
                 time_formatted = message.time.strftime(self.time_format)
                 prefix = '{time} {name}| '.format(time=time_formatted, name=name)
-            self.writer.write(line, color)
+            self.writer.write(line, color=message.color)

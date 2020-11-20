@@ -1,8 +1,8 @@
 import click
-from click.termui import secho
 
 from .config import Config
 from .executor import Executor
+from .printing import Printer, ClickEchoWriter
 from .info import version
 
 
@@ -28,7 +28,9 @@ def up(ctx, file, build):
     Start services
     '''
     conf = Config(file).try_parse()
-    executor = Executor(conf)
+    processes = []
+    writer = ClickEchoWriter()
+    executor = Executor(printer=Printer(writer))
     executor.start()
-    secho(str(conf))
+
     click.echo()
