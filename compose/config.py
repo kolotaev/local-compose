@@ -1,9 +1,8 @@
+from __future__ import print_function
 import sys
 
 import yaml
-import six
 import jsonschema
-# from six import with_metaclass
 
 # from .utils import Singleton
 from .schema import JSON_SCHEMA
@@ -55,7 +54,7 @@ class Config(object):
         try:
             return self.parse()
         except Exception as e:
-            six.print_(e)
+            print(e)
             sys.exit(1)
 
     def validate(self, data):
