@@ -48,6 +48,10 @@ JSON_SCHEMA = {
                     'description': 'Command to build the service',
                     'type': 'string',
                 },
+                'cwd': {
+                    'description': 'Current working directory to run inside',
+                    'type': 'string',
+                },
                 'environment': {
                     'description': 'Environment variables for command run',
                     'type': 'object',
