@@ -4,8 +4,16 @@ global:
   foo: 12
 
 services:
+  web1:
+    run: ruby ser1.rb
+    cwd: examples
+    color: green
+  web2:
+    run: ruby ser2.rb
+    cwd: examples
+    color: cyan
   cat:
-    run: cat
-    color: black
+    run: cat /etc/hosts
+    color: blue
   echo:
     run: echo 'OK'

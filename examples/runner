@@ -1,2 +1,4 @@
 web: ruby ser1.rb
 redis: ruby ser2.rb
+cat: cat /etc/hosts
+echo: echo "ok"
