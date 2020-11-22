@@ -3,7 +3,7 @@ import click
 from .config import Config
 from .executor import Executor
 from .printing import Printer, ClickEchoWriter
-from .info import version
+from .info import version as app_version
 
 
 @click.group()
@@ -16,7 +16,7 @@ def version():
     '''
     Version of the tool
     '''
-    click.echo(version)
+    click.echo(app_version)
 
 
 @root.command()
@@ -31,6 +31,13 @@ def up(ctx, file, build):
     processes = []
     writer = ClickEchoWriter()
     executor = Executor(printer=Printer(writer))
+    services = conf['services']
+    import os
+    import os.path
+    for name, srv in services.items():
+        if srv.get('cwd'):
+            cwd = os.path.join(os.getcwd(), srv.get('cwd'))
+        else:
+            cwd = None
+        executor.add_process(name, cmd=srv.get('run'), cwd=cwd, color=srv.get('color'))
     executor.start()
-
-    click.echo()

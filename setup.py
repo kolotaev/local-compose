@@ -34,6 +34,7 @@ if __name__ == '__main__':
             # 'colorama', # Colorama is only required for Windows
             'PyYAML~=5.3',
             'click~=7.0',
+            # 'https://github.com/feluxe/sty'
         ],
         extras_require={
             'dev': [

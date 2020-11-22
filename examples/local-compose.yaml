@@ -8,12 +8,12 @@ services:
     run: ruby ser1.rb
     cwd: examples
     color: green
-  web2:
+  web2_my_ruby_code:
     run: ruby ser2.rb
     cwd: examples
     color: cyan
-  cat:
-    run: cat /etc/hosts
-    color: blue
-  echo:
-    run: echo 'OK'
+  # cat:
+  #   run: cat /etc/hosts
+  #   color: blue
+  # echo:
+  #   run: echo 'OK'
