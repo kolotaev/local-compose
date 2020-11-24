@@ -1,9 +1,10 @@
 import click
 
 from .config import Config
-from .executor import Executor
+from .scheduler import Scheduler
 from .printing import Printer, ClickEchoWriter, PrintWriter
 from .info import version as app_version
+from .os import OS
 
 
 @click.group()
@@ -36,7 +37,7 @@ def up(ctx, file, build, color):
         writer = ClickEchoWriter()
     else:
         writer = PrintWriter()
-    executor = Executor(printer=Printer(writer))
+    executor = Scheduler(printer=Printer(writer), os=OS())
     services = conf['services']
     import os
     import os.path
@@ -45,5 +46,5 @@ def up(ctx, file, build, color):
             cwd = os.path.join(os.getcwd(), srv.get('cwd'))
         else:
             cwd = None
-        executor.add_process(name, cmd=srv.get('run'), cwd=cwd, color=srv.get('color'))
+        executor.add_service(name, cmd=srv.get('run'), cwd=cwd, color=srv.get('color'))
     executor.start()

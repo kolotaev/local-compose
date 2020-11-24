@@ -18,7 +18,7 @@ class ClickEchoWriter(object):
         self._click_module = click
 
     def write(self, message, color=None):
-        self._click_module.echo(message, color=color)
+        self._click_module.echo(self._click_module.style(message, fg=color))
 
 
 class Printer(object):
@@ -48,4 +48,4 @@ class Printer(object):
             if self.prefix:
                 time_formatted = message.time.strftime(self.time_format)
                 prefix = '{time} {name}| '.format(time=time_formatted, name=name)
-            self.writer.write(line, color=message.color)
+            self.writer.write(prefix + line, color=message.color)
