@@ -1,6 +1,3 @@
-import os
-# import signal
-import subprocess
 import threading
 
 from .printing import Message
@@ -17,8 +14,8 @@ class Executor(object):
         self.child_pid = None
 
     def start(self):
-        proc = threading.Thread(name=self.name, target=self._run_service, args=(True, ))
-        proc.start()
+        th = threading.Thread(name=self.name, target=self._run_service, args=(True, ))
+        th.start()
 
     def stop(self, force=False):
         sig = 'SIGKILL' if force else 'SIGTERM'
@@ -54,11 +51,11 @@ class Pool(object):
     def add(self, executor):
         self._executors[executor.name] = executor
 
-    def all(self):
-        return self._executors.items()
-
     def get(self, name):
         return self._executors.get(name)
+
+    def all(self):
+        return self._executors.items()
 
     def start_all(self):
         for i, executor in self.all():

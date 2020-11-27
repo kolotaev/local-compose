@@ -1,7 +1,6 @@
 import datetime
 import queue
 import signal
-import sys
 
 from .printing import Message
 from .execution import Executor, Pool
