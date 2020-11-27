@@ -1,6 +1,5 @@
 import datetime
 import queue
-import multiprocessing
 import signal
 import sys
 
@@ -28,7 +27,7 @@ class Scheduler(object):
     returncode = None
 
     def __init__(self, printer, os):
-        self.events = multiprocessing.Queue()
+        self.events = queue.Queue()
         self.returncode = None
         self._printer = printer
         self._pool = Pool()
@@ -65,11 +64,9 @@ class Scheduler(object):
                     self._printer.write(msg)
                 elif msg.type == 'start':
                     pid = msg.data['pid']
-                    self._pool.set_pid(msg.name, pid)
                     self._system_print('{name} started (pid={pid})\n'.format(name=msg.name, pid=pid))
                 elif msg.type == 'stop':
                     rc = msg.data['returncode']
-                    self._pool.set_rc(msg.name, rc)
                     self._system_print('{name} stopped (rc={rc})\n'.format(name=msg.name, rc=rc))
                     if self.returncode is None:
                         self.returncode = rc
