@@ -32,19 +32,8 @@ def up(ctx, file, build, color):
     Start services
     '''
     conf = Config(file).try_parse()
-    processes = []
-    if color:
-        writer = ClickEchoWriter()
-    else:
-        writer = PrintWriter()
+    writer = ClickEchoWriter() if color else PrintWriter()
     executor = Scheduler(printer=Printer(writer), os=OS())
-    services = conf['services']
-    import os
-    import os.path
-    for name, srv in services.items():
-        if srv.get('cwd'):
-            cwd = os.path.join(os.getcwd(), srv.get('cwd'))
-        else:
-            cwd = None
-        executor.add_service(name, cmd=srv.get('run'), cwd=cwd, color=srv.get('color'))
+    for s in conf.services:
+        executor.add_service(s)
     executor.start()

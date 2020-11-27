@@ -35,11 +35,10 @@ class Scheduler(object):
         self._os = os
         self._terminating = False
 
-    def add_service(self, name, cmd, color, quiet=False, env=None, cwd=None):
-        srv = Service(cmd, name=name, quiet=quiet, color=color, env=env, cwd=cwd)
-        executor = Executor(self.events, srv, self._os)
+    def add_service(self, service):
+        executor = Executor(self.events, service, self._os)
         self._pool.add(executor)
-        self._printer.width = max(self._printer.width, len(name))
+        self._printer.width = max(self._printer.width, len(service.name))
 
     def start(self):
         def _terminate(signum, frame):

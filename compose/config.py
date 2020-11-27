@@ -6,11 +6,13 @@ import jsonschema
 
 # from .utils import Singleton
 from .schema import JSON_SCHEMA
+from .service import Service
 
 
 class Config(object):
     def __init__(self, filename):
         self._filename = filename
+        self._conf = None
 
     @staticmethod
     def example():
@@ -44,8 +46,9 @@ class Config(object):
         Returns a configuration dict.
         '''
         data = self._read_data()
-        error = self.validate(data)
-        return data
+        self.validate(data)
+        self._conf = data
+        return self
 
     def try_parse(self):
         '''
@@ -65,6 +68,33 @@ class Config(object):
             jsonschema.validate(instance=data, schema=JSON_SCHEMA)
         except Exception as e:
             raise Exception('Configuration file "%s" is invalid.\nErrors found:\n%s' % (self._filename, e))
+
+    @property
+    def services(self):
+        '''
+        Build and get Service objects.
+        '''
+        services = []
+        import os
+        import os.path
+        for name, srv in self._conf['services'].items():
+            if srv.get('cwd'):
+                cwd = os.path.join(os.getcwd(), srv.get('cwd'))
+            else:
+                cwd = None
+            env = {}
+            s = Service(cmd=srv.get('run'), name=name,
+                        quiet=srv.get('quite'), color=srv.get('color'),
+                        env=env, cwd=cwd)
+            services.append(s)
+        return services
+
+    @property
+    def settings(self):
+        '''
+        Get global settings.
+        '''
+        return self._conf['global']
 
     def _read_data(self):
         data = None
