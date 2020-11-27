@@ -4,7 +4,6 @@ import sys
 import yaml
 import jsonschema
 
-# from .utils import Singleton
 from .schema import JSON_SCHEMA
 from .service import Service
 
