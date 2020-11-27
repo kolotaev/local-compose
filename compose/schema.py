@@ -67,6 +67,16 @@ JSON_SCHEMA = {
                     'type': 'array',
                     'items': { 'type': 'string' },
                 },
+                'quite': {
+                    'description': 'Do not log service output to anywhere?',
+                    'type': 'boolean',
+                    'default': False,
+                },
+                'shell': {
+                    'description': 'Run service in shell?',
+                    'type': 'boolean',
+                    'default': False,
+                },
                 'color': {
                     'description': 'Color that is associated with service output',
                     'type': 'string',
