@@ -10,14 +10,13 @@ class Executor(object):
     def __init__(self, events, service, os):
         self._events = events
         self._srv = service
-        self._srv_proc = None
         self._os = os
         self.name = service.name
         self.returncode = None
         self.pid = None
 
     def start(self):
-        proc = multiprocessing.Process(name=self.name, target=self.run_service, args=(True, ))
+        proc = multiprocessing.Process(name=self.name, target=self._run_service, args=(True, ))
         proc.start()
 
     def stop(self, force=False):
@@ -29,16 +28,9 @@ class Executor(object):
         else:
             self._os.terminate_pid(self.pid)
 
-    def run_service(self, ignore_signals=False):
-        self._srv_proc = subprocess.Popen(self._srv.cmd,
-                                      env=self._srv.env,
-                                      cwd=self._srv.cwd,
-                                      shell=self._srv.in_shell,
-                                      stdout=subprocess.PIPE,
-                                      stderr=subprocess.STDOUT,
-                                      start_new_session=True,
-                                      close_fds=True)
-        self._send_message({'pid': self._srv_proc.pid}, 'start')
+    def _run_service(self, ignore_signals=False):
+        child = self._srv.run()
+        self._send_message({'pid': child.pid}, 'start')
 
         # Don't pay attention to SIGINT/SIGTERM. The process itself is
         # considered unkillable, and will only exit when its child (the shell
@@ -47,13 +39,13 @@ class Executor(object):
             signal.signal(signal.SIGINT, signal.SIG_IGN)
             signal.signal(signal.SIGTERM, signal.SIG_IGN)
 
-        for line in iter(self._srv_proc.stdout.readline, b''):
+        for line in iter(child.stdout.readline, b''):
             if not self._srv.quiet:
                 self._send_message(line, 'line')
-        self._srv_proc.stdout.close()
-        self._srv_proc.wait()
+        child.stdout.close()
+        child.wait()
 
-        self._send_message({'returncode': self._srv_proc.returncode}, 'stop')
+        self._send_message({'returncode': child.returncode}, 'stop')
 
     def _send_message(self, data, msg_type):
         self._events.put(Message(type=msg_type, data=data, time=now(), name=self._srv.name, color=self._srv.color))
