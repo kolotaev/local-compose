@@ -1,15 +1,12 @@
 import datetime
-import queue
 import signal
 
 from .printing import Message
 from .execution import Executor, Pool, EventBus
-from .service import Service
+
 from .utils import now
 
 
-KILL_WAIT = 3
-SYSTEM_PRINTER_NAME = 'system'
 SIGNALS = {
     signal.SIGINT: {
         'name': 'SIGINT',
@@ -21,13 +18,13 @@ SIGNALS = {
     },
 }
 
-
 class Scheduler(object):
     returncode = None
 
     def __init__(self, printer, os):
         self.event_bus = EventBus()
         self.returncode = None
+        self.kill_wait = 5
         self._printer = printer
         self._pool = Pool()
         self._os = os
@@ -53,22 +50,19 @@ class Scheduler(object):
         exit_start = None
 
         while True:
-            try:
-                msg = self.event_bus.receive(timeout=0.1)
-            except queue.Empty:
-                if exit:
+            msg = self.event_bus.receive(timeout=0.1)
+            if msg.type == 'no_messages' and exit:
                     break
-            else:
-                if msg.type == 'line':
-                    self._printer.write(msg)
-                elif msg.type == 'start':
-                    pid = msg.data['pid']
-                    self.event_bus.send_system('{name} started (pid={pid})\n'.format(name=msg.name, pid=pid))
-                elif msg.type == 'stop':
-                    rc = msg.data['returncode']
-                    self.event_bus.send_system('{name} stopped (rc={rc})\n'.format(name=msg.name, rc=rc))
-                    if self.returncode is None:
-                        self.returncode = rc
+            if msg.type == 'line':
+                self._printer.write(msg)
+            elif msg.type == 'start':
+                pid = msg.data['pid']
+                self.event_bus.send_system('{name} started (pid={pid})\n'.format(name=msg.name, pid=pid))
+            elif msg.type == 'stop':
+                rc = msg.data['returncode']
+                self.event_bus.send_system('{name} stopped (rc={rc})\n'.format(name=msg.name, rc=rc))
+                if self.returncode is None:
+                    self.returncode = rc
 
             if self._pool.all_started() and self._pool.all_stopped():
                 exit = True
@@ -78,10 +72,10 @@ class Scheduler(object):
                 self.terminate()
 
             if exit_start is not None:
-                # If we've been in this loop for more than KILL_WAIT seconds,
+                # If we've been in this loop for more than kill_wait seconds,
                 # it's time to kill all remaining children.
                 waiting = now() - exit_start
-                if waiting > datetime.timedelta(seconds=KILL_WAIT):
+                if waiting > datetime.timedelta(seconds=self.kill_wait):
                     self.kill()
 
     def terminate(self):

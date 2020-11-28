@@ -49,7 +49,10 @@ class EventBus():
         self._bus = queue.Queue()
 
     def receive(self, timeout):
-        return self._bus.get(timeout=timeout)
+        try:
+            return self._bus.get(timeout=timeout)
+        except queue.Empty:
+            return Message(type='no_messages', data='No messages in queue', name='system')
 
     def send(self, message):
         self._bus.put(message)
