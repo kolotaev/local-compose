@@ -3,7 +3,7 @@ import queue
 import signal
 
 from .printing import Message
-from .execution import Executor, Pool
+from .execution import Executor, Pool, EventBus
 from .service import Service
 from .utils import now
 
@@ -26,7 +26,7 @@ class Scheduler(object):
     returncode = None
 
     def __init__(self, printer, os):
-        self.events = queue.Queue()
+        self.event_bus = EventBus()
         self.returncode = None
         self._printer = printer
         self._pool = Pool()
@@ -34,13 +34,13 @@ class Scheduler(object):
         self._terminating = False
 
     def add_service(self, service):
-        executor = Executor(self.events, service, self._os)
+        executor = Executor(self.event_bus, service, self._os)
         self._pool.add(executor)
         self._printer.width = max(self._printer.width, len(service.name))
 
     def start(self):
         def _terminate(signum, frame):
-            self._system_print('%s received\n' % SIGNALS[signum]['name'])
+            self.event_bus.send_system('%s received\n' % SIGNALS[signum]['name'])
             self.returncode = SIGNALS[signum]['rc']
             self.terminate()
 
@@ -54,7 +54,7 @@ class Scheduler(object):
 
         while True:
             try:
-                msg = self.events.get(timeout=0.1)
+                msg = self.event_bus.receive(timeout=0.1)
             except queue.Empty:
                 if exit:
                     break
@@ -63,10 +63,10 @@ class Scheduler(object):
                     self._printer.write(msg)
                 elif msg.type == 'start':
                     pid = msg.data['pid']
-                    self._system_print('{name} started (pid={pid})\n'.format(name=msg.name, pid=pid))
+                    self.event_bus.send_system('{name} started (pid={pid})\n'.format(name=msg.name, pid=pid))
                 elif msg.type == 'stop':
                     rc = msg.data['returncode']
-                    self._system_print('{name} stopped (rc={rc})\n'.format(name=msg.name, rc=rc))
+                    self.event_bus.send_system('{name} stopped (rc={rc})\n'.format(name=msg.name, rc=rc))
                     if self.returncode is None:
                         self.returncode = rc
 
@@ -92,6 +92,3 @@ class Scheduler(object):
 
     def kill(self):
         self._pool.stop_all(force=True)
-
-    def _system_print(self, data):
-        self._printer.write(Message(type='line', data=data, time=now(), name=SYSTEM_PRINTER_NAME, color=None))

@@ -1,9 +1,25 @@
 from __future__ import print_function
 import sys
-from collections import namedtuple
+import datetime
 
 
-Message = namedtuple('Message', 'type data time name color')
+def now():
+    return
+
+
+class Message(object):
+    def __init__(self, type, data, name, time=None, color=None):
+        self.type = type
+        self.data = data
+        self.name = name
+        self.color = color
+        if time is None:
+            time = self.now()
+        self.time = time
+
+    @staticmethod
+    def now():
+        return datetime.datetime.now()
 
 
 class PrintWriter(object):

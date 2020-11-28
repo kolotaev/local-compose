@@ -1,12 +1,12 @@
 import threading
+import queue
 
 from .printing import Message
-from .utils import now
 
 
 class Executor(object):
-    def __init__(self, events, service, os):
-        self._events = events
+    def __init__(self, event_bus, service, os):
+        self.event_bus = event_bus
         self._srv = service
         self._os = os
         self.name = service.name
@@ -19,8 +19,8 @@ class Executor(object):
 
     def stop(self, force=False):
         sig = 'SIGKILL' if force else 'SIGTERM'
-        msg = 'about to get {signal} from System\n'.format(signal=sig)
-        self._send_message(msg, 'line')
+        msg = 'sending {signal} to {name}(pid={pid})\n'.format(signal=sig, name=self._srv.name, pid=self.child_pid)
+        self.event_bus.send_system(msg)
         if force:
             self._os.kill_pid(self.child_pid)
         else:
@@ -41,7 +41,21 @@ class Executor(object):
         self.returncode = child.returncode
 
     def _send_message(self, data, msg_type):
-        self._events.put(Message(type=msg_type, data=data, time=now(), name=self._srv.name, color=self._srv.color))
+        self.event_bus.send(Message(type=msg_type, data=data, name=self._srv.name, color=self._srv.color))
+
+
+class EventBus():
+    def __init__(self):
+        self._bus = queue.Queue()
+
+    def receive(self, timeout):
+        return self._bus.get(timeout=timeout)
+
+    def send(self, message):
+        self._bus.put(message)
+
+    def send_system(self, text):
+        self._bus.put(Message(type='line', data=text, name='system'))
 
 
 class Pool(object):
