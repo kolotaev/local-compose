@@ -21,10 +21,10 @@ SIGNALS = {
 class Scheduler(object):
     returncode = None
 
-    def __init__(self, printer, os):
+    def __init__(self, printer, os, kill_wait=5):
         self.event_bus = EventBus()
         self.returncode = None
-        self.kill_wait = 5
+        self.kill_wait = kill_wait
         self._printer = printer
         self._pool = Pool()
         self._os = os
