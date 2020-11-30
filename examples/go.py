@@ -5,9 +5,10 @@ import random
 
 
 def run(port):
-    for _ in range(1000):
-        requests.get(f'http://localhost:%d/%f' % (port, random.random()))
-        time.sleep(random.random())
+    while True:
+        rand = random.random()
+        requests.get(f'http://localhost:%d/%f' % (port, rand))
+        time.sleep(rand)
 
 
 t1 = threading.Thread(target=run, args=(9010, ))
