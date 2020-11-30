@@ -1,7 +1,8 @@
-import requests
 import threading
 import time
 import random
+
+import requests
 
 
 def run(port):
@@ -13,7 +14,6 @@ def run(port):
 
 t1 = threading.Thread(target=run, args=(9010, ))
 t2 = threading.Thread(target=run, args=(9020, ))
-
 
 t1.start()
 t2.start()

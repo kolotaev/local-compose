@@ -82,7 +82,7 @@ class Config(object):
             else:
                 cwd = None
             env = {}
-            s = Service(cmd=srv.get('run'), name=name,
+            s = Service(name, srv.get('run'),
                         quiet=srv.get('quite'), color=srv.get('color'),
                         env=env, cwd=cwd)
             services.append(s)
