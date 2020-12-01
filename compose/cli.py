@@ -1,6 +1,6 @@
 import click
 
-from .config import Config
+from .configuration import Config
 from .scheduler import Scheduler
 from .printing import Printer, ClickEchoWriter, PrintWriter
 from .info import version as app_version

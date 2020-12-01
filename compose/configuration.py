@@ -15,28 +15,7 @@ class Config(object):
 
     @staticmethod
     def example():
-        pass
-
-    @staticmethod
-    def colors():
-        return (
-            'black',
-            'red',
-            'green',
-            'yellow',
-            'blue',
-            'magenta',
-            'cyan',
-            'white',
-            'bright_black',
-            'bright_red',
-            'bright_green',
-            'bright_yellow',
-            'bright_blue',
-            'bright_magenta',
-            'bright_cyan',
-            'bright_white',
-        )
+        return ''
 
     def parse(self):
         '''
@@ -64,6 +43,8 @@ class Config(object):
         Validates the config.
         '''
         try:
+            if data is None:
+                raise ValueError('Empty file.')
             jsonschema.validate(instance=data, schema=JSON_SCHEMA)
         except Exception as e:
             raise Exception('Configuration file "%s" is invalid.\nErrors found:\n%s' % (self._filename, e))
@@ -95,11 +76,17 @@ class Config(object):
         '''
         return self._conf['global']
 
+    @property
+    def version(self):
+        '''
+        Get config file version.
+        '''
+        return self._conf['version']
+
     def _read_data(self):
-        data = None
         with open(self._filename) as file:
             try:
-                data = yaml.safe_load(file)
+                return yaml.safe_load(file)
             except Exception as e:
-                raise Exception('Config yaml file structure is malformed.\nError found:\n%s' % e)
-        return data
+                raise Exception('Configuration file "%s" is invalid.\nError found:\n%s' % (self._filename, e))
+        return None

@@ -2,18 +2,18 @@ from os import path
 from setuptools import setup, find_packages
 
 
-about = {}
+info = {}
 here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'compose', 'info.py'), mode='r') as f:
-    exec(f.read(), about)
+    exec(f.read(), info)
 
 
 if __name__ == '__main__':
     setup(
-        name=about['name'],
+        name=info['name'],
         description='Like docker-compose but for locally installed services',
         # keywords='',
-        version=about['version'],
+        version=info['version'],
         author='Egor Kolotaev',
         author_email='ekolotaev@gmail.com',
         license='MIT',
@@ -21,7 +21,7 @@ if __name__ == '__main__':
         long_description='Like docker-compose but for locally installed services',
         entry_points={
             'console_scripts': [
-                '%s = main:run' % about['name'],
+                '%s = main:run' % info['name'],
             ],
         },
         py_modules=['app', 'main'],
@@ -39,6 +39,7 @@ if __name__ == '__main__':
         extras_require={
             'dev': [
                 'pytest~=4.6',
+                'mock==3.0.5',
             ],
         },
         # test_requirements = [],
