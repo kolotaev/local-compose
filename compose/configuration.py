@@ -64,15 +64,23 @@ class Config(object):
         Build and get Service objects.
         '''
         services = []
-        for name, srv in self._conf['services'].items():
-            if srv.get('cwd'):
-                cwd = os.path.join(os.getcwd(), srv.get('cwd'))
-            else:
-                cwd = None
-            env = {}
-            s = Service(name, srv.get('run'),
-                        quiet=srv.get('quite'), color=srv.get('color'),
-                        env=env, cwd=cwd)
+        for name, srv in self._conf.get('services', {}).items():
+            # if srv.get('cwd'):
+            #     cwd = os.path.join(os.getcwd(), srv.get('cwd'))
+            # else:
+            #     cwd = None
+            params = {}
+            if 'env' in srv:
+                params['env'] = srv['env']
+            if 'cwd' in srv:
+                params['cwd'] = srv['cwd']
+            if 'silent' in srv:
+                params['quiet'] = srv['silent']
+            if 'color' in srv:
+                params['color'] = srv['color']
+            if 'shell' in srv:
+                params['shell'] = srv['shell']
+            s = Service(name, srv.get('run'), **params)
             services.append(s)
         return services
 
@@ -81,11 +89,11 @@ class Config(object):
         '''
         Get global settings.
         '''
-        return self._conf['global']
+        return self._conf.get('global', {})
 
     @property
     def version(self):
         '''
         Get config file version.
         '''
-        return self._conf['version']
+        return self._conf.get('version')

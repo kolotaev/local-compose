@@ -2,6 +2,7 @@ import mock
 import pytest
 
 from compose.configuration import Config
+from compose.service import Service
 
 
 FILE_NAME = 'unit-test-config-file.yaml'
@@ -32,6 +33,8 @@ def test_parse_minimal_required(mock_read):
     conf = Config(FILE_NAME).parse()
     assert conf is not None
     assert '123.0' == conf.version
+    assert {} == conf.settings
+    assert [] == conf.services
 
 
 @mock.patch.object(Config, 'read')
@@ -84,21 +87,20 @@ def test_settings_property(mock_read):
     assert {'bar': 'asdf', 'foo': 123} == conf.settings
 
 
-# # @mock.patch('compose.configuration.open', create=True)
-# # def test_parse(mock_open):
-# #     config_contents = '''
-# #     version: '1.0'
-# #     services:
-# #         web1:
-# #             run: ruby server-script.rb
-# #         web2:
-# #             run: java -jar /path/to/server.jar
-# #     '''
-# #     mock_open.side_effect = [
-# #         mock.mock_open(read_data=config_contents).return_value,
-# #     ]
-# #     conf = Config('unit-test-config-file.yaml').parse()
-# #     assert conf is not None
-# #     assert '1.0' == conf.version
-# #     assert {'foo': 123} == conf.settings
-# #     assert 2 == len(conf.services)
+@mock.patch.object(Config, 'read')
+def test_services_property(mock_read):
+    config_contents = '''
+    version: '1.0'
+    services:
+        web1:
+            run: ruby server-script.rb
+        web2:
+            run: java -jar /path/to/server.jar
+    '''
+    mock_read.return_value = config_contents
+    conf = Config(FILE_NAME).parse()
+    assert 2 == len(conf.services)
+    assert 'web1' in list([s.name for s in conf.services])
+    assert 'web2' in list([s.name for s in conf.services])
+    assert isinstance(conf.services[0], Service)
+    assert isinstance(conf.services[1], Service)
