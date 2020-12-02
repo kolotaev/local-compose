@@ -4,7 +4,7 @@ from .configuration import Config
 from .scheduler import Scheduler
 from .printing import Printer, ClickEchoWriter, PrintWriter
 from .info import version as app_version
-from .os import OS
+from .system import OS
 
 
 @click.group()

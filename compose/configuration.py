@@ -1,5 +1,7 @@
 from __future__ import print_function
 import sys
+import os
+import os.path
 
 import yaml
 import jsonschema
@@ -23,10 +25,14 @@ class Config(object):
         Validates it.
         Returns a configuration dict.
         '''
-        data = self._read_data()
-        self.validate(data)
-        self._conf = data
-        return self
+        try:
+            contents = self.read()
+            data = yaml.safe_load(contents)
+            self.validate(data)
+            self._conf = data
+            return self
+        except Exception as e:
+            raise Exception('Configuration file "%s" is invalid.\nErrors found:\n%s' % (self._filename, e))
 
     def try_parse(self):
         '''
@@ -42,12 +48,15 @@ class Config(object):
         '''
         Validates the config.
         '''
-        try:
-            if data is None:
-                raise ValueError('Empty file.')
-            jsonschema.validate(instance=data, schema=JSON_SCHEMA)
-        except Exception as e:
-            raise Exception('Configuration file "%s" is invalid.\nErrors found:\n%s' % (self._filename, e))
+        if data is None:
+            raise ValueError('File is empty.')
+        jsonschema.validate(instance=data, schema=JSON_SCHEMA)
+
+    def read(self):
+        if not os.path.isfile(self._filename):
+            raise Exception('File is not found.')
+        with open(self._filename) as file:
+            return file.read()
 
     @property
     def services(self):
@@ -55,8 +64,6 @@ class Config(object):
         Build and get Service objects.
         '''
         services = []
-        import os
-        import os.path
         for name, srv in self._conf['services'].items():
             if srv.get('cwd'):
                 cwd = os.path.join(os.getcwd(), srv.get('cwd'))
@@ -82,11 +89,3 @@ class Config(object):
         Get config file version.
         '''
         return self._conf['version']
-
-    def _read_data(self):
-        with open(self._filename) as file:
-            try:
-                return yaml.safe_load(file)
-            except Exception as e:
-                raise Exception('Configuration file "%s" is invalid.\nError found:\n%s' % (self._filename, e))
-        return None
