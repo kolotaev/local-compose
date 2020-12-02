@@ -13,22 +13,27 @@ def test_services_all_items_are_passed(mock_read):
     config_contents = '''
     version: '1.0'
     services:
-        web2:
+        web1:
             run: java -jar /path/to/server.jar
             color: red
             cwd: this-dir
             env:
                 FOO: 123
+                BAR: asdf
             silent: yes
             shell: no
     '''
     mock_read.return_value = config_contents
     conf = Config(FILE_NAME).parse()
     assert 1 == len(conf.services)
-    assert 'web2' == conf.services[0].name
-    assert 'java -jar /path/to/server.jar' == conf.services[0].cmd
-    assert 'red' == conf.services[0].color
-    assert 'this-dir' == conf.services[0].cwd
-    assert {'FOO': 123} == conf.services[0].env
-    assert conf.services[0].quiet
-    assert not conf.services[0].in_shell
+    web1 = conf.services[0]
+    assert 'web1' == web1.name
+    assert 'java -jar /path/to/server.jar' == web1.cmd
+    assert 'red' == web1.color
+    assert 'this-dir' == web1.cwd
+    assert 'FOO' in web1.env
+    assert 123 == web1.env['FOO']
+    assert 'BAR' in web1.env
+    assert 'asdf' == web1.env['BAR']
+    assert web1.quiet
+    assert not web1.in_shell
