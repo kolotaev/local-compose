@@ -30,6 +30,7 @@ if __name__ == '__main__':
             # 'six~=1.15',
             'watchdog~=0.10',
             'jsonschema~=3.2',
+            'pyrsistent==0.16.0', # see https://github.com/Julian/jsonschema/issues/741
             # 'delegator.py~=0.1',
             # 'colorama', # Colorama is only required for Windows
             'PyYAML~=5.3',
