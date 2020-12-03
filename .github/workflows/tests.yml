@@ -34,4 +34,4 @@ jobs:
         file: ./coverage.xml
         directory: ./coverage/reports/
         fail_ci_if_error: true
-        verbose: true
+        verbose: false
