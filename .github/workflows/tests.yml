@@ -1,6 +1,7 @@
 name: Tests
 
-on: [push]
+on:
+  - push
 
 jobs:
   build:
@@ -8,7 +9,9 @@ jobs:
     strategy:
       max-parallel: 5
       matrix:
-        python-version: [2.7, 3.9]
+        python-version:
+          - 2.7
+          - 3.9
 
     steps:
     - uses: actions/checkout@v1
@@ -21,4 +24,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install tox tox-gh-actions
     - name: Run tests
-      run: tox
+      run: |
+      ls -la .
+      tox
