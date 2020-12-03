@@ -1,9 +1,12 @@
-dist: precise
-sudo: true
+sudo: false
 language: python
+cache: pip
 python:
-    - "2.7"
-    - "3.7"
-    - "3.8"
-install: pip install tox-travis
-script: tox
+  - "2.7"
+  - "3.8"
+install:
+  - pip install tox-travis
+script:
+  - tox
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
