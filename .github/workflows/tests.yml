@@ -25,5 +25,5 @@ jobs:
         pip install tox tox-gh-actions
     - name: Run tests
       run: |
-      ls -la .
-      tox
+        ls -la .
+        tox
