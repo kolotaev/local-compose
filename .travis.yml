@@ -5,8 +5,9 @@ python:
   - "2.7"
   - "3.8"
 install:
-  - pip install tox-travis
+  - pip install -e .[dev]
 script:
-  - tox
+  - echo "OK"
+  - python -m pytest
 after_success:
   - bash <(curl -s https://codecov.io/bash)
