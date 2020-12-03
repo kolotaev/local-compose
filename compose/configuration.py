@@ -8,6 +8,7 @@ import jsonschema
 
 from .schema import JSON_SCHEMA
 from .service import Service
+from .info import config_example
 
 
 class Config(object):
@@ -17,7 +18,7 @@ class Config(object):
 
     @staticmethod
     def example():
-        return ''
+        return config_example
 
     def parse(self):
         '''

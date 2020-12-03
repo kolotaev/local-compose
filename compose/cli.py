@@ -23,6 +23,14 @@ def version():
 
 
 @root.command()
+def example():
+    '''
+    Show detailed configuration example
+    '''
+    click.echo(Config.example())
+
+
+@root.command()
 @click.option('-f', '--file', show_default=True, default='local-compose.yaml', help='Configuration file.')
 @click.option('-b', '--build', is_flag=True, show_default=True, help='Build services before run.')
 @click.option('--color/--no-color', default=True, show_default=True, help='Use colored output?')
