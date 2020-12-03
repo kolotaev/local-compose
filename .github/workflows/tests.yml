@@ -26,16 +26,12 @@ jobs:
 
 
     - name: Run tests
-      run: python -m pytest --cov=./ --cov-report=xml
+      run: python -m pytest --cov=./ --cov-report=xml --color=yes
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
         file: ./coverage.xml
         directory: ./coverage/reports/
-        # flags: unittests
-        # env_vars: OS,PYTHON
-        # name: codecov-umbrella
         fail_ci_if_error: true
-        # path_to_write_report: ./coverage/codecov_report.txt
         verbose: true
