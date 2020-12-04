@@ -46,13 +46,13 @@ class Scheduler(object):
 
         self._pool.start_all()
 
-        exit = False
+        do_exit = False
         exit_start = None
 
         while True:
             msg = self.event_bus.receive(timeout=0.1)
-            if msg.type == 'no_messages' and exit:
-                    break
+            if msg.type == 'no_messages' and do_exit:
+                break
             if msg.type == 'line':
                 self._printer.write(msg)
             elif msg.type == 'start':
@@ -65,7 +65,7 @@ class Scheduler(object):
                     self.returncode = rc
 
             if self._pool.all_started() and self._pool.all_stopped():
-                exit = True
+                do_exit = True
 
             if exit_start is None and self._pool.all_started() and self._pool.any_stopped():
                 exit_start = now()

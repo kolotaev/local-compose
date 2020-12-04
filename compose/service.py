@@ -26,7 +26,8 @@ class Service(object):
                                 shell=self.in_shell,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT,
-                                start_new_session=True,
+                                # todo - breaks on py27
+                                # start_new_session=True,
                                 close_fds=True)
 
 class Job(Service):

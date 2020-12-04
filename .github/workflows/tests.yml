@@ -24,7 +24,6 @@ jobs:
         pip install -e .[dev]
         pip install pytest-cov
 
-
     - name: Run tests
       run: python -m pytest --cov=./ --cov-report=xml --color=yes
 

@@ -15,14 +15,13 @@ class OS(object):
         self._kill(pid, signal.SIGKILL)
 
     def pid_by_name(self, name):
-        # or use psutil
         child = subprocess.Popen(['pgrep', '-f', name], stdout=subprocess.PIPE, shell=False)
         response = child.communicate()[0]
         return [int(pid) for pid in response.split()]
 
     def _kill(self, pid, signal):
         try:
-            os.killpg(pid, signal)
+            os.kill(pid, signal)
         except OSError as e:
             if e.errno not in [errno.EPERM, errno.ESRCH]:
                 raise
