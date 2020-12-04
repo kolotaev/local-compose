@@ -59,3 +59,11 @@ class TestOS(object):
         assert 1 == len(os.pid_by_name(program))
         os.terminate_pid(pid)
         assert 0 == len(os.pid_by_name(program))
+
+    def test_does_not_panic_when_terminating_unknown_pid(self):
+        os = OS()
+        os.terminate_pid(99999999)
+
+    def test_does_not_panic_when_killing_unknown_pid(self):
+        os = OS()
+        os.kill_pid(99999999)
