@@ -13,8 +13,9 @@ class Message(object):
         self.time = time
 
 
-class PrintWriter(object):
+class SimplePrintWriter(object):
     def write(self, message, color=None):
+        # sys.stdout.write
         print(message)
 
 
