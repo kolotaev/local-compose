@@ -33,7 +33,7 @@ class Scheduler(object):
     def add_service(self, service):
         executor = Executor(self.event_bus, service, self._os)
         self._pool.add(executor)
-        self._printer.width = max(self._printer.width, len(service.name))
+        self._printer.set_width(service)
 
     def start(self):
         def _terminate(signum, frame):

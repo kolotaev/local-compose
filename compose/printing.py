@@ -39,12 +39,15 @@ class Printer(object):
         if message.type != 'line':
             raise RuntimeError('Printer can only process messages of type "line"')
 
-        name = message.name if message.name is not None else ''
+        if message.name is not None:
+            name = message.name
+        else:
+            name = ''
         name = name.ljust(self.width)
         if name:
             name += ' '
 
-        # Replace the unrecognisable bytes with Unicode replacement character (U+FFFD).
+        # Replace the unrecognizable bytes with Unicode replacement character (U+FFFD).
         if isinstance(message.data, bytes):
             string = message.data.decode('utf-8', 'replace')
         else:
@@ -56,3 +59,6 @@ class Printer(object):
                 time_formatted = message.time.strftime(self.time_format)
                 prefix = '{time} {name}| '.format(time=time_formatted, name=name)
             self.writer.write(prefix + line, color=message.color)
+
+    def set_width(self, service):
+        self.width = max(self.width, len(service.name))
