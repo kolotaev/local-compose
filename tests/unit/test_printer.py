@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pytest
 
 from compose.printing import Printer, Message
@@ -8,13 +10,12 @@ class StoreWriter(object):
     def __init__(self):
         self.data = ''
 
-    def write(msg, color=None):
+    def write(self, msg, color=None):
         self.data = msg
 
 
 def test_printer_does_not_allow_other_mesage_types():
-    w = StoreWriter()
-    p = Printer(w)
+    p = Printer(StoreWriter())
     with pytest.raises(RuntimeError) as execinfo:
         p.write(Message(type='close', data='bye...', name='web1'))
     assert 'Printer can only process messages of type "line"' == str(execinfo.value)
@@ -34,3 +35,50 @@ def test_adjust_width():
     assert 14 == p.width
     p.adjust_width(s3)
     assert 14 == p.width
+
+
+@pytest.mark.parametrize('message, time_format, use_prefix, expect', [
+    (
+        Message(type='line', data='', name=''),
+        '',
+        True,
+        '        | '
+    ),
+    (
+        Message(type='line', data='bye...', name='web1', color='red'),
+        '',
+        True,
+        ' web1   | bye...'
+    ),
+    (
+        Message(type='line', data='bye...', name='web1', time=datetime.fromtimestamp(1547730073)),
+        None,
+        True,
+        '16:01:13 web1   | bye...'
+    ),
+    (
+        Message(type='line', data='bye...', name='web1', time=datetime.fromtimestamp(1547730073)),
+        "%b %d %Y %H:%M:%S",
+        True,
+        'Jan 17 2019 16:01:13 web1   | bye...'
+    ),
+    (
+        Message(type='line', data='bye...', name='web1', time=datetime.fromtimestamp(1547730073)),
+        None,
+        False,
+        'bye...'
+    ),
+    (
+        Message(type='line', data=b'\x28', name='web1'),
+        '',
+        True,
+        ' web1   | ('
+    ),
+])
+def test_write(message, time_format, use_prefix, expect):
+    w = StoreWriter()
+    p = Printer(w, time_format=time_format, use_prefix=use_prefix)
+    s1 = Service(name='123456', cmd='cat')
+    p.adjust_width(s1)
+    p.write(message)
+    assert expect == w.data

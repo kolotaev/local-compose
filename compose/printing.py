@@ -29,11 +29,14 @@ class ClickEchoWriter(object):
 
 
 class Printer(object):
-    def __init__(self, writer, time_format='%H:%M:%S', width=0, prefix=True):
+    def __init__(self, writer, time_format='%H:%M:%S', use_prefix=True):
         self.writer = writer
-        self.time_format = time_format
-        self.width = width
-        self.prefix = prefix
+        if time_format is None:
+            self.time_format = '%H:%M:%S'
+        else:
+            self.time_format = time_format
+        self.width = 0
+        self.use_prefix = use_prefix
 
     def write(self, message):
         if message.type != 'line':
@@ -49,13 +52,17 @@ class Printer(object):
 
         # Replace the unrecognizable bytes with Unicode replacement character (U+FFFD).
         if isinstance(message.data, bytes):
-            string = message.data.decode('utf-8', 'replace')
+            string_data = message.data.decode('utf-8', 'replace')
         else:
-            string = message.data
+            string_data = message.data
 
-        for line in string.splitlines():
+        lines = string_data.splitlines()
+        if not lines:
+            lines = ['']
+
+        for line in lines:
             prefix = ''
-            if self.prefix:
+            if self.use_prefix:
                 time_formatted = message.time.strftime(self.time_format)
                 prefix = '{time} {name}| '.format(time=time_formatted, name=name)
             self.writer.write(prefix + line, color=message.color)
