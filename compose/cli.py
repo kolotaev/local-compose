@@ -40,7 +40,10 @@ def up(ctx, file, build, color):
     Start services
     '''
     conf = Config(file).try_parse()
-    writer = ClickEchoWriter() if color else SimplePrintWriter()
+    if color:
+        writer = ClickEchoWriter()
+    else:
+        writer = SimplePrintWriter()
     executor = Scheduler(printer=Printer(writer), os=OS())
     for s in conf.services:
         executor.add_service(s)

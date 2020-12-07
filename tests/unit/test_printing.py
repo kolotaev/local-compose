@@ -1,37 +1,50 @@
 # -*- coding: utf-8 -*-
 
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 import mock
 
 from compose.printing import SimplePrintWriter, ClickEchoWriter
 
 
-@mock.patch('sys.stdout', new_callable=StringIO)
+@mock.patch('sys.stdout', new_callable=StringIO, create=True)
 def test_simple_print_writer(mock_stdout):
+    mock_stdout.isatty = lambda: True
     w = SimplePrintWriter()
     w.write(u'hello it is ü')
-    assert mock_stdout.getvalue() == u'hello it is ü\n'
-    w.write('is there a color?', color='red')
-    assert mock_stdout.getvalue() == 'is there a color?\n'
+    assert u'hello it is ü\n' == mock_stdout.getvalue()
 
 
-@mock.patch('sys.stdout', new_callable=StringIO)
+@mock.patch('sys.stdout', new_callable=StringIO, create=True)
 def test_simple_print_writer_color(mock_stdout):
+    mock_stdout.isatty = lambda: True
     w = SimplePrintWriter()
     w.write('is there a color?', color='red')
-    assert mock_stdout.getvalue() == 'is there a color?\n'
+    assert 'is there a color?\n' == mock_stdout.getvalue()
 
 
-@mock.patch('sys.stdout', new_callable=StringIO)
+@mock.patch('sys.stdout', new_callable=StringIO, create=True)
 def test_click_echo_writer(mock_stdout):
+    mock_stdout.isatty = lambda: True
     w = ClickEchoWriter()
-    w.write(u'hello it is ü')
-    assert mock_stdout.getvalue() == u'hello it is ü\n'
+    w.write('hello it is û')
+    assert 'hello it is û\033[0m\n' == mock_stdout.getvalue()
 
 
-@mock.patch('sys.stdout', new_callable=StringIO)
+@mock.patch('sys.stdout', new_callable=StringIO, create=True)
 def test_click_echo_writer_color(mock_stdout):
+    mock_stdout.isatty = lambda: True
     w = ClickEchoWriter()
     w.write('is there a color?', color='red')
-    assert mock_stdout.getvalue() == '////is there a color?\n'
+    assert '\033[31mis there a color?\033[0m\n' == mock_stdout.getvalue()
+
+
+@mock.patch('sys.stdout', new_callable=StringIO, create=True)
+def test_click_echo_writer_color_no_tty(mock_stdout):
+    mock_stdout.isatty = lambda: False
+    w = ClickEchoWriter()
+    w.write('is there a color?', color='red')
+    assert 'is there a color?\n' == mock_stdout.getvalue()
