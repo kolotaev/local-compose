@@ -60,5 +60,5 @@ class Printer(object):
                 prefix = '{time} {name}| '.format(time=time_formatted, name=name)
             self.writer.write(prefix + line, color=message.color)
 
-    def set_width(self, service):
+    def adjust_width(self, service):
         self.width = max(self.width, len(service.name))
