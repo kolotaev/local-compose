@@ -1,9 +1,24 @@
 from datetime import datetime
+import time
+import os
 
 import pytest
 
 from compose.printing import Printer, Message
 from compose.service import Service
+
+
+@pytest.fixture
+def timezone_fixture():
+    original_tz = os.environ.get('TZ')
+    os.environ['TZ'] = 'Europe/London'
+    time.tzset()
+    yield
+    if original_tz:
+        os.environ['TZ'] = original_tz
+    else:
+        del os.environ['TZ']
+    time.tzset()
 
 
 class StoreWriter(object):
@@ -51,19 +66,19 @@ def test_adjust_width():
         ' web1   | bye...'
     ),
     (
-        Message(type='line', data='bye...', name='web1', time=datetime.fromtimestamp(1547730073)),
+        Message(type='line', data='bye...', name='web1'),
         None,
         True,
-        '16:01:13 web1   | bye...'
+        '13:01:13 web1   | bye...'
     ),
     (
-        Message(type='line', data='bye...', name='web1', time=datetime.fromtimestamp(1547730073)),
+        Message(type='line', data='bye...', name='web1'),
         "%b %d %Y %H:%M:%S",
         True,
-        'Jan 17 2019 16:01:13 web1   | bye...'
+        'Jan 17 2019 13:01:13 web1   | bye...'
     ),
     (
-        Message(type='line', data='bye...', name='web1', time=datetime.fromtimestamp(1547730073)),
+        Message(type='line', data='bye...', name='web1'),
         None,
         False,
         'bye...'
@@ -75,7 +90,9 @@ def test_adjust_width():
         ' web1   | ('
     ),
 ])
-def test_write(message, time_format, use_prefix, expect):
+def test_write(timezone_fixture, message, time_format, use_prefix, expect):
+    # Adjust message time here to use timezone_fixture settings
+    message.time = datetime.fromtimestamp(1547730073)
     w = StoreWriter()
     p = Printer(w, time_format=time_format, use_prefix=use_prefix)
     s1 = Service(name='123456', cmd='cat')
