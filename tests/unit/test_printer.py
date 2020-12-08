@@ -89,6 +89,12 @@ def test_adjust_width():
         True,
         ' web1   | ('
     ),
+    (
+        Message(type='line', data='bye...', name=None),
+        "%H:%M:%S",
+        True,
+        '13:01:13        | bye...'
+    ),
 ])
 def test_write(timezone_fixture, message, time_format, use_prefix, expect):
     # Adjust message time here to use timezone_fixture settings
