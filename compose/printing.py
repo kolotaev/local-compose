@@ -39,7 +39,7 @@ class Printer(object):
         self.use_prefix = use_prefix
 
     def write(self, message):
-        if message.type != 'line':
+        if message.type != 'output':
             raise RuntimeError('Printer can only process messages of type "line"')
 
         if message.name is not None:

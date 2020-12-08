@@ -39,7 +39,7 @@ class Executor(object):
 
         for line in iter(child.stdout.readline, b''):
             if not self._srv.quiet:
-                self._send_message(line, 'line')
+                self._send_message(line, 'output')
         child.stdout.close()
         child.wait()
 
@@ -64,7 +64,7 @@ class EventBus():
         self._bus.put(message)
 
     def send_system(self, text):
-        self._bus.put(Message(type='line', data=text, name='system'))
+        self._bus.put(Message(type='output', data=text, name='system'))
 
 
 class ExecutorsPool(object):
@@ -144,7 +144,7 @@ class Scheduler(object):
             msg = self.event_bus.receive(timeout=0.1)
             if msg.type == 'no_messages' and do_exit:
                 break
-            if msg.type == 'line':
+            if msg.type == 'output':
                 self._printer.write(msg)
             elif msg.type == 'start':
                 pid = msg.data['pid']

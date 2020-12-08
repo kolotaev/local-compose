@@ -54,43 +54,43 @@ def test_adjust_width():
 
 @pytest.mark.parametrize('message, time_format, use_prefix, expect', [
     (
-        Message(type='line', data='', name=''),
+        Message(type='output', data='', name=''),
         '',
         True,
         '        | '
     ),
     (
-        Message(type='line', data='bye...', name='web1', color='red'),
+        Message(type='output', data='bye...', name='web1', color='red'),
         '',
         True,
         ' web1   | bye...'
     ),
     (
-        Message(type='line', data='bye...', name='web1'),
+        Message(type='output', data='bye...', name='web1'),
         None,
         True,
         '13:01:13 web1   | bye...'
     ),
     (
-        Message(type='line', data='bye...', name='web1'),
+        Message(type='output', data='bye...', name='web1'),
         "%b %d %Y %H:%M:%S",
         True,
         'Jan 17 2019 13:01:13 web1   | bye...'
     ),
     (
-        Message(type='line', data='bye...', name='web1'),
+        Message(type='output', data='bye...', name='web1'),
         None,
         False,
         'bye...'
     ),
     (
-        Message(type='line', data=b'\x28', name='web1'),
+        Message(type='output', data=b'\x28', name='web1'),
         '',
         True,
         ' web1   | ('
     ),
     (
-        Message(type='line', data='bye...', name=None),
+        Message(type='output', data='bye...', name=None),
         "%H:%M:%S",
         True,
         '13:01:13        | bye...'

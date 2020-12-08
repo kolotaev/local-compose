@@ -5,8 +5,8 @@ from compose.utils import now
 
 
 def test_message_defaults():
-    m = Message('line', u'hello it is me на русском', 'web1')
-    assert 'line' == m.type
+    m = Message('output', u'hello it is me на русском', 'web1')
+    assert 'output' == m.type
     assert u'hello it is me на русском' == m.data
     assert 'web1' == m.name
     assert m.time <= now()
