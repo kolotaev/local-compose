@@ -1,7 +1,10 @@
 import threading
-import queue
 import signal
 import datetime
+try:
+   import queue
+except ImportError:
+   import Queue as queue
 
 from .printing import Message
 from .utils import now
