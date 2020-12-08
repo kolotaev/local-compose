@@ -78,25 +78,25 @@ class ExecutorsPool(object):
         return self._executors.get(name)
 
     def all(self):
-        return self._executors.items()
+        return self._executors.values()
 
     def start_all(self):
-        for i, executor in self.all():
+        for executor in self.all():
             executor.start()
 
     def stop_all(self, force=False):
-        for _, p in self.all():
-            if p.returncode is None:
-                p.stop(force)
+        for executor in self.all():
+            if executor.returncode is None:
+                executor.stop(force)
 
     def all_started(self):
-        return all(p.child_pid is not None for _, p in self.all())
+        return all(e.child_pid is not None for e in self.all())
 
     def all_stopped(self):
-        return all(p.returncode is not None for _, p in self.all())
+        return all(e.returncode is not None for e in self.all())
 
     def any_stopped(self):
-        return any(p.returncode is not None for _, p in self.all())
+        return any(e.returncode is not None for e in self.all())
 
 
 class Scheduler(object):
