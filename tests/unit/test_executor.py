@@ -1,4 +1,4 @@
-from mock import Mock
+from mock import Mock, patch
 
 from compose.runtime import Executor, EventBus
 from compose.service import Service
@@ -12,10 +12,13 @@ def test_executor_name():
     assert 'web1' == executor.name
 
 
-def test_full_circle():
+@patch('compose.runtime.threading.Thread')
+def test_full_circle(thread_mock):
+    # Process mocks
     stdout_mock = Mock()
     stdout_mock.readline.side_effect = ['webserver listens on :80', 'bye', '']
     popen_mock = Mock(pid=3333, stdout=stdout_mock, returncode=2)
+    # Service mocks
     srv = Service(name='web1', cmd='fake', quiet=False)
     srv_run_mock = Mock()
     srv_kill_mock = Mock()
@@ -25,6 +28,10 @@ def test_full_circle():
     # Create
     eb = EventBus()
     executor = Executor(eb, srv)
+    # Thread mocks (a little hack to not execute in a separate thread)
+    thread_obj_mock = Mock()
+    thread_obj_mock.start.side_effect = executor._run_service
+    thread_mock.return_value = thread_obj_mock
     # state assertions
     assert executor.child_pid is None
     assert executor.returncode is None
