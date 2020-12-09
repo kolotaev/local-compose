@@ -19,26 +19,25 @@ class Executor(object):
         self.child_pid = None
 
     def start(self):
-        th = threading.Thread(name=self.name, target=self._run_service, args=(True, ))
+        self.event_bus.send_system('starting service {s}'.format(s=self._srv.name))
+        th = threading.Thread(name=self.name, target=self._run_service)
         th.start()
 
     def stop(self, force=False):
         kill_type = 'forcefully' if force else 'gracefully'
-        msg = 'killing {name} (pid={pid}) {method}\n'.format(method=kill_type, name=self._srv.name, pid=self.child_pid)
+        msg = 'stopping service {name} (pid={pid}) {method}\n'.format(method=kill_type, name=self._srv.name, pid=self.child_pid)
         self.event_bus.send_system(msg)
         self._srv.kill(force=force)
 
-    def _run_service(self, ignore_signals=False):
+    def _run_service(self):
         child = self._srv.run()
         self.child_pid = child.pid
         self._send_message({'pid': self.child_pid}, 'start')
-
         for line in iter(child.stdout.readline, b''):
             if not self._srv.quiet:
                 self._send_message(line, 'output')
         child.stdout.close()
         child.wait()
-
         self._send_message({'returncode': child.returncode}, 'stop')
         self.returncode = child.returncode
 
@@ -50,7 +49,7 @@ class EventBus():
     def __init__(self):
         self._bus = queue.Queue()
 
-    def receive(self, timeout):
+    def receive(self, timeout=0.1):
         try:
             return self._bus.get(timeout=timeout)
         except queue.Empty:

@@ -6,9 +6,9 @@ from compose.service import Service
 
 def test_add_get():
     ep = ExecutorsPool()
-    e1 = Executor(EventBus, Service('web1', 'cat'))
-    e2 = Executor(EventBus, Service('web2', 'cat'))
-    e3 = Executor(EventBus, Service('web2', 'cat'))
+    e1 = Executor(EventBus(), Service('web1', 'cat'))
+    e2 = Executor(EventBus(), Service('web2', 'cat'))
+    e3 = Executor(EventBus(), Service('web2', 'cat'))
     ep.add(e1)
     ep.add(e2)
     assert e1 == ep.get('web1')
@@ -19,8 +19,8 @@ def test_add_get():
 
 def test_all():
     ep = ExecutorsPool()
-    e1 = Executor(EventBus, Service('web1', 'cat'))
-    e2 = Executor(EventBus, Service('web2', 'cat'))
+    e1 = Executor(EventBus(), Service('web1', 'cat'))
+    e2 = Executor(EventBus(), Service('web2', 'cat'))
     ep.add(e1)
     ep.add(e2)
     assert 2 == len(ep.all())
@@ -84,8 +84,8 @@ def test_stop_all_not_all_have_empty_returncode():
 
 def test_all_started():
     ep = ExecutorsPool()
-    e1 = Executor(EventBus, Service('web1', 'cat'))
-    e2 = Executor(EventBus, Service('web2', 'cat'))
+    e1 = Executor(EventBus(), Service('web1', 'cat'))
+    e2 = Executor(EventBus(), Service('web2', 'cat'))
     ep.add(e1)
     ep.add(e2)
     e1.child_pid = 123
@@ -95,8 +95,8 @@ def test_all_started():
 
 def test_all_started_not():
     ep = ExecutorsPool()
-    e1 = Executor(EventBus, Service('web1', 'cat'))
-    e2 = Executor(EventBus, Service('web2', 'cat'))
+    e1 = Executor(EventBus(), Service('web1', 'cat'))
+    e2 = Executor(EventBus(), Service('web2', 'cat'))
     ep.add(e1)
     ep.add(e2)
     e1.child_pid = 123
@@ -105,8 +105,8 @@ def test_all_started_not():
 
 def test_all_stopped():
     ep = ExecutorsPool()
-    e1 = Executor(EventBus, Service('web1', 'cat'))
-    e2 = Executor(EventBus, Service('web2', 'cat'))
+    e1 = Executor(EventBus(), Service('web1', 'cat'))
+    e2 = Executor(EventBus(), Service('web2', 'cat'))
     ep.add(e1)
     ep.add(e2)
     e1.returncode = 1
@@ -116,8 +116,8 @@ def test_all_stopped():
 
 def test_all_stopped_not():
     ep = ExecutorsPool()
-    e1 = Executor(EventBus, Service('web1', 'cat'))
-    e2 = Executor(EventBus, Service('web2', 'cat'))
+    e1 = Executor(EventBus(), Service('web1', 'cat'))
+    e2 = Executor(EventBus(), Service('web2', 'cat'))
     ep.add(e1)
     ep.add(e2)
     e1.returncode = 1
@@ -126,8 +126,8 @@ def test_all_stopped_not():
 
 def test_any_stopped():
     ep = ExecutorsPool()
-    e1 = Executor(EventBus, Service('web1', 'cat'))
-    e2 = Executor(EventBus, Service('web2', 'cat'))
+    e1 = Executor(EventBus(), Service('web1', 'cat'))
+    e2 = Executor(EventBus(), Service('web2', 'cat'))
     ep.add(e1)
     ep.add(e2)
     e1.returncode = 1
@@ -136,8 +136,8 @@ def test_any_stopped():
 
 def test_any_stopped_not():
     ep = ExecutorsPool()
-    e1 = Executor(EventBus, Service('web1', 'cat'))
-    e2 = Executor(EventBus, Service('web2', 'cat'))
+    e1 = Executor(EventBus(), Service('web1', 'cat'))
+    e2 = Executor(EventBus(), Service('web2', 'cat'))
     ep.add(e1)
     ep.add(e2)
     assert not ep.any_stopped()

@@ -18,11 +18,11 @@ def test_send_and_receive():
     assert 'output' == msg1.type
     assert 'web1' == msg1.name
     assert 'hello it is Beth' == msg1.data
-    msg2 = eb.receive(timeout=0.001)
+    msg2 = eb.receive()
     assert 'output' == msg2.type
     assert 'web1' == msg2.name
     assert 'hello it is John' == msg2.data
-    msg3 = eb.receive(timeout=0.001)
+    msg3 = eb.receive()
     assert 'no_messages' == msg3.type
     assert 'No messages in queue' == msg3.data
     assert 'system' == msg3.name
@@ -31,7 +31,7 @@ def test_send_and_receive():
 def test_send_system():
     eb = EventBus()
     eb.send_system('some custom system message')
-    msg = eb.receive(timeout=0.001)
+    msg = eb.receive()
     assert 'output' == msg.type
     assert 'some custom system message' == msg.data
     assert 'system' == msg.name
