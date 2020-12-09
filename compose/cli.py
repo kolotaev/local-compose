@@ -4,7 +4,6 @@ from .configuration import Config
 from .runtime import Scheduler
 from .printing import Printer, ClickEchoWriter, SimplePrintWriter
 from .info import version as app_version
-from .system import OS
 
 
 @click.group()
@@ -44,7 +43,7 @@ def up(ctx, file, build, color):
         writer = ClickEchoWriter()
     else:
         writer = SimplePrintWriter()
-    executor = Scheduler(printer=Printer(writer), os=OS())
+    executor = Scheduler(printer=Printer(writer))
     for s in conf.services:
         executor.add_service(s)
     executor.start()

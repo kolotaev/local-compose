@@ -11,10 +11,9 @@ from .utils import now
 
 
 class Executor(object):
-    def __init__(self, event_bus, service, os):
+    def __init__(self, event_bus, service):
         self.event_bus = event_bus
         self._srv = service
-        self._os = os
         self.name = service.name
         self.returncode = None
         self.child_pid = None
@@ -24,13 +23,10 @@ class Executor(object):
         th.start()
 
     def stop(self, force=False):
-        sig = 'SIGKILL' if force else 'SIGTERM'
-        msg = 'sending {signal} to {name}(pid={pid})\n'.format(signal=sig, name=self._srv.name, pid=self.child_pid)
+        kill_type = 'forcefully' if force else 'gracefully'
+        msg = 'killing {name} (pid={pid}) {method}\n'.format(method=kill_type, name=self._srv.name, pid=self.child_pid)
         self.event_bus.send_system(msg)
-        if force:
-            self._os.kill_pid(self.child_pid)
-        else:
-            self._os.terminate_pid(self.child_pid)
+        self._srv.kill(force=force)
 
     def _run_service(self, ignore_signals=False):
         child = self._srv.run()
@@ -102,13 +98,12 @@ class ExecutorsPool(object):
 class Scheduler(object):
     returncode = None
 
-    def __init__(self, printer, os, kill_wait=5):
+    def __init__(self, printer, kill_wait=5):
         self.event_bus = EventBus()
         self.returncode = None
         self.kill_wait = kill_wait
         self._printer = printer
         self._pool = ExecutorsPool()
-        self._os = os
         self._terminating = False
         self.signals = {
             signal.SIGINT: {
@@ -122,7 +117,7 @@ class Scheduler(object):
         }
 
     def add_service(self, service):
-        executor = Executor(self.event_bus, service, self._os)
+        executor = Executor(self.event_bus, service)
         self._pool.add(executor)
         self._printer.adjust_width(service)
 

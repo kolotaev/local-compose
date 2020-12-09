@@ -1,6 +1,8 @@
 import subprocess
 import shlex
 
+from .system import OS
+
 
 class Service(object):
     '''
@@ -14,13 +16,15 @@ class Service(object):
         self.env = env
         self.cwd = cwd
         self.in_shell = shell
+        self._os = OS()
+        self.pid = None
 
     def run(self):
         if not self.in_shell:
             command = shlex.split(self.cmd)
         else:
             command = self.cmd
-        return subprocess.Popen(command,
+        proc = subprocess.Popen(command,
                                 env=self.env,
                                 cwd=self.cwd,
                                 shell=self.in_shell,
@@ -29,6 +33,14 @@ class Service(object):
                                 # todo - breaks on py27
                                 # start_new_session=True,
                                 close_fds=True)
+        self.pid = proc.pid
+        return proc
+
+    def kill(self, force=False):
+        if force:
+            self._os.kill_pid(self.pid)
+        else:
+            self._os.terminate_pid(self.pid)
 
 class Job(Service):
     '''
