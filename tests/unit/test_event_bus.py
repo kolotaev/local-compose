@@ -1,5 +1,3 @@
-from mock import Mock
-
 from compose.runtime import EventBus
 from compose.printing import Message
 
