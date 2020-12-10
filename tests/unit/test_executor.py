@@ -16,7 +16,7 @@ def test_executor_name():
 def test_full_circle(thread_mock):
     # Process mocks
     stdout_mock = Mock()
-    stdout_mock.readline.side_effect = ['webserver listens on :80', 'bye', '']
+    stdout_mock.readline.side_effect = ['webserver listens on :80', 'bye', b'']
     popen_mock = Mock(pid=3333, stdout=stdout_mock, returncode=2)
     # Service mocks
     srv = Service(name='web1', cmd='fake', quiet=False)
