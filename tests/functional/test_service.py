@@ -74,7 +74,7 @@ class TestService(object):
     )
     def test_stop(self, force):
         os = OS()
-        s = Service(name='web1', cmd='nc -l 9977')
+        s = Service(name='web1', cmd='nc -l 9977', shell=False)
         proc = s.run()
         self.mark_service(proc)
         assert s.pid is not None
