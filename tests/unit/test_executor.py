@@ -21,10 +21,10 @@ def test_full_circle(thread_mock):
     # Service mocks
     srv = Service(name='web1', cmd='fake', quiet=False)
     srv_run_mock = Mock()
-    srv_kill_mock = Mock()
+    srv_stop_mock = Mock()
     srv_run_mock.return_value = popen_mock
     srv.run = srv_run_mock
-    srv.kill = srv_kill_mock
+    srv.stop = srv_stop_mock
     # Create
     eb = EventBus()
     executor = Executor(eb, srv)
@@ -56,7 +56,7 @@ def test_full_circle(thread_mock):
     assert 3333 == executor.child_pid
     assert 2 == executor.returncode
     # call assertions
-    srv.kill.assert_called_once_with(force=True)
+    srv.stop.assert_called_once_with(force=True)
     # message assertions
     assert 'stopping service web1 (pid=3333) forcefully' in eb.receive().data
     assert 'no_messages' == eb.receive().type

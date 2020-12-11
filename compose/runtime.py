@@ -27,7 +27,7 @@ class Executor(object):
         kill_type = 'forcefully' if force else 'gracefully'
         msg = 'stopping service {name} (pid={pid}) {method}\n'.format(method=kill_type, name=self._srv.name, pid=self.child_pid)
         self.event_bus.send_system(msg)
-        self._srv.kill(force=force)
+        self._srv.stop(force=force)
 
     def _run_service(self):
         child = self._srv.run()
@@ -95,8 +95,6 @@ class ExecutorsPool(object):
 
 
 class Scheduler(object):
-    returncode = None
-
     def __init__(self, printer, kill_wait=5):
         self.event_bus = EventBus()
         self.returncode = None

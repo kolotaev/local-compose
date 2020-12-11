@@ -36,7 +36,7 @@ class Service(object):
         self.pid = proc.pid
         return proc
 
-    def kill(self, force=False):
+    def stop(self, force=False):
         if force:
             self._os.kill_pid(self.pid)
         else:
