@@ -18,7 +18,12 @@ JSON_SCHEMA = {
         'global': {
             'description': 'Global configuration for the tool',
             'type': 'object',
-            'properties': {},
+            'properties': {
+                'time-format': {
+                    'description': 'Time format for service output in console',
+                    'type': 'string',
+                }
+            },
         },
         'services': {
             'description': 'Services to run list',

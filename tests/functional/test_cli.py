@@ -1,3 +1,6 @@
+import os
+import re
+
 import mock
 from click.testing import CliRunner
 
@@ -34,3 +37,17 @@ def test_up_no_file():
 Errors found:
 File is not found.
 ''' == result.output
+
+
+def test_up_one_job():
+    runner = CliRunner()
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'one-job.yaml')
+    result = runner.invoke(cli.root, ['up', '-f', file])
+    assert result.exit_code == 0
+    out = re.sub(r'pid=\d+', 'pid=22580', result.output)
+    assert \
+''' system  | starting service my-job1
+ system  | my-job1 started (pid=22580)
+ my-job1 | I'm OK and I'm done.
+ system  | my-job1 stopped (rc=0)
+''' == out

@@ -29,7 +29,7 @@ class ClickEchoWriter(object):
 
 
 class Printer(object):
-    def __init__(self, writer, time_format='%H:%M:%S', use_prefix=True):
+    def __init__(self, writer, time_format=None, use_prefix=True):
         self.writer = writer
         if time_format is None:
             self.time_format = '%H:%M:%S'

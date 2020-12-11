@@ -1,0 +1,9 @@
+version: '1.0'
+
+global:
+  time-format: ''
+
+services:
+  my-job1:
+    run: echo "I'm OK and I'm done."
+
