@@ -16,13 +16,13 @@ class TestService(object):
             if p and p.pid:
                 os.kill(p.pid, signal.SIGKILL)
 
-    def add_service(self, proc):
+    def mark_service(self, proc):
         self.procs.append(proc)
 
     def test_run(self):
         s = Service(name='info', cmd='echo "OK"')
         proc = s.run()
-        self.add_service(proc)
+        self.mark_service(proc)
         res = ''
         for line in iter(proc.stdout.readline, b''):
             res += str(line)
@@ -33,7 +33,7 @@ class TestService(object):
     def test_run_uses_env(self):
         s = Service(name='info', cmd='echo $FOO $BAR', env={'FOO': '123', 'BAR': 'aa'})
         proc = s.run()
-        self.add_service(proc)
+        self.mark_service(proc)
         res = ''
         for line in iter(proc.stdout.readline, b''):
             res += str(line)
@@ -44,7 +44,7 @@ class TestService(object):
     def test_run_uses_cwd(self):
         s = Service(name='info', cmd='pwd', cwd='/usr/bin')
         proc = s.run()
-        self.add_service(proc)
+        self.mark_service(proc)
         res = ''
         for line in iter(proc.stdout.readline, b''):
             res += str(line)
@@ -57,7 +57,7 @@ class TestService(object):
                     env={'FOO': '123', 'BAR': 'aa'},
                     shell=False)
         proc = s.run()
-        self.add_service(proc)
+        self.mark_service(proc)
         res = ''
         for line in iter(proc.stdout.readline, b''):
             res += str(line)
@@ -76,8 +76,8 @@ class TestService(object):
         os = OS()
         s = Service(name='web1', cmd='nc -l 9988')
         proc = s.run()
-        self.add_service(proc)
+        self.mark_service(proc)
         assert s.pid is not None
-        assert 1 == len(os.pid_by_name('nc -l 9988'))
+        assert 1 == len(os.pid_by_name('9988'))
         s.stop(force=force)
-        assert 0 == len(os.pid_by_name('nc -l 9988'))
+        assert 0 == len(os.pid_by_name('9988'))
