@@ -65,19 +65,19 @@ class TestService(object):
         assert s.pid is not None
         assert '$FOO $BAR\n' == res
 
-    # @pytest.mark.parametrize(
-    #     'force',
-    #     [
-    #         False,
-    #         True,
-    #     ]
-    # )
-    def test_stop(self):
+    @pytest.mark.parametrize(
+        'force',
+        [
+            False,
+            True,
+        ]
+    )
+    def test_stop(self, force):
         os = OS()
-        s = Service(name='web1', cmd='nc -l 9988')
+        s = Service(name='web1', cmd='nc -l 9977')
         proc = s.run()
         self.mark_service(proc)
         assert s.pid is not None
-        assert 1 == len(os.pid_by_name('nc -l 9988'))
-        s.stop(force=True)
-        assert 0 == len(os.pid_by_name('nc -l 9988'))
+        assert 1 == len(os.pid_by_name('nc -l 9977'))
+        s.stop(force=force)
+        assert 0 == len(os.pid_by_name('nc -l 9977'))
