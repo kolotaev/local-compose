@@ -48,6 +48,6 @@ def test_up_one_job():
     assert \
 ''' system  | starting service my-job1
  system  | my-job1 started (pid=22580)
- my-job1 | I'm OK and I'm done.
+ my-job1 | Hello world
  system  | my-job1 stopped (rc=0)
 ''' == out
