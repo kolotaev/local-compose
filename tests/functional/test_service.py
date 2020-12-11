@@ -78,6 +78,6 @@ class TestService(object):
         proc = s.run()
         self.mark_service(proc)
         assert s.pid is not None
-        assert 1 == len(os.pid_by_name('nc -l 9977'))
+        assert 0 != len(os.pid_by_name('nc -l 9977'))
         s.stop(force=force)
         assert 0 == len(os.pid_by_name('nc -l 9977'))
