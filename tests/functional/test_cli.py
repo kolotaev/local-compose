@@ -45,10 +45,9 @@ def test_up_one_job():
     result = runner.invoke(cli.root, ['up', '-f', file])
     assert result.exit_code == 0
     out = re.sub(r'pid=\d+', 'pid=22580', result.output)
-    assert 'tt' == out
     assert \
 ''' system  | starting service my-job1
  system  | my-job1 started (pid=22580)
- my-job1 | Hello worldw
+ my-job1 | Hello world
  system  | my-job1 stopped (rc=0)
 ''' == out
