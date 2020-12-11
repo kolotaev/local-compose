@@ -25,10 +25,10 @@ class TestService(object):
         self.mark_service(proc)
         res = ''
         for line in iter(proc.stdout.readline, b''):
-            res += str(line)
+            res += line.decode('ascii')
         proc.stdout.close()
         assert s.pid is not None
-        assert 'OK\n' == str(res)
+        assert 'OK\n' == res
 
     def test_run_uses_env(self):
         s = Service(name='info', cmd='echo $FOO $BAR', env={'FOO': '123', 'BAR': 'aa'})
@@ -36,10 +36,10 @@ class TestService(object):
         self.mark_service(proc)
         res = ''
         for line in iter(proc.stdout.readline, b''):
-            res += str(line)
+            res += line.decode('ascii')
         proc.stdout.close()
         assert s.pid is not None
-        assert '123 aa\n' == str(res)
+        assert '123 aa\n' == res
 
     def test_run_uses_cwd(self):
         s = Service(name='info', cmd='pwd', cwd='/usr/bin')
@@ -47,10 +47,10 @@ class TestService(object):
         self.mark_service(proc)
         res = ''
         for line in iter(proc.stdout.readline, b''):
-            res += str(line)
+            res += line.decode('ascii')
         proc.stdout.close()
         assert s.pid is not None
-        assert '/usr/bin\n' == str(res)
+        assert '/usr/bin\n' == res
 
     def test_run_does_not_use_shell_if_said_so(self):
         s = Service(name='info', cmd='echo $FOO $BAR',
@@ -60,10 +60,10 @@ class TestService(object):
         self.mark_service(proc)
         res = ''
         for line in iter(proc.stdout.readline, b''):
-            res += str(line)
+            res += line.decode('ascii')
         proc.stdout.close()
         assert s.pid is not None
-        assert '$FOO $BAR\n' == str(res)
+        assert '$FOO $BAR\n' == res
 
     @pytest.mark.parametrize(
         'force',
