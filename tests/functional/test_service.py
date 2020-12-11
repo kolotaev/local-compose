@@ -25,7 +25,7 @@ class TestService(object):
         self.add_service(proc)
         res = ''
         for line in iter(proc.stdout.readline, b''):
-            res += line
+            res += str(line)
         proc.stdout.close()
         assert s.pid is not None
         assert 'OK\n' == res
@@ -36,7 +36,7 @@ class TestService(object):
         self.add_service(proc)
         res = ''
         for line in iter(proc.stdout.readline, b''):
-            res += line
+            res += str(line)
         proc.stdout.close()
         assert s.pid is not None
         assert '123 aa\n' == res
@@ -47,7 +47,7 @@ class TestService(object):
         self.add_service(proc)
         res = ''
         for line in iter(proc.stdout.readline, b''):
-            res += line
+            res += str(line)
         proc.stdout.close()
         assert s.pid is not None
         assert '/usr/bin\n' == res
@@ -60,7 +60,7 @@ class TestService(object):
         self.add_service(proc)
         res = ''
         for line in iter(proc.stdout.readline, b''):
-            res += line
+            res += str(line)
         proc.stdout.close()
         assert s.pid is not None
         assert '$FOO $BAR\n' == res
