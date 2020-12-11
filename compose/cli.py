@@ -31,10 +31,10 @@ def example():
 
 @root.command()
 @click.option('-f', '--file', show_default=True, default='local-compose.yaml', help='Configuration file.')
-@click.option('-b', '--build', is_flag=True, show_default=True, help='Build services before run.')
+# @click.option('-b', '--build', is_flag=True, show_default=True, help='Build services before run.')
 @click.option('--color/--no-color', default=True, show_default=True, help='Use colored output?')
 @click.pass_context
-def up(ctx, file, build, color):
+def up(ctx, file, color):
     '''
     Start services
     '''
@@ -43,7 +43,7 @@ def up(ctx, file, build, color):
         writer = ClickEchoWriter()
     else:
         writer = SimplePrintWriter()
-    executor = Scheduler(printer=Printer(writer))
+    rt = Scheduler(printer=Printer(writer))
     for s in conf.services:
-        executor.add_service(s)
-    executor.start()
+        rt.add_service(s)
+    rt.start()
