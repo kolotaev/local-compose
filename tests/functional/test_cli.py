@@ -67,7 +67,6 @@ def test_up_one_job_silent():
 ''' == out
 
 
-
 @pytest.mark.skip
 def test_up_one_job_with_color():
     runner = CliRunner()
@@ -80,4 +79,18 @@ def test_up_one_job_with_color():
  system      | colored-job started (pid=22580)\033[0m
 \033[36m colored-job | Hello world\033[0m
  system      | colored-job stopped (rc=0)\033[0m
+''' == out
+
+
+def test_up_one_job_with_color_but_explicitly_said_no_color():
+    runner = CliRunner()
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'one-job-with-color.yaml')
+    result = runner.invoke(cli.root, ['up', '-f', file, '--no-color'], color=True)
+    assert result.exit_code == 0
+    out = re.sub(r'pid=\d+', 'pid=22580', result.output)
+    assert \
+''' system      | starting service colored-job
+ system      | colored-job started (pid=22580)
+ colored-job | Hello world
+ system      | colored-job stopped (rc=0)
 ''' == out
