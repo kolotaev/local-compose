@@ -2,6 +2,7 @@ import os
 import re
 
 import mock
+import pytest
 from click.testing import CliRunner
 
 import compose.cli as cli
@@ -50,4 +51,33 @@ def test_up_one_job():
  system  | my-job1 started (pid=22580)
  my-job1 | Hello world
  system  | my-job1 stopped (rc=0)
+''' == out
+
+
+def test_up_one_job_silent():
+    runner = CliRunner()
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'one-job-silent.yaml')
+    result = runner.invoke(cli.root, ['up', '-f', file])
+    assert result.exit_code == 0
+    out = re.sub(r'pid=\d+', 'pid=22580', result.output)
+    assert \
+''' system  | starting service my-job1
+ system  | my-job1 started (pid=22580)
+ system  | my-job1 stopped (rc=0)
+''' == out
+
+
+
+@pytest.mark.skip
+def test_up_one_job_with_color():
+    runner = CliRunner()
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'one-job-with-color.yaml')
+    result = runner.invoke(cli.root, ['up', '-f', file], color=True)
+    assert result.exit_code == 0
+    out = re.sub(r'pid=\d+', 'pid=22580', result.output)
+    assert \
+''' system      | starting service colored-job\033[0m
+ system      | colored-job started (pid=22580)\033[0m
+\033[36m colored-job | Hello world\033[0m
+ system      | colored-job stopped (rc=0)\033[0m
 ''' == out

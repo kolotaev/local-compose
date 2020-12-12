@@ -4,5 +4,6 @@ global:
   time-format: ''
 
 services:
-  my-job1:
+  colored-job:
     run: sleep 0.1 && echo "Hello world"
+    color: 'cyan'
