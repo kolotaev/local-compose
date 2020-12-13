@@ -2,9 +2,9 @@ import threading
 import signal
 import datetime
 try:
-   import queue
+    import queue
 except ImportError:
-   import Queue as queue
+    import Queue as queue
 
 from .printing import Message
 from .utils import now
