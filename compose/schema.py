@@ -6,7 +6,7 @@ JSON_SCHEMA = {
 
     'required': [
         'version',
-        # 'global',
+        # 'settings',
         # 'services',
     ],
 
@@ -15,12 +15,12 @@ JSON_SCHEMA = {
             'description': 'Version of the config file format',
             # 'type': 'float',
         },
-        'global': {
+        'settings': {
             'description': 'Global configuration for the tool',
             'type': 'object',
             'properties': {
                 'time-format': {
-                    'description': 'Time format for service output in console',
+                    'description': 'Time format for service output in console. Accepts strftime format',
                     'type': 'string',
                 }
             },

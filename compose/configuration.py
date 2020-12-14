@@ -88,9 +88,9 @@ class Config(object):
     @property
     def settings(self):
         '''
-        Get global settings.
+        Get settings.
         '''
-        return self._conf.get('global', {})
+        return self._conf.get('settings', {})
 
     @property
     def version(self):

@@ -14,8 +14,8 @@ def test_config_example():
 version: '1'
 
 # All global settings.
-global:
-    foo: 123
+settings:
+    time-format: '%c'
 
 # All services you want to run.
 services:
@@ -102,7 +102,7 @@ def test_parse_fails_with_no_version_specified(mock_read):
 def test_settings_property(mock_read):
     config_contents = '''
     version: '1.0'
-    global:
+    settings:
         foo: 123
         bar: asdf
     '''

@@ -1,7 +1,7 @@
 version: '0.1'
 
-global:
-  foo: 12
+settings:
+  time-format: "%H:%M:%S"
 
 services:
   web1:

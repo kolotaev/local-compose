@@ -13,8 +13,8 @@ config_example = '''
 version: '1'
 
 # All global settings.
-global:
-    foo: 123
+settings:
+    time-format: '%c'
 
 # All services you want to run.
 services:
