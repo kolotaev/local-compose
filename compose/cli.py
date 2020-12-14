@@ -43,7 +43,9 @@ def up(ctx, file, color):
         writer = ClickEchoWriter()
     else:
         writer = SimplePrintWriter()
-    printer = Printer(writer, time_format=conf.settings.get('time-format'))
+    printer = Printer(writer,
+                      time_format=conf.settings.get('time-format'),
+                      use_prefix=conf.settings.get('use-prefix', True))
     rt = Scheduler(printer=printer)
     for s in conf.services:
         rt.add_service(s)

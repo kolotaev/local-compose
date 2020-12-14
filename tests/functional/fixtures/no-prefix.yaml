@@ -1,0 +1,8 @@
+version: '0.1'
+
+settings:
+  use-prefix: no
+
+services:
+  my-job1:
+    run: sleep 0.1 && echo "Hello world"

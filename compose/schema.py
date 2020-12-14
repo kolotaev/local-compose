@@ -22,7 +22,12 @@ JSON_SCHEMA = {
                 'time-format': {
                     'description': 'Time format for service output in console. Accepts strftime format',
                     'type': 'string',
-                }
+                },
+                'use-prefix': {
+                    'description': 'Use prefix with info for service output in console?',
+                    'type': 'boolean',
+                    'default': True,
+                },
             },
         },
         'services': {

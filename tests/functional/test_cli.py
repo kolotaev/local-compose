@@ -54,9 +54,9 @@ def test_up_one_job():
 ''' == out
 
 
-def test_up_one_job_silent():
+def test_up_silent():
     runner = CliRunner()
-    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'one-job-silent.yaml')
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'silent.yaml')
     result = runner.invoke(cli.root, ['up', '-f', file])
     assert result.exit_code == 0
     out = re.sub(r'pid=\d+', 'pid=22580', result.output)
@@ -68,9 +68,9 @@ def test_up_one_job_silent():
 
 
 @pytest.mark.skip
-def test_up_one_job_with_color():
+def test_up_with_color():
     runner = CliRunner()
-    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'one-job-with-color.yaml')
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'with-color.yaml')
     result = runner.invoke(cli.root, ['up', '-f', file], color=True)
     assert result.exit_code == 0
     out = re.sub(r'pid=\d+', 'pid=22580', result.output)
@@ -82,9 +82,9 @@ def test_up_one_job_with_color():
 ''' == out
 
 
-def test_up_one_job_with_color_but_explicitly_said_no_color():
+def test_up_with_color_but_explicitly_said_no_color():
     runner = CliRunner()
-    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'one-job-with-color.yaml')
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'with-color.yaml')
     result = runner.invoke(cli.root, ['up', '-f', file, '--no-color'], color=True)
     assert result.exit_code == 0
     out = re.sub(r'pid=\d+', 'pid=22580', result.output)
@@ -93,4 +93,18 @@ def test_up_one_job_with_color_but_explicitly_said_no_color():
  system      | colored-job started (pid=22580)
  colored-job | Hello world
  system      | colored-job stopped (rc=0)
+''' == out
+
+
+def test_up_no_prefix():
+    runner = CliRunner()
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'no-prefix.yaml')
+    result = runner.invoke(cli.root, ['up', '-f', file])
+    assert result.exit_code == 0
+    out = re.sub(r'pid=\d+', 'pid=22580', result.output)
+    assert \
+'''starting service my-job1
+my-job1 started (pid=22580)
+Hello world
+my-job1 stopped (rc=0)
 ''' == out

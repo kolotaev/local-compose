@@ -1,7 +1,7 @@
 version: '0.1'
 
 settings:
-  time-format: "%H:%M:%S"
+  time-format: "%H:%M:%S:%f"
 
 services:
   web1:
