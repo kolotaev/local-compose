@@ -20,7 +20,7 @@ def test_version():
     runner = CliRunner()
     result = runner.invoke(cli.root, ['version'])
     assert result.exit_code == 0
-    assert '0.1.0\n' == result.output
+    assert '0.2.1\n' == result.output
 
 
 def test_example():

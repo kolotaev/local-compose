@@ -1,6 +1,6 @@
 name = 'local-compose'
 
-version = '0.1.0'
+version = '0.2.1'
 
 banner = r'''
       __   __                __   __         __   __   __   ___
