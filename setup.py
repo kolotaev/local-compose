@@ -32,10 +32,9 @@ if __name__ == '__main__':
             'jsonschema~=3.2',
             'pyrsistent==0.16.0', # see https://github.com/Julian/jsonschema/issues/741
             # 'delegator.py~=0.1',
-            # 'colorama', # Colorama is only required for Windows
             'PyYAML~=5.3',
             'click~=7.0',
-            # 'https://github.com/feluxe/sty'
+            'colored~=1.4',
         ],
         extras_require={
             'dev': [

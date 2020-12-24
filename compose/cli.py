@@ -2,7 +2,7 @@ import click
 
 from .configuration import Config
 from .runtime import Scheduler
-from .printing import Printer, ClickEchoWriter, SimplePrintWriter
+from .printing import Printer, ClickEchoWriter, SimplePrintWriter, ColoredPrintWriter
 from .info import version as app_version
 
 
@@ -19,6 +19,15 @@ def version():
     Version of the tool
     '''
     click.echo(app_version)
+
+
+@root.command()
+def colors():
+    '''
+    Show available colors you can use for services output
+    '''
+    for c in Config.available_colors():
+        click.echo(c)
 
 
 @root.command()
@@ -40,7 +49,7 @@ def up(ctx, file, color):
     '''
     conf = Config(file).try_parse()
     if color:
-        writer = ClickEchoWriter()
+        writer = ColoredPrintWriter()
     else:
         writer = SimplePrintWriter()
     printer = Printer(writer,

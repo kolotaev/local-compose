@@ -30,6 +30,21 @@ def test_example():
     assert config_example + '\n' == result.output
 
 
+def test_colors():
+    runner = CliRunner()
+    result = runner.invoke(cli.root, ['colors'])
+    assert result.exit_code == 0
+    assert 256 == len(result.output.splitlines())
+    assert \
+'''black
+red
+green
+yellow
+blue
+magenta
+''' in result.output
+
+
 def test_up_no_file():
     runner = CliRunner()
     result = runner.invoke(cli.root, ['up'])

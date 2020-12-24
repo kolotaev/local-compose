@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import click
+import colored
 
 from .utils import now
 
@@ -25,6 +26,24 @@ class SimplePrintWriter(object):
     def write(self, message, color=None):
         'Write a message'
         print(message)
+
+
+class ColoredPrintWriter(object):
+    '''
+    Writer that uses `colored` lib functionality.
+    '''
+    def write(self, message, color=None):
+        '''
+        Write a message
+        '''
+        if color is None:
+            print(message)
+        else:
+            print(colored.stylize(message, colored.fg(color)))
+
+    @staticmethod
+    def available_colors():
+        return colored.colors.names
 
 
 class ClickEchoWriter(object):

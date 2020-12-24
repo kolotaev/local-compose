@@ -9,6 +9,7 @@ import jsonschema
 from .schema import JSON_SCHEMA
 from .service import Service
 from .info import config_example
+from .printing import ColoredPrintWriter
 
 
 class Config(object):
@@ -19,6 +20,10 @@ class Config(object):
     @staticmethod
     def example():
         return config_example
+
+    @staticmethod
+    def available_colors():
+        return list(map(lambda x: x.lower(), ColoredPrintWriter.available_colors()))
 
     def parse(self):
         '''
