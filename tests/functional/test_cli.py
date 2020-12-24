@@ -90,10 +90,10 @@ def test_up_with_color():
     assert result.exit_code == 0
     out = re.sub(r'pid=\d+', 'pid=22580', result.output)
     assert \
-''' system      | starting service colored-job\033[0m
- system      | colored-job started (pid=22580)\033[0m
+''' system      | starting service colored-job
+ system      | colored-job started (pid=22580)
 \033[36m colored-job | Hello world\033[0m
- system      | colored-job stopped (rc=0)\033[0m
+ system      | colored-job stopped (rc=0)
 ''' == out
 
 
