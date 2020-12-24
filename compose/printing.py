@@ -1,6 +1,6 @@
 from __future__ import print_function
+import sys
 
-import click
 import colored
 
 from .utils import now
@@ -31,12 +31,13 @@ class SimplePrintWriter(object):
 class ColoredPrintWriter(object):
     '''
     Writer that uses `colored` lib functionality.
+    Can use 8-bit palette: 256 colors.
     '''
     def write(self, message, color=None):
         '''
         Write a message
         '''
-        if color is None:
+        if color is None or not sys.stdout.isatty():
             print(message)
         else:
             print(colored.stylize(message, colored.fg(color)))
@@ -44,19 +45,6 @@ class ColoredPrintWriter(object):
     @staticmethod
     def available_colors():
         return colored.colors.names
-
-
-class ClickEchoWriter(object):
-    '''
-    Writer that uses Click printing functionality.
-    Uses ANSI colors if asked to do so.
-    '''
-    def __init__(self):
-        self._click_module = click
-
-    def write(self, message, color=None):
-        'Write a message'
-        self._click_module.echo(self._click_module.style(message, fg=color))
 
 
 class Printer(object):

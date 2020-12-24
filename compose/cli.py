@@ -2,7 +2,7 @@ import click
 
 from .configuration import Config
 from .runtime import Scheduler
-from .printing import Printer, ClickEchoWriter, SimplePrintWriter, ColoredPrintWriter
+from .printing import Printer, SimplePrintWriter, ColoredPrintWriter
 from .info import version as app_version
 
 
