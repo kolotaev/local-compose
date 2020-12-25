@@ -22,7 +22,10 @@ Install from sources:
 git clone git@github.com:kolotaev/local-compose.git
 # Or download any released version from github releases
 wget https://github.com/kolotaev/local-compose/archive/{$RELEASE_VERSION}.tar.gz
-tar -zxvf {$RELEASE_VERSION}.tar.gz
+mkdir local-compose
+tar -zxvf {$RELEASE_VERSION}.tar.gz -C local-compose
 
-alias local-compose="python `pwd`/local-compose-{$RELEASE_VERSION}/main.py"
+# Install the package
+cd local-compose
+python setup.py install
 ```
