@@ -5,5 +5,5 @@ settings:
 
 services:
   colored-job:
-    run: sleep 0.1 && echo "Hello world"
+    run: sleep 0.01 && echo "Hello world"
     color: 'cyan'
