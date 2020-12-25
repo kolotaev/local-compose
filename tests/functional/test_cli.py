@@ -134,7 +134,7 @@ def test_up_with_job_and_daemon():
     assert \
 '''
 Job says I'm done
-stopping service web1 (pid=22580) gracefully
 echo1 stopped (rc=0)
-web1 stopped (rc=-15)
+Long running says I'm done
+web1 stopped (rc=0)
 ''' in out

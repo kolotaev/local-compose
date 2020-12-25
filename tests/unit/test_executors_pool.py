@@ -122,22 +122,3 @@ def test_all_stopped_not():
     ep.add(e2)
     e1.returncode = 1
     assert not ep.all_stopped()
-
-
-def test_any_stopped():
-    ep = ExecutorsPool()
-    e1 = Executor(EventBus(), Service('web1', 'cat'))
-    e2 = Executor(EventBus(), Service('web2', 'cat'))
-    ep.add(e1)
-    ep.add(e2)
-    e1.returncode = 1
-    assert ep.any_stopped()
-
-
-def test_any_stopped_not():
-    ep = ExecutorsPool()
-    e1 = Executor(EventBus(), Service('web1', 'cat'))
-    e2 = Executor(EventBus(), Service('web2', 'cat'))
-    ep.add(e1)
-    ep.add(e2)
-    assert not ep.any_stopped()

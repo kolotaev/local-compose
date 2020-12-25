@@ -90,9 +90,6 @@ class ExecutorsPool(object):
     def all_stopped(self):
         return all(e.returncode is not None for e in self.all())
 
-    def any_stopped(self):
-        return any(e.returncode is not None for e in self.all())
-
 
 class Scheduler(object):
     def __init__(self, printer, kill_wait=5):
@@ -149,14 +146,14 @@ class Scheduler(object):
 
             if self._pool.all_started() and self._pool.all_stopped():
                 do_exit = True
-
-            if exit_start is None and self._pool.all_started() and self._pool.any_stopped():
-                exit_start = now()
+                # It will be our guard against hanging executors
+                if exit_start is None:
+                    exit_start = now()
                 self.terminate()
 
             if exit_start is not None:
-                # If we've been in this loop for more than kill_wait seconds,
-                # it's time to kill all remaining children.
+                # If we're running (though have triggered an exit) more than kill_wait seconds,
+                # we need to kill all the hanging executors.
                 waiting = now() - exit_start
                 if waiting > datetime.timedelta(seconds=self.kill_wait):
                     self.kill()
