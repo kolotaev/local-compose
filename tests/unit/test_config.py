@@ -113,7 +113,26 @@ def test_validate_wrong_color(mock_read):
         conf = Config(FILE_NAME).parse()
     assert conf is None
     assert 'Configuration file "unit-test-config-file.yaml" is invalid.\nErrors found:\n' in str(execinfo.value)
-    assert "Color 'fancy-color' for service 'cat' is not allowed" in str(execinfo.value)
+    assert "Color 'fancy-color' for service 'cat' is not allowed." in str(execinfo.value)
+
+
+@mock.patch.object(Config, 'read')
+def test_validate_wrong_color_suggestion(mock_read):
+    config_contents = '''
+    version: '1.0'
+    services:
+        cat:
+            run: cat /etc/hosts
+            color: grennnn
+    '''
+    mock_read.return_value = config_contents
+    conf = None
+    with pytest.raises(Exception) as execinfo:
+        conf = Config(FILE_NAME).parse()
+    assert conf is None
+    assert 'Configuration file "unit-test-config-file.yaml" is invalid.\nErrors found:\n' in str(execinfo.value)
+    assert "Color 'grennnn' for service 'cat' is not allowed." in str(execinfo.value)
+    assert "Maybe you meant: green" in str(execinfo.value)
 
 
 @mock.patch.object(Config, 'read')

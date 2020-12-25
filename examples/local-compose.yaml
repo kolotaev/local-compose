@@ -14,7 +14,7 @@ services:
     color: cyan
   cat:
     run: cat /etc/hosts
-    color: blue
+    color: yellow_2
 
 # jobs:
 #   cat:

@@ -2,6 +2,7 @@ from __future__ import print_function
 import sys
 import os
 import os.path
+import difflib
 
 import yaml
 import jsonschema
@@ -114,4 +115,8 @@ class Config(object):
             if srv.color is None:
                 continue
             if srv.color not in allowed_colors:
-                raise ValueError("Color '%s' for service '%s' is not allowed" % (srv.color, srv.name))
+                suggested_colors = difflib.get_close_matches(srv.color, allowed_colors, n=1)
+                msg = "Color '%s' for service '%s' is not allowed." % (srv.color, srv.name)
+                if suggested_colors:
+                    msg += '\nMaybe you meant: %s' % suggested_colors[0]
+                raise ValueError(msg)
