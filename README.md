@@ -4,17 +4,24 @@
 <!-- [![Supported Versions](https://img.shields.io/pypi/pyversions/local-compose.svg)](https://pypi.org/project/local-compose) -->
 
 
-## Supported python versions
+## Supported versions
 
-Python >= 2.7
+Python:
+- >= 2.7
+OS:
+- Linux
+- MacOS
 
 
 ## Install
 
 Install from sources:
 ```bash
+# Clone from git
 git clone git@github.com:kolotaev/local-compose.git
 # Or download any released version from github releases
+wget https://github.com/kolotaev/local-compose/archive/{$RELEASE_VERSION}.tar.gz
+tar -zxvf {$RELEASE_VERSION}.tar.gz
 
-alias local-compose="python3 ./local-compose/main.py"
+alias local-compose="python `pwd`/local-compose-{$RELEASE_VERSION}/main.py"
 ```
