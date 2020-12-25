@@ -5,4 +5,4 @@ settings:
 
 services:
   my-job1:
-    run: sleep 0.01 && echo "Hello world"
+    run: sleep 0.1 && echo "Hello world"
