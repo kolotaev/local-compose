@@ -1,0 +1,10 @@
+version: '0.1'
+
+settings:
+  use-prefix: no
+
+services:
+  echo1:
+    run: sleep 0.1 && echo "Job says I'm done"
+  web1:
+    run: sleep 1 && echo "Long running says I'm done"
