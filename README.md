@@ -7,7 +7,8 @@
 ## Supported versions
 
 Python:
-- >= 2.7
+- CPython >= 2.7
+
 OS:
 - Linux
 - MacOS
