@@ -12,8 +12,13 @@ services:
     run: ruby ser2.rb
     cwd: examples
     color: cyan
-  # cat:
-  #   run: cat /etc/hosts
-  #   color: blue
-  # echo:
-  #   run: echo 'OK'
+  cat:
+    run: cat /etc/hosts
+    color: bluejl
+
+# jobs:
+#   cat:
+#     run: cat /etc/hosts
+#     color: blue
+#   echo:
+#     run: echo 'OK'

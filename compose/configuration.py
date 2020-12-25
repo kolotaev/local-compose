@@ -34,8 +34,8 @@ class Config(object):
         try:
             contents = self.read()
             data = yaml.safe_load(contents)
-            self.validate(data)
             self._conf = data
+            self.validate(data)
             return self
         except Exception as e:
             raise Exception('Configuration file "%s" is invalid.\nErrors found:\n%s' % (self._filename, e))
@@ -57,6 +57,7 @@ class Config(object):
         if data is None:
             raise ValueError('File is empty.')
         jsonschema.validate(instance=data, schema=JSON_SCHEMA)
+        self._validate_services()
 
     def read(self):
         if not os.path.isfile(self._filename):
@@ -103,3 +104,14 @@ class Config(object):
         Get config file version.
         '''
         return self._conf.get('version')
+
+    def _validate_services(self):
+        '''
+        Validate each service config properties
+        '''
+        allowed_colors = self.available_colors()
+        for srv in self.services:
+            if srv.color is None:
+                continue
+            if srv.color not in allowed_colors:
+                raise ValueError("Color '%s' for service '%s' is not allowed" % (srv.color, srv.name))
