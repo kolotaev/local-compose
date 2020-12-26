@@ -18,14 +18,14 @@ OS:
 
 Install from sources:
 ```bash
-# Clone from git
-git clone git@github.com:kolotaev/local-compose.git
-# Or download any released version from github releases
-wget https://github.com/kolotaev/local-compose/archive/{$RELEASE_VERSION}.tar.gz
-mkdir local-compose
-tar -zxvf {$RELEASE_VERSION}.tar.gz -C local-compose
+# Set the release version you'd like
+RELEASE_VERSION=0.2.1
+wget https://github.com/kolotaev/local-compose/archive/${RELEASE_VERSION}.tar.gz
 
-# Install the package
-cd local-compose
-python setup.py install
+# Either install the package with pip
+pip install ./${RELEASE_VERSION}.tar.gz
+
+# Or install the package with setuptools
+tar -zxvf ${RELEASE_VERSION}.tar.gz
+python local-compose-${RELEASE_VERSION}/setup.py install
 ```
