@@ -7,3 +7,4 @@ services:
   my-job1:
     run: sleep 0.1 && echo "Hello world"
     silent: yes
+    shell: yes

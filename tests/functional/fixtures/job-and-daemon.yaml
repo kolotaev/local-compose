@@ -6,6 +6,8 @@ settings:
 services:
   echo1:
     run: sleep 0.1 && echo "Job says I'm done"
+    shell: yes
   web1:
     # 0.3 simulates long-running
     run: sleep 0.3 && echo "Long running says I'm done"
+    shell: yes

@@ -7,3 +7,4 @@ services:
   colored-job:
     run: sleep 0.1 && echo "Hello world"
     color: 'cyan'
+    shell: yes

@@ -31,7 +31,7 @@ class TestService(object):
         assert 'OK\n' == res
 
     def test_run_uses_env(self):
-        s = Service(name='info', cmd='echo $FOO $BAR', env={'FOO': '123', 'BAR': 'aa'})
+        s = Service(name='info', cmd='echo $FOO $BAR', shell=True, env={'FOO': '123', 'BAR': 'aa'})
         proc = s.run()
         self.mark_service(proc)
         res = ''

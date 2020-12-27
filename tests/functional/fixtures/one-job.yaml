@@ -6,3 +6,4 @@ settings:
 services:
   my-job1:
     run: sleep 0.1 && echo "Hello world"
+    shell: yes

@@ -22,7 +22,7 @@ def test_service_default_properties(type_class, cmd):
     assert s.color is None
     assert s.env is None
     assert s.cwd is None
-    assert s.in_shell
+    assert not s.in_shell
 
 
 @pytest.mark.parametrize('type_class, cmd', [

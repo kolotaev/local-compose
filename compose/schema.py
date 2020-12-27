@@ -83,7 +83,7 @@ JSON_SCHEMA = {
                     'default': False,
                 },
                 'shell': {
-                    'description': 'Run service in shell?',
+                    'description': 'Run service in system shell?',
                     'type': 'boolean',
                     'default': False,
                 },
