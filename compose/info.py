@@ -23,15 +23,15 @@ services:
         # How to run service binary
         run: ruby server.rb
         # Directory that will be set for service run
-        cwd: /home/me/work/microservices/billing
+        cwd: ~/work/microservices/billing
         # What color should service output use (console logs from service's stdout, stderr)
         color: red
         # Environment variables that are passed into service run.
         env:
             DB_USER: admin
             DB_PASS: 12345
-        # Show service's output in console.
+        # Don't show service's output in console.
         silent: yes
-        # Don't execute run service command in system shell (e.g. bash).
-        shell: no
+        # Execute run service command in system shell (e.g. bash).
+        shell: yes
 '''
