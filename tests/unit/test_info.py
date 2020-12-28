@@ -2,7 +2,7 @@ from compose.info import version, name
 
 
 def test_version():
-    assert '0.2.1' == version
+    assert '0.3.0' == version
 
 
 def test_name():
