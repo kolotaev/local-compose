@@ -1,5 +1,6 @@
 import subprocess
 import shlex
+import os
 
 from .system import OS
 
@@ -14,7 +15,7 @@ class Service(object):
         self.color = color
         self.quiet = quiet
         self.env = env
-        self.cwd = cwd
+        self.cwd = self._calculate_work_dir(cwd)
         self.in_shell = shell
         self._os = OS()
         self.pid = None
@@ -42,8 +43,15 @@ class Service(object):
         else:
             self._os.terminate_pid(self.pid)
 
+    @staticmethod
+    def _calculate_work_dir(work_dir):
+        if work_dir is None:
+            return os.getcwd()
+        return os.path.realpath(os.path.expanduser(work_dir))
+
 class Job(Service):
     '''
     Short running process that is expected to exit by itself.
+    *Not currently used.*
     '''
     pass

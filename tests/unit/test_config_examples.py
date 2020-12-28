@@ -16,7 +16,7 @@ def test_services_all_items_are_passed(mock_read):
         web1:
             run: java -jar /path/to/server.jar
             color: red
-            cwd: this-dir
+            cwd: /path/to/your/dir
             env:
                 FOO: 123
                 BAR: asdf
@@ -30,7 +30,7 @@ def test_services_all_items_are_passed(mock_read):
     assert 'web1' == web1.name
     assert 'java -jar /path/to/server.jar' == web1.cmd
     assert 'red' == web1.color
-    assert 'this-dir' == web1.cwd
+    assert '/path/to/your/dir' == web1.cwd
     assert 'FOO' in web1.env
     assert 123 == web1.env['FOO']
     assert 'BAR' in web1.env
