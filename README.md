@@ -19,7 +19,7 @@ OS:
 Install from sources:
 ```bash
 # Set the release version you'd like
-RELEASE_VERSION=0.2.1
+RELEASE_VERSION=X.Y.Z
 wget https://github.com/kolotaev/local-compose/archive/${RELEASE_VERSION}.tar.gz
 
 # Either install the package with pip
