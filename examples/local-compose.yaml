@@ -15,6 +15,10 @@ services:
   cat:
     run: cat /etc/hosts
     color: yellow_2
+  folly:
+    run: echo "Gogo" && exit 7
+    color: magenta
+    shell: yes
 
 # jobs:
 #   cat:

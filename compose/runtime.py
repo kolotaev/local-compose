@@ -1,6 +1,7 @@
 import threading
 import signal
 import datetime
+import time
 try:
     import queue
 except ImportError:
@@ -28,6 +29,9 @@ class Executor(object):
         msg = 'stopping service {name} (pid={pid}) {method}\n'.format(method=kill_type, name=self._srv.name, pid=self.child_pid)
         self.event_bus.send_system(msg)
         self._srv.stop(force=force)
+
+    def reset(self):
+        self.returncode = None
 
     def _run_service(self):
         child = self._srv.run()
@@ -58,8 +62,8 @@ class EventBus():
     def send(self, message):
         self._bus.put(message)
 
-    def send_system(self, text):
-        self._bus.put(Message(type='output', data=text, name='system'))
+    def send_system(self, data, type='output'):
+        self._bus.put(Message(type=type, data=data, name='system'))
 
 
 class ExecutorsPool(object):
@@ -91,13 +95,49 @@ class ExecutorsPool(object):
         return all(e.returncode is not None for e in self.all())
 
 
+class Supervisor(object):
+    '''
+    Supervises status, execution, readiness of services and jobs.
+    '''
+    def __init__(self, event_bus, exec_pool):
+        self.name = 'local_compose_supervisor'
+        self.eb = event_bus
+        self.exec_pool = exec_pool
+        self._stop = False
+
+    def launch(self):
+        th = threading.Thread(name=self.name, target=self._monitor)
+        th.start()
+
+    def stop(self):
+        self._stop = True
+
+    def _monitor(self):
+        while True:
+            to_restart = []
+            if self._stop:
+                return
+            for executor in self.exec_pool.all():
+                rc = executor.returncode
+                if rc is not None and rc != 0:
+                    to_restart.append(executor)
+            # todo - move up
+            for executor in to_restart:
+                # todo - use events
+                time.sleep(10)
+                executor.reset()
+                self.eb.send_system(type='restart', data={'name': executor.name})
+
+
 class Scheduler(object):
     def __init__(self, printer, kill_wait=5):
         self.event_bus = EventBus()
+        # todo - set it correctly
         self.returncode = None
         self.kill_wait = kill_wait
         self._printer = printer
         self._pool = ExecutorsPool()
+        self._supervisor = Supervisor(self.event_bus, self._pool)
         self._terminating = False
         self.signals = {
             signal.SIGINT: {
@@ -125,6 +165,7 @@ class Scheduler(object):
         signal.signal(signal.SIGINT, _terminate)
 
         self._pool.start_all()
+        self._supervisor.launch()
 
         do_exit = False
         exit_start = None
@@ -138,6 +179,10 @@ class Scheduler(object):
             elif msg.type == 'start':
                 pid = msg.data['pid']
                 self.event_bus.send_system('{name} started (pid={pid})\n'.format(name=msg.name, pid=pid))
+            elif msg.type == 'restart':
+                name = msg.data['name']
+                self.event_bus.send_system('{name} is restarting\n'.format(name=name))
+                self._pool.get(name).start()
             elif msg.type == 'stop':
                 rc = msg.data['returncode']
                 self.event_bus.send_system('{name} stopped (rc={rc})\n'.format(name=msg.name, rc=rc))
@@ -162,6 +207,7 @@ class Scheduler(object):
         if self._terminating:
             return
         self._terminating = True
+        self._supervisor.stop()
         self._pool.stop_all()
 
     def kill(self):
