@@ -45,7 +45,6 @@ JSON_SCHEMA = {
         'retry': {
             'description': 'Retry logic for re-runs, health-checks, etc.',
             'type': 'object',
-            'required': ['url'],
             'properties': {
                 'attempts': {
                     'description': 'How many attempts to perform before giving up',
@@ -83,7 +82,7 @@ JSON_SCHEMA = {
         'tcpCheck': {
             'description': 'Health check by TCP probing',
             'type': 'object',
-            'required': ['url'],
+            'required': ['endpoint'],
             'properties': {
                 'endpoint': {
                     'description': 'Full endpoint name host+port to the health check',
@@ -144,6 +143,18 @@ JSON_SCHEMA = {
                     'description': 'Method that can determine if service has started successfully',
                     'type': 'object',
                     'properties': {
+                        'retry': {
+                            '$ref': '#/definitions/retry'
+                        },
+                    },
+                    "additionalProperties": False,
+                    'patternProperties': {
+                        '^httpCheck|tcpCheck$': {
+                            'oneOf': [
+                                { '$ref': '#/definitions/httpCheck' },
+                                { '$ref': '#/definitions/tcpCheck' },
+                            ],
+                        },
                     },
                 },
             },
