@@ -103,6 +103,7 @@ class Supervisor(object):
         self.name = 'local_compose_supervisor'
         self.eb = event_bus
         self.exec_pool = exec_pool
+        self._event = threading.Event()
         self._stop = False
 
     def launch(self):
@@ -111,22 +112,23 @@ class Supervisor(object):
 
     def stop(self):
         self._stop = True
+        self._event.set()
 
     def _monitor(self):
         while True:
-            to_restart = []
             if self._stop:
-                return
+                break
             for executor in self.exec_pool.all():
-                rc = executor.returncode
-                if rc is not None and rc != 0:
-                    to_restart.append(executor)
-            # todo - move up
-            for executor in to_restart:
-                # todo - use events
-                time.sleep(10)
-                executor.reset()
-                self.eb.send_system(type='restart', data={'name': executor.name})
+                if self._need_restart(executor):
+                    self._event.wait(10)
+                    executor.reset()
+                    self.eb.send_system(type='restart', data={'name': executor.name})
+
+    def _need_restart(self, executor):
+        rc = executor.returncode
+        if rc is not None and rc != 0:
+            return True
+        return False
 
 
 class Scheduler(object):
