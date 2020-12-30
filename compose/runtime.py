@@ -107,24 +107,24 @@ class Supervisor(object):
         self._stop = False
 
     def launch(self):
-        th = threading.Thread(name=self.name, target=self._monitor)
+        th = threading.Thread(name=self.name, target=self.monitor)
         th.start()
 
     def stop(self):
         self._stop = True
         self._event.set()
 
-    def _monitor(self):
+    def monitor(self):
         while True:
             if self._stop:
                 break
             for executor in self.exec_pool.all():
-                if self._need_restart(executor):
+                if self.needs_restart(executor):
                     self._event.wait(10)
                     executor.reset()
                     self.eb.send_system(type='restart', data={'name': executor.name})
 
-    def _need_restart(self, executor):
+    def needs_restart(self, executor):
         rc = executor.returncode
         if rc is not None and rc != 0:
             return True
