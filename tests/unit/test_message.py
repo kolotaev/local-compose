@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import time
 
 from compose.printing import Message
 from compose.utils import now
@@ -11,6 +12,20 @@ def test_message_defaults():
     assert 'web1' == m.name
     assert m.time <= now()
     assert m.color is None
+
+
+def test_message_time():
+    n = now()
+    time.sleep(0.01)
+    m = Message('output', 'hello', 'web1')
+    time.sleep(0.01)
+    m_next = Message('output', 'hello', 'web2')
+    assert n < m.time
+    assert m.time != m_next.time
+    n2 = now
+    time.sleep(0.01)
+    m2 = Message('output', 'hello2', 'web2', time=n2)
+    assert n2 == m2.time
 
 
 def test_message_properties():

@@ -10,12 +10,15 @@ class Message(object):
     '''
     Represents a basic messaging entity in the system.
     '''
-    def __init__(self, type, data, name, time=now(), color=None):
+    def __init__(self, type, data, name, time=None, color=None):
         self.type = type
         self.data = data
         self.name = name
         self.color = color
-        self.time = time
+        if time is None:
+            self.time = now()
+        else:
+            self.time = time
 
 
 class SimplePrintWriter(object):
