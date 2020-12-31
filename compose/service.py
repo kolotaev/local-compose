@@ -9,7 +9,7 @@ class Service(object):
     '''
     Long running (daemon) process that is not expected to exit by itself.
     '''
-    def __init__(self, name, cmd, color=None, quiet=False, env=None, cwd=None, shell=False):
+    def __init__(self, name, cmd, color=None, quiet=False, env=None, cwd=None, shell=False, readiness=None):
         self.name = name
         self.cmd = cmd
         self.color = color
@@ -19,6 +19,9 @@ class Service(object):
         self.in_shell = shell
         self._os = OS()
         self.pid = None
+        if readiness is None:
+            readiness = {}
+        self.readiness = readiness
 
     def run(self):
         if not self.in_shell:

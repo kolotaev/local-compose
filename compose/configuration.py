@@ -72,23 +72,25 @@ class Config(object):
         Build and get Service objects.
         '''
         services = []
-        for name, srv in self._conf.get('services', {}).items():
+        for name, srv_conf in self._conf.get('services', {}).items():
             # if srv.get('cwd'):
             #     cwd = os.path.join(os.getcwd(), srv.get('cwd'))
             # else:
             #     cwd = None
             params = {}
-            if 'env' in srv:
-                params['env'] = srv['env']
-            if 'cwd' in srv:
-                params['cwd'] = srv['cwd']
-            if 'silent' in srv:
-                params['quiet'] = srv['silent']
-            if 'color' in srv:
-                params['color'] = srv['color']
-            if 'shell' in srv:
-                params['shell'] = srv['shell']
-            s = Service(name, srv.get('run'), **params)
+            if 'env' in srv_conf:
+                params['env'] = srv_conf['env']
+            if 'cwd' in srv_conf:
+                params['cwd'] = srv_conf['cwd']
+            if 'silent' in srv_conf:
+                params['quiet'] = srv_conf['silent']
+            if 'color' in srv_conf:
+                params['color'] = srv_conf['color']
+            if 'shell' in srv_conf:
+                params['shell'] = srv_conf['shell']
+            if 'readyProbe' in srv_conf:
+                params['readiness'] = srv_conf['readyProbe']
+            s = Service(name, srv_conf.get('run'), **params)
             services.append(s)
         return services
 
