@@ -21,7 +21,10 @@ class Service(object):
         self.pid = None
         if readiness is None:
             readiness = {}
-        self.readiness = readiness
+        self.readiness = {
+            'probe': readiness.get('probe'),
+            'retry': RetryLogic(readiness.get('retry')['attempts'], readiness.get('retry')['wait']),
+        }
 
     def run(self):
         if not self.in_shell:
@@ -52,9 +55,23 @@ class Service(object):
             return os.getcwd()
         return os.path.realpath(os.path.expanduser(work_dir))
 
+
 class Job(Service):
     '''
     Short running process that is expected to exit by itself.
     *Not currently used.*
     '''
     pass
+
+
+class RetryLogic(object):
+    def __init__(self, attempts, wait):
+        self._done_attempts = 0
+        self.attempts = attempts
+        self.wait = wait
+
+    def do_retry(self):
+        if self._done_attempts < self.attempts:
+            self._done_attempts += 1
+            return True
+        return False
