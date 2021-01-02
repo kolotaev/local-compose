@@ -1,7 +1,6 @@
 import threading
 import signal
 import datetime
-import time
 try:
     import queue
 except ImportError:
@@ -12,6 +11,10 @@ from .utils import now
 
 
 class Executor(object):
+    '''
+    Runs, re-runs, stops, services.
+    Each executor is associated with exactly one service.
+    '''
     def __init__(self, event_bus, service):
         self.event_bus = event_bus
         self._srv = service
@@ -20,6 +23,9 @@ class Executor(object):
         self.child_pid = None
 
     def start(self):
+        '''
+        Start service.
+        '''
         self.event_bus.send_system('starting service {s}'.format(s=self._srv.name))
         th = threading.Thread(name=self.name, target=self._run_service)
         th.start()

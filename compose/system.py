@@ -5,6 +5,9 @@ import subprocess
 
 
 class OS(object):
+    '''
+    Helper class for operating system proxies and utilities.
+    '''
     def __init__(self):
         self._type = 'unix'
 
@@ -19,9 +22,9 @@ class OS(object):
         response = child.communicate()[0]
         return [int(pid) for pid in response.split()]
 
-    def _kill(self, pid, signal):
+    def _kill(self, pid, sig):
         try:
-            os.kill(pid, signal)
+            os.kill(pid, sig)
         except OSError as e:
             if e.errno not in [errno.EPERM, errno.ESRCH]:
                 raise
