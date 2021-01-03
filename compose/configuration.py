@@ -14,16 +14,25 @@ from .printing import ColoredPrintWriter
 
 
 class Config(object):
+    '''
+    Main and only class that is responsible for configuration.
+    '''
     def __init__(self, filename):
         self._filename = filename
         self._conf = None
 
     @staticmethod
     def example():
+        '''
+        Return configuration file example text in yaml format.
+        '''
         return config_example
 
     @staticmethod
     def available_colors():
+        '''
+        List of colors allowed for usage in service output.
+        '''
         return list(map(lambda x: x.lower(), ColoredPrintWriter.available_colors()))
 
     def parse(self):
@@ -61,6 +70,9 @@ class Config(object):
         self._validate_services()
 
     def read(self):
+        '''
+        Read configuration from file.
+        '''
         if not os.path.isfile(self._filename):
             raise Exception('File is not found.')
         with open(self._filename) as file:
