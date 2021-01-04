@@ -1,6 +1,7 @@
 [MASTER]
 disable=
     C0114, # missing-module-docstring
+    R0205, # useless-object-inheritance
 
 [FORMAT]
 # Maximum number of characters on a single line.
