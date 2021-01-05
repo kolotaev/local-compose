@@ -10,4 +10,4 @@ max-line-length=120
 [REPORTS]
 output-format=colorized
 
-good-names=e, k, v, i
+good-names=e, k, v, i, s, rt
