@@ -12,17 +12,28 @@ class OS(object):
         self._type = 'unix'
 
     def terminate_pid(self, pid):
+        '''
+        Stop process with SIGTERM by its PID.
+        '''
         self._kill(pid, signal.SIGTERM)
 
     def kill_pid(self, pid):
+        '''
+        Stop process with SIGKILL by its PID.
+        '''
         self._kill(pid, signal.SIGKILL)
 
-    def pid_by_name(self, name):
+    @staticmethod
+    def pid_by_name(name):
+        '''
+        Get PID by the process name (or the process' name representation in the shell).
+        '''
         child = subprocess.Popen(['pgrep', '-f', name], stdout=subprocess.PIPE, shell=False)
         response = child.communicate()[0]
         return [int(pid) for pid in response.split()]
 
-    def _kill(self, pid, sig):
+    @staticmethod
+    def _kill(pid, sig):
         try:
             os.kill(pid, sig)
         except OSError as e:

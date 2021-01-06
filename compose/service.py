@@ -27,6 +27,9 @@ class Service(object):
         }
 
     def run(self):
+        '''
+        Run service as the OS process.
+        '''
         if not self.in_shell:
             command = shlex.split(self.cmd)
         else:
@@ -44,6 +47,9 @@ class Service(object):
         return proc
 
     def stop(self, force=False):
+        '''
+        Stop OS process that represents the service.
+        '''
         if force:
             self._os.kill_pid(self.pid)
         else:
@@ -61,16 +67,21 @@ class Job(Service):
     Short running process that is expected to exit by itself.
     *Not currently used.*
     '''
-    pass
 
 
 class RetryLogic(object):
+    '''
+    Class that is responsible for service/job restarts related actions, state.
+    '''
     def __init__(self, attempts, wait):
         self._done_attempts = 0
         self.attempts = attempts
         self.wait = wait
 
     def do_retry(self):
+        '''
+        Do we need to retry?
+        '''
         if self._done_attempts < self.attempts:
             self._done_attempts += 1
             return True
