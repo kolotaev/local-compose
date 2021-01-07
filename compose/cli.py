@@ -8,9 +8,9 @@ from .info import version as app_version
 
 @click.group()
 def root():
-    pass
-    # ctx.ensure_object(dict)
-    # ctx.obj['color'] = color
+    '''
+    Tool for running and managing your services.
+    '''
 
 
 @root.command()
@@ -42,8 +42,8 @@ def example():
 @click.option('-f', '--file', show_default=True, default='local-compose.yaml', help='Configuration file.')
 # @click.option('-b', '--build', is_flag=True, show_default=True, help='Build services before run.')
 @click.option('--color/--no-color', default=True, show_default=True, help='Use colored output?')
-@click.pass_context
-def up(ctx, file, color):
+# @click.pass_context
+def up(file, color):
     '''
     Start services
     '''
