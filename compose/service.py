@@ -20,10 +20,12 @@ class Service(object):
         self._os = OS()
         self.pid = None
         if readiness is None:
-            readiness = {}
+            readiness = {
+                'retry': {},
+            }
         self.readiness = {
             'probe': readiness.get('probe'),
-            'retry': RetryLogic(readiness.get('retry')['attempts'], readiness.get('retry')['wait']),
+            'retry': RetryLogic(readiness.get('retry').get('attempts'), readiness.get('retry').get('wait')),
         }
 
     def run(self):
