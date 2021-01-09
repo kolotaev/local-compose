@@ -16,6 +16,19 @@ def test_no_args():
     assert 'Usage: root [OPTIONS] COMMAND [ARGS]...' in result.output
 
 
+def test_banner():
+    runner = CliRunner()
+    result = runner.invoke(cli.root, [])
+    assert result.exit_code == 0
+    assert '''
+        __   __                __   __         __   __   __   ___
+  |    /  \ /  `  /\  |    __ /  ` /  \  |\/| |__) /  \ /__` |__
+  |___ \__/ \__, /~~\ |___    \__, \__/  |  | |    \__/ .__/ |___
+
+  Tool for running and managing your services.
+''' in result.output
+
+
 def test_version():
     runner = CliRunner()
     result = runner.invoke(cli.root, ['version'])

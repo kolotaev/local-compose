@@ -8,9 +8,14 @@ from .info import version as app_version
 
 @click.group()
 def root():
-    '''
+    """
+    \b
+          __   __                __   __         __   __   __   ___
+    |    /  \ /  `  /\  |    __ /  ` /  \  |\/| |__) /  \ /__` |__
+    |___ \__/ \__, /~~\ |___    \__, \__/  |  | |    \__/ .__/ |___
+
     Tool for running and managing your services.
-    '''
+    """
 
 
 @root.command()
