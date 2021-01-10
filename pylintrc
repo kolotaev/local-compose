@@ -2,6 +2,8 @@
 disable=
     C0114, # missing-module-docstring
     R0205, # useless-object-inheritance
+ignore=
+    tests/**
 
 [FORMAT]
 # Maximum number of characters on a single line.
@@ -10,4 +12,4 @@ max-line-length=120
 [REPORTS]
 output-format=colorized
 
-good-names=e, k, v, i, s, rt, c
+good-names=e, k, v, i, s, rt, c, th

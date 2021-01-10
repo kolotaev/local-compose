@@ -8,7 +8,7 @@ from .info import version as app_version
 
 @click.group()
 def root():
-    """
+    r"""
     \b
           __   __                __   __         __   __   __   ___
     |    /  \ /  `  /\  |    __ /  ` /  \  |\/| |__) /  \ /__` |__
