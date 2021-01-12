@@ -32,7 +32,8 @@ class Executor(object):
 
     def stop(self, force=False):
         kill_type = 'forcefully' if force else 'gracefully'
-        msg = 'stopping service {name} (pid={pid}) {method}\n'.format(method=kill_type, name=self._srv.name, pid=self.child_pid)
+        msg = 'stopping service {name} (pid={pid}) {method}\n'. \
+                format(method=kill_type, name=self._srv.name, pid=self.child_pid)
         self.event_bus.send_system(msg)
         self._srv.stop(force=force)
 
