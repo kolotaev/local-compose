@@ -48,7 +48,7 @@ class Config(object):
             self.validate(data)
             return self
         except Exception as e:
-            raise Exception('Configuration file "%s" is invalid.\nErrors found:\n%s' % (self._filename, e))
+            raise ConfigurationError('Configuration file "%s" is invalid.\nErrors found:\n%s' % (self._filename, e))
 
     def try_parse(self):
         '''
@@ -56,7 +56,7 @@ class Config(object):
         '''
         try:
             return self.parse()
-        except Exception as e:
+        except ConfigurationError as e:
             print(e)
             sys.exit(1)
 
@@ -65,7 +65,7 @@ class Config(object):
         Validates the config.
         '''
         if data is None:
-            raise ValueError('File is empty.')
+            raise ConfigurationError('File is empty.')
         jsonschema.validate(instance=data, schema=JSON_SCHEMA)
         self._validate_services()
 
@@ -74,7 +74,7 @@ class Config(object):
         Read configuration from file.
         '''
         if not os.path.isfile(self._filename):
-            raise Exception('File is not found.')
+            raise ConfigurationError('File is not found.')
         with open(self._filename) as file:
             return file.read()
 
@@ -133,4 +133,10 @@ class Config(object):
                 msg = "Color '%s' for service '%s' is not allowed." % (srv.color, srv.name)
                 if suggested_colors:
                     msg += '\nMaybe you meant: %s' % suggested_colors[0]
-                raise ValueError(msg)
+                raise ConfigurationError(msg)
+
+
+class ConfigurationError(ValueError):
+    '''
+    Configuration error.
+    '''
