@@ -3,6 +3,8 @@ disable=
     C0114, # missing-module-docstring
     R0205, # useless-object-inheritance
     R0902, # too-many-instance-attributes
+    R0903, # too-few-public-methods
+
 ignore=
     tests/**
 
