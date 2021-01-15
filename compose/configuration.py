@@ -9,7 +9,7 @@ import jsonschema
 
 from .schema import JSON_SCHEMA
 from .service import Service
-from .info import config_example
+from .info import CONFIG_EXAMPLE
 from .printing import ColoredPrintWriter
 
 
@@ -26,14 +26,14 @@ class Config(object):
         '''
         Return configuration file example text in yaml format.
         '''
-        return config_example
+        return CONFIG_EXAMPLE
 
     @staticmethod
     def available_colors():
         '''
         List of colors allowed for usage in service output.
         '''
-        return list(map(lambda x: x.lower(), ColoredPrintWriter.available_colors()))
+        return list(map(lambda x: x.lower(), ColoredPrintWriter.supported_colors()))
 
     def parse(self):
         '''

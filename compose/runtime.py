@@ -229,7 +229,7 @@ class Scheduler(object):
         '''
         Start the main managing and execution logic of the Scheduler.
         '''
-        def _terminate(signum, frame):
+        def _terminate(signum, _frame):
             self.event_bus.send_system('%s received\n' % self.signals[signum]['name'])
             self.returncode = self.signals[signum]['rc']
             self.terminate()

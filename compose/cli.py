@@ -3,7 +3,7 @@ import click
 from .configuration import Config
 from .runtime import Scheduler
 from .printing import Printer, SimplePrintWriter, ColoredPrintWriter
-from .info import version as app_version
+from .info import VERSION
 
 
 @click.group()
@@ -24,7 +24,7 @@ def version():
     '''
     Version of the tool
     '''
-    click.echo(app_version)
+    click.echo(VERSION)
 
 
 @root.command()

@@ -10,10 +10,10 @@ with open(path.join(here, 'compose', 'info.py'), mode='r') as f:
 
 if __name__ == '__main__':
     setup(
-        name=info['name'],
+        name=info['NAME'],
         description='Like docker-compose but for locally installed services',
         # keywords='',
-        version=info['version'],
+        version=info['VERSION'],
         author='Egor Kolotaev',
         author_email='ekolotaev@gmail.com',
         license='MIT',
@@ -21,7 +21,7 @@ if __name__ == '__main__':
         long_description='Like docker-compose but for locally installed services',
         entry_points={
             'console_scripts': [
-                '%s = main:run' % info['name'],
+                '%s = main:run' % info['NAME'],
             ],
         },
         py_modules=['app', 'main'],

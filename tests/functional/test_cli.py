@@ -6,7 +6,7 @@ import pytest
 from click.testing import CliRunner
 
 import compose.cli as cli
-from compose.info import config_example
+from compose.info import CONFIG_EXAMPLE
 
 
 def test_no_args():
@@ -40,7 +40,7 @@ def test_example():
     runner = CliRunner()
     result = runner.invoke(cli.root, ['example'])
     assert result.exit_code == 0
-    assert config_example + '\n' == result.output
+    assert CONFIG_EXAMPLE + '\n' == result.output
 
 
 def test_colors():

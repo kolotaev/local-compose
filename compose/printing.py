@@ -46,7 +46,10 @@ class ColoredPrintWriter(object):
             print(colored.stylize(message, colored.fg(color)))
 
     @staticmethod
-    def available_colors():
+    def supported_colors():
+        '''
+        Get colors supported by the printer.
+        '''
         return colored.colors.names
 
 
