@@ -8,7 +8,7 @@ from compose.printing import Message
 def test_ctor():
     printer = Mock()
     sch = Scheduler(printer, 10)
-    sch.add_service(Service(name='web1', cmd='fake'))
+    sch.register_service(Service(name='web1', cmd='fake'))
     assert sch.returncode is None
     assert 10 == sch.kill_wait
     sch2 = Scheduler(printer)
@@ -16,10 +16,10 @@ def test_ctor():
     assert 5 == sch2.kill_wait
 
 
-def test_add_service():
+def test_register_service():
     printer = Mock()
     sch = Scheduler(printer)
-    sch.add_service(Service(name='web1', cmd='fake'))
-    sch.add_service(Service(name='web2', cmd='fake'))
+    sch.register_service(Service(name='web1', cmd='fake'))
+    sch.register_service(Service(name='web2', cmd='fake'))
     assert sch.returncode is None
     assert 2 == len(sch._pool.all())

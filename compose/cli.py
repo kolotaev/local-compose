@@ -63,5 +63,5 @@ def up(file, color):
                       use_prefix=conf.settings.get('use-prefix', True))
     rt = Scheduler(printer=printer)
     for s in conf.services:
-        rt.add_service(s)
+        rt.register_service(s)
     rt.start()

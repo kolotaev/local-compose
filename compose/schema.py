@@ -123,7 +123,9 @@ JSON_SCHEMA = {
                 'watch': {
                     'description': 'Watch files by patterns and if anything changes re-run build and run',
                     'type': 'array',
-                    'items': { 'type': 'string' },
+                    'items': {
+                        'type': 'string'
+                    },
                 },
                 'quite': {
                     'description': 'Do not log service output to anywhere?',
@@ -151,8 +153,12 @@ JSON_SCHEMA = {
                     'patternProperties': {
                         '^httpCheck|tcpCheck$': {
                             'oneOf': [
-                                { '$ref': '#/definitions/httpCheck' },
-                                { '$ref': '#/definitions/tcpCheck' },
+                                {
+                                    '$ref': '#/definitions/httpCheck'
+                                },
+                                {
+                                    '$ref': '#/definitions/tcpCheck'
+                                },
                             ],
                         },
                     },

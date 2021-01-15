@@ -12,7 +12,7 @@ from .utils import now
 
 class Executor(object):
     '''
-    Runs, re-runs, stops, services.
+    Runs, re-runs, stops services.
     Each executor is associated with exactly one service.
     '''
     def __init__(self, event_bus, service):
@@ -24,13 +24,16 @@ class Executor(object):
 
     def start(self):
         '''
-        Start service.
+        Start thread for execution of the underlying service.
         '''
         self.event_bus.send_system('starting service {s}'.format(s=self._srv.name))
         th = threading.Thread(name=self.name, target=self._run_service)
         th.start()
 
     def stop(self, force=False):
+        '''
+        Stop thread for execution of the underlying service.
+        '''
         kill_type = 'forcefully' if force else 'gracefully'
         msg = 'stopping service {name} (pid={pid}) {method}\n'. \
                 format(method=kill_type, name=self._srv.name, pid=self.child_pid)
@@ -38,6 +41,9 @@ class Executor(object):
         self._srv.stop(force=force)
 
     def reset(self):
+        '''
+        Reset return code of the service.
+        '''
         self.returncode = None
 
     def _run_service(self):
@@ -57,48 +63,84 @@ class Executor(object):
 
 
 class EventBus():
+    '''
+    Main event messaging bus for the runtime.
+    '''
     def __init__(self):
         self._bus = queue.Queue()
 
     def receive(self, timeout=0.1):
+        '''
+        Receive a message from this event bus.
+        '''
         try:
             return self._bus.get(timeout=timeout)
         except queue.Empty:
             return Message(type='no_messages', data='No messages in queue', name='system')
 
     def send(self, message):
+        '''
+        Send a message to this event bus.
+        '''
         self._bus.put(message)
 
     def send_system(self, data, type='output'):
+        '''
+        Send a system-type message to this event bus.
+        '''
         self._bus.put(Message(type=type, data=data, name='system'))
 
 
 class ExecutorsPool(object):
+    '''
+    Pooled collection of executors.
+    '''
     def __init__(self):
         self._executors = {}
 
     def add(self, executor):
+        '''
+        Add executor to pool.
+        '''
         self._executors[executor.name] = executor
 
     def get(self, name):
+        '''
+        Get executor from pool.
+        '''
         return self._executors.get(name)
 
     def all(self):
+        '''
+        Get all executors from pool.
+        '''
         return self._executors.values()
 
     def start_all(self):
+        '''
+        Start all executors in the pool.
+        '''
         for executor in self.all():
             executor.start()
 
     def stop_all(self, force=False):
+        '''
+        Stop all executors in the pool. Unless they already haven't exited by themselves.
+        '''
         for executor in self.all():
             if executor.returncode is None:
                 executor.stop(force)
 
     def all_started(self):
+        '''
+        Are all executors started?
+        '''
         return all(e.child_pid is not None for e in self.all())
 
     def all_stopped(self):
+        '''
+        Are all executors stopped?
+        '''
         return all(e.returncode is not None for e in self.all())
 
 
@@ -114,14 +156,23 @@ class Supervisor(object):
         self._stop = False
 
     def launch(self):
+        '''
+        Start supervision.
+        '''
         th = threading.Thread(name=self.name, target=self.monitor)
         th.start()
 
     def stop(self):
+        '''
+        Stop supervision.
+        '''
         self._stop = True
         self._event.set()
 
     def monitor(self):
+        '''
+        The actual supervision method.
+        '''
         while True:
             if self._stop:
                 break
@@ -131,7 +182,11 @@ class Supervisor(object):
                     executor.reset()
                     self.eb.send_system(type='restart', data={'name': executor.name})
 
+    # todo - move to executor
     def needs_restart(self, executor):
+        '''
+        Must executor be restarted?
+        '''
         rc = executor.returncode
         if rc is not None and rc != 0:
             return True
@@ -139,6 +194,9 @@ class Supervisor(object):
 
 
 class Scheduler(object):
+    '''
+    Manager for scheduling, running, stopping and monitoring services.
+    '''
     def __init__(self, printer, kill_wait=5):
         self.event_bus = EventBus()
         # todo - set it correctly
@@ -159,12 +217,18 @@ class Scheduler(object):
             },
         }
 
-    def add_service(self, service):
+    def register_service(self, service):
+        '''
+        Register Service within the Scheduler.
+        '''
         executor = Executor(self.event_bus, service)
         self._pool.add(executor)
         self._printer.adjust_width(service)
 
     def start(self):
+        '''
+        Start the main managing and execution logic of the Scheduler.
+        '''
         def _terminate(signum, frame):
             self.event_bus.send_system('%s received\n' % self.signals[signum]['name'])
             self.returncode = self.signals[signum]['rc']
@@ -210,14 +274,17 @@ class Scheduler(object):
                 # we need to kill all the hanging executors.
                 waiting = now() - exit_start
                 if waiting > datetime.timedelta(seconds=self.kill_wait):
-                    self.kill()
+                    self._kill()
 
     def terminate(self):
+        '''
+        Stop (maybe forcefully) the Scheduler.
+        '''
         if self._terminating:
             return
         self._terminating = True
         self._supervisor.stop()
         self._pool.stop_all()
 
-    def kill(self):
+    def _kill(self):
         self._pool.stop_all(force=True)
