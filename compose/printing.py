@@ -26,7 +26,8 @@ class SimplePrintWriter(object):
     Basic writer that uses `print` function.
     Doesn't use colors.
     '''
-    def write(self, message, color=None):
+    @staticmethod
+    def write(message, color=None):
         'Write a message'
         print(message)
 
@@ -36,7 +37,8 @@ class ColoredPrintWriter(object):
     Writer that uses `colored` lib functionality.
     Can use 8-bit palette: 256 colors.
     '''
-    def write(self, message, color=None):
+    @staticmethod
+    def write(message, color=None):
         '''
         Write a message
         '''

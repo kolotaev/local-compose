@@ -40,6 +40,12 @@ class Executor(object):
         self.event_bus.send_system(msg)
         self._srv.stop(force=force)
 
+    def needs_restart(self):
+        '''
+        Must underlying service be restarted?
+        '''
+        return self.returncode is not None and self.returncode != 0
+
     def reset(self):
         '''
         Reset return code of the service.
@@ -177,20 +183,10 @@ class Supervisor(object):
             if self._stop:
                 break
             for executor in self.exec_pool.all():
-                if self.needs_restart(executor):
+                if executor.needs_restart():
                     self._event.wait(10)
                     executor.reset()
                     self.eb.send_system(type='restart', data={'name': executor.name})
-
-    # todo - move to executor
-    def needs_restart(self, executor):
-        '''
-        Must executor be restarted?
-        '''
-        rc = executor.returncode
-        if rc is not None and rc != 0:
-            return True
-        return False
 
 
 class Scheduler(object):
