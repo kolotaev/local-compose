@@ -1,12 +1,8 @@
 import threading
 import signal
 import datetime
-try:
-    import queue
-except ImportError:
-    import Queue as queue
 
-from .messaging import Line, Start, Restart, Stop, EmptyBus
+from .messaging import EventBus, Line, Start, Restart, Stop, EmptyBus
 from .utils import now
 
 
@@ -66,36 +62,6 @@ class Executor(object):
 
     def _send_message(self, data, message_class):
         self.event_bus.send(message_class(data=data, name=self._srv.name, color=self._srv.color))
-
-
-class EventBus():
-    '''
-    Main event messaging bus for the runtime.
-    '''
-    def __init__(self):
-        self._bus = queue.Queue()
-
-    def receive(self, timeout=0.1):
-        '''
-        Receive a message from this event bus.
-        '''
-        try:
-            return self._bus.get(timeout=timeout)
-        except queue.Empty:
-            return EmptyBus(data='No messages in queue', name='system')
-
-    def send(self, message):
-        '''
-        Send a message to this event bus.
-        '''
-        self._bus.put(message)
-
-    def send_system(self, data, message_class=Line):
-        '''
-        Send a system-type message to this event bus.
-        message_class - represents class of the message you want to send.
-        '''
-        self._bus.put(message_class(data=data, name='system'))
 
 
 class ExecutorsPool(object):

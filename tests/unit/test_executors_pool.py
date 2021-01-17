@@ -1,6 +1,7 @@
 from mock import Mock
 
-from compose.runtime import ExecutorsPool, Executor, EventBus
+from compose.runtime import ExecutorsPool, Executor
+from compose.messaging import EventBus
 from compose.service import Service
 
 

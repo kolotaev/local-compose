@@ -1,5 +1,4 @@
-from compose.runtime import EventBus
-from compose.messaging import EmptyBus, Line
+from compose.messaging import EventBus, EmptyBus, Line
 
 
 def test_receive():

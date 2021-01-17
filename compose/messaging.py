@@ -1,4 +1,8 @@
 from abc import ABCMeta
+try:
+    import queue
+except ImportError:
+    import Queue as queue
 
 from .utils import now
 
@@ -48,3 +52,33 @@ class EmptyBus(Message):
     '''
     Message type that denotes empty message bus and thus finish of all components run.
     '''
+
+
+class EventBus():
+    '''
+    Main event messaging bus for the runtime.
+    '''
+    def __init__(self):
+        self._bus = queue.Queue()
+
+    def receive(self, timeout=0.1):
+        '''
+        Receive a message from this event bus.
+        '''
+        try:
+            return self._bus.get(timeout=timeout)
+        except queue.Empty:
+            return EmptyBus(data='No messages in queue', name='system')
+
+    def send(self, message):
+        '''
+        Send a message to this event bus.
+        '''
+        self._bus.put(message)
+
+    def send_system(self, data, message_class=Line):
+        '''
+        Send a system-type message to this event bus.
+        message_class - represents class of the message you want to send.
+        '''
+        self._bus.put(message_class(data=data, name='system'))

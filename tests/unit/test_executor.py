@@ -1,8 +1,8 @@
 from mock import Mock, patch
 
-from compose.runtime import Executor, EventBus
+from compose.runtime import Executor
 from compose.service import Service
-from compose.messaging import EmptyBus
+from compose.messaging import EventBus, EmptyBus
 
 
 def test_executor_name():
