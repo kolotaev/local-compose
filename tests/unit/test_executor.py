@@ -2,7 +2,7 @@ from mock import Mock, patch
 
 from compose.runtime import Executor, EventBus
 from compose.service import Service
-from compose.printing import MessageEmptyBus
+from compose.messaging import EmptyBus
 
 
 def test_executor_name():
@@ -50,7 +50,7 @@ def test_full_circle(thread_mock):
     assert 'webserver listens on :80' == eb.receive().data
     assert 'bye' == eb.receive().data
     assert {'returncode': 2} == eb.receive().data
-    assert isinstance(eb.receive(), MessageEmptyBus)
+    assert isinstance(eb.receive(), EmptyBus)
     # Stop
     executor.stop(force=True)
     # state assertions
@@ -60,4 +60,4 @@ def test_full_circle(thread_mock):
     srv.stop.assert_called_once_with(force=True)
     # message assertions
     assert 'stopping service web1 (pid=3333) forcefully' in eb.receive().data
-    assert isinstance(eb.receive(), MessageEmptyBus)
+    assert isinstance(eb.receive(), EmptyBus)

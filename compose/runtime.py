@@ -6,7 +6,7 @@ try:
 except ImportError:
     import Queue as queue
 
-from .printing import MessageOutput, MessageStart, MessageRestart, MessageStop, MessageEmptyBus
+from .messaging import Line, Start, Restart, Stop, EmptyBus
 from .utils import now
 
 
@@ -55,13 +55,13 @@ class Executor(object):
     def _run_service(self):
         child = self._srv.run()
         self.child_pid = child.pid
-        self._send_message({'pid': self.child_pid}, MessageStart)
+        self._send_message({'pid': self.child_pid}, Start)
         for line in iter(child.stdout.readline, b''):
             if not self._srv.quiet:
-                self._send_message(line, MessageOutput)
+                self._send_message(line, Line)
         child.stdout.close()
         child.wait()
-        self._send_message({'returncode': child.returncode}, MessageStop)
+        self._send_message({'returncode': child.returncode}, Stop)
         self.returncode = child.returncode
 
     def _send_message(self, data, message_class):
@@ -82,7 +82,7 @@ class EventBus():
         try:
             return self._bus.get(timeout=timeout)
         except queue.Empty:
-            return MessageEmptyBus(data='No messages in queue', name='system')
+            return EmptyBus(data='No messages in queue', name='system')
 
     def send(self, message):
         '''
@@ -90,7 +90,7 @@ class EventBus():
         '''
         self._bus.put(message)
 
-    def send_system(self, data, message_class=MessageOutput):
+    def send_system(self, data, message_class=Line):
         '''
         Send a system-type message to this event bus.
         message_class - represents class of the message you want to send.
@@ -187,7 +187,7 @@ class Supervisor(object):
                 if executor.needs_restart():
                     self._event.wait(10)
                     executor.reset()
-                    self.eb.send_system({'name': executor.name}, MessageRestart)
+                    self.eb.send_system({'name': executor.name}, Restart)
 
 
 class Scheduler(object):
@@ -242,18 +242,18 @@ class Scheduler(object):
 
         while True:
             msg = self.event_bus.receive(timeout=0.1)
-            if isinstance(msg, MessageEmptyBus) and do_exit:
+            if isinstance(msg, EmptyBus) and do_exit:
                 break
-            if isinstance(msg, MessageOutput):
+            if isinstance(msg, Line):
                 self._printer.write(msg)
-            elif isinstance(msg, MessageStart):
+            elif isinstance(msg, Start):
                 pid = msg.data['pid']
                 self.event_bus.send_system('{name} started (pid={pid})\n'.format(name=msg.name, pid=pid))
-            elif isinstance(msg, MessageRestart):
+            elif isinstance(msg, Restart):
                 name = msg.data['name']
                 self.event_bus.send_system('{name} is restarting\n'.format(name=name))
                 self._pool.get(name).start()
-            elif isinstance(msg, MessageStop):
+            elif isinstance(msg, Stop):
                 rc = msg.data['returncode']
                 self.event_bus.send_system('{name} stopped (rc={rc})\n'.format(name=msg.name, rc=rc))
                 if self.returncode is None:

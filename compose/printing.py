@@ -1,58 +1,9 @@
 from __future__ import print_function
 import sys
-from abc import ABCMeta
 
 import colored
 
-from .utils import now
-
-
-# todo - move to separate module
-class Message(object):
-    '''
-    Represents a basic messaging entity in the system.
-    '''
-
-    __metaclass__ = ABCMeta
-
-    def __init__(self, data, name, time=None, color=None):
-        self.data = data
-        self.name = name
-        self.color = color
-        if time is None:
-            self.time = now()
-        else:
-            self.time = time
-
-
-class MessageOutput(Message):
-    '''
-    Message type for Service and system information logging and output.
-    '''
-
-
-class MessageStart(Message):
-    '''
-    Message type for Service starting.
-    '''
-
-
-class MessageStop(Message):
-    '''
-    Message type for Service stopping.
-    '''
-
-
-class MessageRestart(Message):
-    '''
-    Message type for Service restarting.
-    '''
-
-
-class MessageEmptyBus(Message):
-    '''
-    Message type that denotes empty message bus and thus finish of all components run.
-    '''
+from .messaging import Line
 
 
 class SimplePrintWriter(object):
@@ -61,7 +12,7 @@ class SimplePrintWriter(object):
     Doesn't use colors.
     '''
     @staticmethod
-    def write(message, _color=None):
+    def write(message, color=None):
         'Write a message'
         print(message)
 
@@ -107,8 +58,8 @@ class Printer(object):
         '''
         Writes message via underlying writer
         '''
-        if not isinstance(message, MessageOutput):
-            raise RuntimeError('Printer can only process messages of type "%s"' % MessageOutput.__name__)
+        if not isinstance(message, Line):
+            raise RuntimeError('Printer can only process messages of type "%s"' % Line.__name__)
 
         if message.name is not None:
             name = message.name

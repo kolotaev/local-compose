@@ -4,7 +4,8 @@ import os
 
 import pytest
 
-from compose.printing import Printer, MessageStop, MessageOutput
+from compose.printing import Printer
+from compose.messaging import Stop, Line
 from compose.service import Service
 
 
@@ -32,8 +33,8 @@ class StoreWriter(object):
 def test_printer_does_not_allow_other_mesage_types():
     p = Printer(StoreWriter())
     with pytest.raises(RuntimeError) as execinfo:
-        p.write(MessageStop(data='bye...', name='web1'))
-    assert 'Printer can only process messages of type "MessageOutput"' == str(execinfo.value)
+        p.write(Stop(data='bye...', name='web1'))
+    assert 'Printer can only process messages of type "Line"' == str(execinfo.value)
 
 
 def test_adjust_width():
@@ -54,43 +55,43 @@ def test_adjust_width():
 
 @pytest.mark.parametrize('message, time_format, use_prefix, expect', [
     (
-        MessageOutput(data='', name=''),
+        Line(data='', name=''),
         '',
         True,
         '        | '
     ),
     (
-        MessageOutput(data='bye...', name='web1', color='red'),
+        Line(data='bye...', name='web1', color='red'),
         '',
         True,
         ' web1   | bye...'
     ),
     (
-        MessageOutput(data='bye...', name='web1'),
+        Line(data='bye...', name='web1'),
         None,
         True,
         '13:01:13 web1   | bye...'
     ),
     (
-        MessageOutput( data='bye...', name='web1'),
+        Line( data='bye...', name='web1'),
         "%b %d %Y %H:%M:%S",
         True,
         'Jan 17 2019 13:01:13 web1   | bye...'
     ),
     (
-        MessageOutput(data='bye...', name='web1'),
+        Line(data='bye...', name='web1'),
         None,
         False,
         'bye...'
     ),
     (
-        MessageOutput(data=b'\x28', name='web1'),
+        Line(data=b'\x28', name='web1'),
         '',
         True,
         ' web1   | ('
     ),
     (
-        MessageOutput(data='bye...', name=None),
+        Line(data='bye...', name=None),
         "%H:%M:%S",
         True,
         '13:01:13        | bye...'
