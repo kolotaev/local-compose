@@ -1,8 +1,7 @@
-from mock import Mock, patch
+from mock import Mock
 
 from compose.runtime import Scheduler
 from compose.service import Service
-from compose.printing import Message
 
 
 def test_ctor():
