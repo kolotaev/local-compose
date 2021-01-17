@@ -6,7 +6,7 @@ try:
 except ImportError:
     import Queue as queue
 
-from .printing import MessageOutput, MessageStart, MessageRestart, MessageStop, MessageEmptyBus, MessageRestart
+from .printing import MessageOutput, MessageStart, MessageRestart, MessageStop, MessageEmptyBus
 from .utils import now
 
 

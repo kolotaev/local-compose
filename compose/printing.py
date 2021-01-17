@@ -61,7 +61,7 @@ class SimplePrintWriter(object):
     Doesn't use colors.
     '''
     @staticmethod
-    def write(message, color=None):
+    def write(message, _color=None):
         'Write a message'
         print(message)
 
