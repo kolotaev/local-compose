@@ -7,8 +7,8 @@ from compose.utils import now
 
 def test_message_defaults():
     m = Line(u'hello it is me на русском', 'web1')
-    assert u'hello it is me на русском' == m.data
-    assert 'web1' == m.name
+    assert m.data == u'hello it is me на русском'
+    assert m.name == 'web1'
     assert m.time <= now()
     assert m.color is None
 
@@ -24,7 +24,7 @@ def test_message_time():
     n2 = now()
     time.sleep(0.01)
     m2 = Line('hello2', 'web2', time=n2)
-    assert n2 == m2.time
+    assert m2.time == n2
 
 
 def test_message_properties():
@@ -35,7 +35,7 @@ def test_message_properties():
         string
     '''
     m = Stop(data, 'web1', time=my_time, color='red')
-    assert data == m.data
-    assert 'web1' == m.name
-    assert my_time == m.time
-    assert 'red' == m.color
+    assert m.data == data
+    assert m.name == 'web1'
+    assert m.time == my_time
+    assert m.color == 'red'

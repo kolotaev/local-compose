@@ -1,7 +1,6 @@
 import os
 import re
 
-import mock
 import pytest
 from click.testing import CliRunner
 
@@ -20,7 +19,7 @@ def test_banner():
     runner = CliRunner()
     result = runner.invoke(cli.root, [])
     assert result.exit_code == 0
-    assert '''
+    assert r'''
         __   __                __   __         __   __   __   ___
   |    /  \ /  `  /\  |    __ /  ` /  \  |\/| |__) /  \ /__` |__
   |___ \__/ \__, /~~\ |___    \__, \__/  |  | |    \__/ .__/ |___
@@ -33,21 +32,21 @@ def test_version():
     runner = CliRunner()
     result = runner.invoke(cli.root, ['version'])
     assert result.exit_code == 0
-    assert '0.3.0\n' == result.output
+    assert result.output == '0.3.0\n'
 
 
 def test_example():
     runner = CliRunner()
     result = runner.invoke(cli.root, ['example'])
     assert result.exit_code == 0
-    assert CONFIG_EXAMPLE + '\n' == result.output
+    assert result.output == CONFIG_EXAMPLE + '\n'
 
 
 def test_colors():
     runner = CliRunner()
     result = runner.invoke(cli.root, ['colors'])
     assert result.exit_code == 0
-    assert 256 == len(result.output.splitlines())
+    assert len(result.output.splitlines()) == 256
     assert \
 '''black
 red
@@ -62,10 +61,10 @@ def test_up_no_file():
     runner = CliRunner()
     result = runner.invoke(cli.root, ['up'])
     assert result.exit_code == 1
-    assert '''Configuration file "local-compose.yaml" is invalid.
+    assert result.output == '''Configuration file "local-compose.yaml" is invalid.
 Errors found:
 File is not found.
-''' == result.output
+'''
 
 
 def test_up_one_job():
@@ -74,12 +73,12 @@ def test_up_one_job():
     result = runner.invoke(cli.root, ['up', '-f', file])
     assert result.exit_code == 0
     out = re.sub(r'pid=\d+', 'pid=22580', result.output)
-    assert \
+    assert out == \
 ''' system  | starting service my-job1
  system  | my-job1 started (pid=22580)
  my-job1 | Hello world
  system  | my-job1 stopped (rc=0)
-''' == out
+'''
 
 
 def test_up_silent():
@@ -88,11 +87,11 @@ def test_up_silent():
     result = runner.invoke(cli.root, ['up', '-f', file])
     assert result.exit_code == 0
     out = re.sub(r'pid=\d+', 'pid=22580', result.output)
-    assert \
+    assert out == \
 ''' system  | starting service my-job1
  system  | my-job1 started (pid=22580)
  system  | my-job1 stopped (rc=0)
-''' == out
+'''
 
 
 @pytest.mark.skip
@@ -102,12 +101,12 @@ def test_up_with_color():
     result = runner.invoke(cli.root, ['up', '-f', file], color=True)
     assert result.exit_code == 0
     out = re.sub(r'pid=\d+', 'pid=22580', result.output)
-    assert \
+    assert out == \
 ''' system      | starting service colored-job
  system      | colored-job started (pid=22580)
 \033[36m colored-job | Hello world\033[0m
  system      | colored-job stopped (rc=0)
-''' == out
+'''
 
 
 def test_up_with_color_but_explicitly_said_no_color():
@@ -116,12 +115,12 @@ def test_up_with_color_but_explicitly_said_no_color():
     result = runner.invoke(cli.root, ['up', '-f', file, '--no-color'], color=True)
     assert result.exit_code == 0
     out = re.sub(r'pid=\d+', 'pid=22580', result.output)
-    assert \
+    assert out == \
 ''' system      | starting service colored-job
  system      | colored-job started (pid=22580)
  colored-job | Hello world
  system      | colored-job stopped (rc=0)
-''' == out
+'''
 
 
 def test_up_no_prefix():
@@ -130,12 +129,12 @@ def test_up_no_prefix():
     result = runner.invoke(cli.root, ['up', '-f', file])
     assert result.exit_code == 0
     out = re.sub(r'pid=\d+', 'pid=22580', result.output)
-    assert \
+    assert out == \
 '''starting service my-job1
 my-job1 started (pid=22580)
 Hello world
 my-job1 stopped (rc=0)
-''' == out
+'''
 
 
 def test_up_with_job_and_daemon():

@@ -31,8 +31,8 @@ def test_service_type():
 ])
 def test_service_default_properties(set_current_dir, type_class, cmd):
     s = type_class('test-srv', cmd)
-    assert 'test-srv' == s.name
-    assert cmd == s.cmd
+    assert s.name == 'test-srv'
+    assert s.cmd == cmd
     assert not s.quiet
     assert s.color is None
     assert s.env is None
@@ -46,12 +46,12 @@ def test_service_default_properties(set_current_dir, type_class, cmd):
 ])
 def test_service_properties(type_class, cmd):
     s = type_class('test-srv', cmd, color='red', env={'FOO': '1'}, cwd='/home', shell=False, quiet=True)
-    assert 'test-srv' == s.name
-    assert cmd == s.cmd
+    assert s.name == 'test-srv'
+    assert s.cmd == cmd
     assert s.quiet
-    assert 'red' == s.color
-    assert {'FOO': '1'} == s.env
-    assert '/home' == s.cwd
+    assert s.color == 'red'
+    assert s.env == {'FOO': '1'}
+    assert s.cwd == '/home'
     assert not s.in_shell
 
 
@@ -66,4 +66,4 @@ def test_service_properties(type_class, cmd):
 ])
 def test_work_dir(set_current_dir, cwd, expected):
     s = Service('web1', 'echo 123', cwd=cwd)
-    assert expected == s.cwd
+    assert s.cwd == expected

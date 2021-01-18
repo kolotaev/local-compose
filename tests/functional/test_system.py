@@ -1,6 +1,5 @@
 import os
 import signal
-import time
 
 import pytest
 
@@ -26,11 +25,10 @@ class TestOS(object):
 
     def test_get_pid_by_name(self):
         program = 'nc -l 9990'
-        os = OS()
         pid = self.launch_service(program)
-        pids_found = os.pid_by_name(program)
+        pids_found = OS().pid_by_name(program)
         assert len(pids_found) > 0
-        assert pid == pids_found[0]
+        assert pids_found[0] == pid
 
     @pytest.mark.parametrize(
         'program, in_shell',
@@ -40,11 +38,10 @@ class TestOS(object):
         ]
     )
     def test_kill_pid(self, program, in_shell):
-        os = OS()
         pid = self.launch_service(program, shell=in_shell)
-        assert 1 == len(os.pid_by_name(program))
-        os.kill_pid(pid)
-        assert 0 == len(os.pid_by_name(program))
+        assert len(OS().pid_by_name(program)) == 1
+        OS().kill_pid(pid)
+        assert len(OS().pid_by_name(program)) == 0
 
     @pytest.mark.parametrize(
         'program, in_shell',
@@ -54,16 +51,13 @@ class TestOS(object):
         ]
     )
     def test_terminate_pid(self, program, in_shell):
-        os = OS()
         pid = self.launch_service(program, shell=in_shell)
-        assert 1 == len(os.pid_by_name(program))
-        os.terminate_pid(pid)
-        assert 0 == len(os.pid_by_name(program))
+        assert len(OS().pid_by_name(program)) == 1
+        OS().terminate_pid(pid)
+        assert len(OS().pid_by_name(program)) == 0
 
     def test_does_not_panic_when_terminating_unknown_pid(self):
-        os = OS()
-        os.terminate_pid(99999999)
+        OS().terminate_pid(99999999)
 
     def test_does_not_panic_when_killing_unknown_pid(self):
-        os = OS()
-        os.kill_pid(99999999)
+        OS().kill_pid(99999999)

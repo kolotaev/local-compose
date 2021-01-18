@@ -28,7 +28,7 @@ class TestService(object):
             res += line.decode('ascii')
         proc.stdout.close()
         assert s.pid is not None
-        assert 'OK\n' == res
+        assert res == 'OK\n'
 
     def test_run_uses_env(self):
         s = Service(name='info', cmd='echo $FOO $BAR', shell=True, env={'FOO': '123', 'BAR': 'aa'})
@@ -39,7 +39,7 @@ class TestService(object):
             res += line.decode('ascii')
         proc.stdout.close()
         assert s.pid is not None
-        assert '123 aa\n' == res
+        assert res == '123 aa\n'
 
     def test_run_uses_cwd(self):
         s = Service(name='info', cmd='pwd', cwd='/usr/bin')
@@ -50,7 +50,7 @@ class TestService(object):
             res += line.decode('ascii')
         proc.stdout.close()
         assert s.pid is not None
-        assert '/usr/bin\n' == res
+        assert res == '/usr/bin\n'
 
     def test_run_does_not_use_shell_if_said_so(self):
         s = Service(name='info', cmd='echo $FOO $BAR',
@@ -63,7 +63,7 @@ class TestService(object):
             res += line.decode('ascii')
         proc.stdout.close()
         assert s.pid is not None
-        assert '$FOO $BAR\n' == res
+        assert res == '$FOO $BAR\n'
 
     @pytest.mark.parametrize(
         'force',
@@ -73,11 +73,10 @@ class TestService(object):
         ]
     )
     def test_stop(self, force):
-        os = OS()
         s = Service(name='web1', cmd='nc -l 9977', shell=False)
         proc = s.run()
         self.mark_service(proc)
         assert s.pid is not None
-        assert 0 != len(os.pid_by_name('nc -l 9977'))
+        assert len(OS().pid_by_name('nc -l 9977')) != 0
         s.stop(force=force)
-        assert 0 == len(os.pid_by_name('nc -l 9977'))
+        assert len(OS().pid_by_name('nc -l 9977')) == 0

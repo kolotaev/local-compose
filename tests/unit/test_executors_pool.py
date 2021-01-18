@@ -12,10 +12,10 @@ def test_add_get():
     e3 = Executor(EventBus(), Service('web2', 'cat'))
     ep.add(e1)
     ep.add(e2)
-    assert e1 == ep.get('web1')
-    assert e2 == ep.get('web2')
+    assert ep.get('web1') == e1
+    assert ep.get('web2') == e2
     ep.add(e3)
-    assert e3 == ep.get('web2')
+    assert ep.get('web2') == e3
 
 
 def test_all():
@@ -24,7 +24,7 @@ def test_all():
     e2 = Executor(EventBus(), Service('web2', 'cat'))
     ep.add(e1)
     ep.add(e2)
-    assert 2 == len(ep.all())
+    assert len(ep.all()) == 2
     res = list(ep.all())
     assert res[0] != res[1]
     assert res[0].returncode is None
@@ -33,7 +33,7 @@ def test_all():
 
 def test_all_empty():
     ep = ExecutorsPool()
-    assert 0 == len(ep.all())
+    assert len(ep.all()) == 0
 
 
 def test_start_all():

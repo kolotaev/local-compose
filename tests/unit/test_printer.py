@@ -23,6 +23,7 @@ def timezone_fixture():
 
 
 class StoreWriter(object):
+    'Mock writer'
     def __init__(self):
         self.data = ''
 
@@ -34,7 +35,7 @@ def test_printer_does_not_allow_other_mesage_types():
     p = Printer(StoreWriter())
     with pytest.raises(RuntimeError) as execinfo:
         p.write(Stop(data='bye...', name='web1'))
-    assert 'Printer can only process messages of type "Line"' == str(execinfo.value)
+    assert str(execinfo.value) == 'Printer can only process messages of type "Line"'
 
 
 def test_adjust_width():
@@ -42,15 +43,15 @@ def test_adjust_width():
     s1 = Service(name='web1', cmd='cat')
     s2 = Service(name='web_1234567890', cmd='cat')
     s3 = Service(name='web_2', cmd='cat')
-    assert 0 == p.width
+    assert p.width == 0
     p.adjust_width(s1)
-    assert 4 == p.width
+    assert p.width == 4
     p.adjust_width(s1)
-    assert 4 == p.width
+    assert p.width == 4
     p.adjust_width(s2)
-    assert 14 == p.width
+    assert p.width == 14
     p.adjust_width(s3)
-    assert 14 == p.width
+    assert p.width == 14
 
 
 @pytest.mark.parametrize('message, time_format, use_prefix, expect', [
@@ -73,7 +74,7 @@ def test_adjust_width():
         '13:01:13 web1   | bye...'
     ),
     (
-        Line( data='bye...', name='web1'),
+        Line(data='bye...', name='web1'),
         "%b %d %Y %H:%M:%S",
         True,
         'Jan 17 2019 13:01:13 web1   | bye...'
@@ -105,4 +106,4 @@ def test_write(timezone_fixture, message, time_format, use_prefix, expect):
     s1 = Service(name='123456', cmd='cat')
     p.adjust_width(s1)
     p.write(message)
-    assert expect == w.data
+    assert w.data == expect

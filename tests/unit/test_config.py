@@ -1,5 +1,5 @@
-import mock
 import pytest
+import mock
 
 from compose.configuration import Config
 from compose.service import Service
@@ -45,8 +45,8 @@ def test_parse_with_non_existent_file(mock_read):
     with pytest.raises(Exception) as execinfo:
         conf = Config(FILE_NAME).parse()
     assert conf is None
-    assert 'Configuration file "unit-test-config-file.yaml" is invalid.\nErrors found:\nFile is missing in OS' \
-        == str(execinfo.value)
+    assert str(execinfo.value) == \
+        'Configuration file "unit-test-config-file.yaml" is invalid.\nErrors found:\nFile is missing in OS'
 
 
 @mock.patch.object(Config, 'read')
@@ -57,9 +57,9 @@ def test_parse_minimal_required(mock_read):
     mock_read.return_value = config_contents
     conf = Config(FILE_NAME).parse()
     assert conf is not None
-    assert '123.0' == conf.version
-    assert {} == conf.settings
-    assert [] == conf.services
+    assert conf.version == '123.0'
+    assert conf.settings == {}
+    assert conf.services == []
 
 
 @mock.patch.object(Config, 'read')
@@ -69,8 +69,8 @@ def test_parse_fails_with_empty_file(mock_read):
     with pytest.raises(Exception) as execinfo:
         conf = Config(FILE_NAME).parse()
     assert conf is None
-    assert 'Configuration file "unit-test-config-file.yaml" is invalid.\nErrors found:\nFile is empty.' \
-        == str(execinfo.value)
+    assert str(execinfo.value) == \
+        'Configuration file "unit-test-config-file.yaml" is invalid.\nErrors found:\nFile is empty.'
 
 
 @mock.patch.object(Config, 'read')
@@ -146,7 +146,7 @@ def test_settings_property(mock_read):
     mock_read.return_value = config_contents
     conf = Config(FILE_NAME).parse()
     assert conf is not None
-    assert {'bar': 'asdf', 'foo': 123} == conf.settings
+    assert conf.settings == {'bar': 'asdf', 'foo': 123}
 
 
 @mock.patch.object(Config, 'read')
@@ -161,7 +161,7 @@ def test_services_property(mock_read):
     '''
     mock_read.return_value = config_contents
     conf = Config(FILE_NAME).parse()
-    assert 2 == len(conf.services)
+    assert len(conf.services) == 2
     assert 'web1' in list([s.name for s in conf.services])
     assert 'web2' in list([s.name for s in conf.services])
     assert isinstance(conf.services[0], Service)

@@ -1,8 +1,7 @@
-import mock
 import pytest
+import mock
 
 from compose.configuration import Config
-from compose.service import Service
 
 
 FILE_NAME = 'unit-test-config-file.yaml'
@@ -25,16 +24,16 @@ def test_services_all_items_are_passed(mock_read):
     '''
     mock_read.return_value = config_contents
     conf = Config(FILE_NAME).parse()
-    assert 1 == len(conf.services)
+    assert len(conf.services) == 1
     web1 = conf.services[0]
-    assert 'web1' == web1.name
-    assert 'java -jar /path/to/server.jar' == web1.cmd
-    assert 'red' == web1.color
-    assert '/path/to/your/dir' == web1.cwd
+    assert web1.name == 'web1'
+    assert web1.cmd == 'java -jar /path/to/server.jar'
+    assert web1.color == 'red'
+    assert web1.cwd == '/path/to/your/dir'
     assert 'FOO' in web1.env
-    assert 123 == web1.env['FOO']
+    assert web1.env['FOO'] == 123
     assert 'BAR' in web1.env
-    assert 'asdf' == web1.env['BAR']
+    assert web1.env['BAR'] == 'asdf'
     assert web1.quiet
     assert not web1.in_shell
 
@@ -57,4 +56,4 @@ def test_ready_probe(mock_read):
     '''
     mock_read.return_value = config_contents
     conf = Config(FILE_NAME).parse()
-    assert 1 == len(conf.services)
+    assert len(conf.services) == 1

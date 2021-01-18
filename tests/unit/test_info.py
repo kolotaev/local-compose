@@ -2,8 +2,8 @@ from compose.info import VERSION, NAME
 
 
 def test_version():
-    assert '0.3.0' == VERSION
+    assert VERSION == '0.3.0'
 
 
 def test_name():
-    assert 'local-compose' == NAME
+    assert NAME == 'local-compose'

@@ -9,10 +9,10 @@ def test_ctor():
     sch = Scheduler(printer, 10)
     sch.register_service(Service(name='web1', cmd='fake'))
     assert sch.returncode is None
-    assert 10 == sch.kill_wait
+    assert sch.kill_wait == 10
     sch2 = Scheduler(printer)
     assert sch2.returncode is None
-    assert 5 == sch2.kill_wait
+    assert sch2.kill_wait == 5
 
 
 def test_register_service():
@@ -21,4 +21,4 @@ def test_register_service():
     sch.register_service(Service(name='web1', cmd='fake'))
     sch.register_service(Service(name='web2', cmd='fake'))
     assert sch.returncode is None
-    assert 2 == len(sch._pool.all())
+    assert len(sch._pool.all()) == 2

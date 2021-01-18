@@ -10,7 +10,7 @@ def test_executor_name():
     srv = Service(name='web1', cmd='fake')
     executor = Executor(eb, srv)
     executor.start()
-    assert 'web1' == executor.name
+    assert executor.name == 'web1'
 
 
 @patch('compose.runtime.threading.Thread')
@@ -39,23 +39,23 @@ def test_full_circle(thread_mock):
     # Start
     executor.start()
     # state assertions
-    assert 3333 == executor.child_pid
+    assert executor.child_pid == 3333
     # call assertions
     srv_run_mock.assert_called_once_with()
     stdout_mock.close.assert_called_once_with()
     popen_mock.wait.assert_called_once_with()
     # message assertions
     assert 'starting service web1' in eb.receive().data
-    assert {'pid': 3333} == eb.receive().data
-    assert 'webserver listens on :80' == eb.receive().data
-    assert 'bye' == eb.receive().data
-    assert {'returncode': 2} == eb.receive().data
+    assert eb.receive().data == {'pid': 3333}
+    assert eb.receive().data == 'webserver listens on :80'
+    assert eb.receive().data == 'bye'
+    assert eb.receive().data == {'returncode': 2}
     assert isinstance(eb.receive(), EmptyBus)
     # Stop
     executor.stop(force=True)
     # state assertions
-    assert 3333 == executor.child_pid
-    assert 2 == executor.returncode
+    assert executor.child_pid == 3333
+    assert executor.returncode == 2
     # call assertions
     srv.stop.assert_called_once_with(force=True)
     # message assertions
