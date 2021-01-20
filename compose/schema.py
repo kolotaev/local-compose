@@ -58,38 +58,6 @@ JSON_SCHEMA = {
                 },
             },
         },
-        'httpCheck': {
-            'description': 'Health check by HTTP request',
-            'type': 'object',
-            'required': ['url'],
-            'properties': {
-                'url': {
-                    'description': 'Full URL to the health check endpoint',
-                    'type': 'string',
-                },
-                'method': {
-                    'description': 'HTTP method to make a request with',
-                    'type': 'string',
-                    'default': 'GET',
-                },
-                'statusCode': {
-                    'description': 'HTTP status code of the response that is considered healthy',
-                    'type': 'integer',
-                    'default': 200,
-                },
-            },
-        },
-        'tcpCheck': {
-            'description': 'Health check by TCP probing',
-            'type': 'object',
-            'required': ['endpoint'],
-            'properties': {
-                'endpoint': {
-                    'description': 'Full endpoint name host+port to the health check',
-                    'type': 'string',
-                },
-            },
-        },
         'service': {
             'type': 'object',
             'required': ['run'],
@@ -141,25 +109,13 @@ JSON_SCHEMA = {
                     'description': 'Color that is associated with service output',
                     'type': 'string',
                 },
-                'readyProbe': {
-                    'description': 'Method that can determine if service has started successfully',
+                'readinessProbe': {
+                    'description': 'Method that can determine if service has started successfully. \
+                        Currently it uses only service exit code as a probe',
                     'type': 'object',
                     'properties': {
                         'retry': {
                             '$ref': '#/definitions/retry'
-                        },
-                    },
-                    "additionalProperties": False,
-                    'patternProperties': {
-                        '^httpCheck|tcpCheck$': {
-                            'oneOf': [
-                                {
-                                    '$ref': '#/definitions/httpCheck'
-                                },
-                                {
-                                    '$ref': '#/definitions/tcpCheck'
-                                },
-                            ],
                         },
                     },
                 },
