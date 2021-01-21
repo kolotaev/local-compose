@@ -9,7 +9,8 @@ class Service(object):
     '''
     Long running (daemon) process that is not expected to exit by itself.
     '''
-    def __init__(self, name, cmd, color=None, quiet=False, env=None, cwd=None, shell=False, readiness=None):
+    def __init__(self, name, cmd, color=None, quiet=False,
+                 env=None, cwd=None, shell=False, readiness=None):
         self.name = name
         self.cmd = cmd
         self.color = color
@@ -24,7 +25,6 @@ class Service(object):
                 'retry': {},
             }
         self.readiness = {
-            'probe': readiness.get('probe'),
             'retry': RetryLogic(readiness.get('retry').get('attempts'), readiness.get('retry').get('wait')),
         }
 
@@ -73,11 +73,17 @@ class Job(Service):
 
 class RetryLogic(object):
     '''
-    Class that is responsible for service/job restarts related actions, state.
+    Class that is responsible for service/job restarts state related actions.
+    attempts: How many times to try? Default: infinite
+    wait: How many seconds to wait between attempts? Default: 5 seconds.
     '''
-    def __init__(self, attempts, wait):
+    def __init__(self, attempts=None, wait=None):
         self._done_attempts = 0
+        if attempts is None:
+            attempts = float('inf')
         self.attempts = attempts
+        if wait is None:
+            wait = 5
         self.wait = wait
 
     def do_retry(self):
