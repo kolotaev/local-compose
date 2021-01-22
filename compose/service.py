@@ -3,6 +3,7 @@ import shlex
 import os
 
 from .system import OS
+from .readiness import Readiness
 
 
 class Service(object):
@@ -20,13 +21,7 @@ class Service(object):
         self.in_shell = shell
         self._os = OS()
         self.pid = None
-        if readiness is None:
-            readiness = {
-                'retry': {},
-            }
-        self.readiness = {
-            'retry': RetryLogic(readiness.get('retry').get('attempts'), readiness.get('retry').get('wait')),
-        }
+        self.readiness = Readiness(readiness)
 
     def run(self):
         '''
@@ -69,28 +64,3 @@ class Job(Service):
     Short running process that is expected to exit by itself.
     *Not currently used.*
     '''
-
-
-class RetryLogic(object):
-    '''
-    Class that is responsible for service/job restarts state related actions.
-    attempts: How many times to try? Default: infinite
-    wait: How many seconds to wait between attempts? Default: 5 seconds.
-    '''
-    def __init__(self, attempts=None, wait=None):
-        self._done_attempts = 0
-        if attempts is None:
-            attempts = float('inf')
-        self.attempts = attempts
-        if wait is None:
-            wait = 5
-        self.wait = wait
-
-    def do_retry(self):
-        '''
-        Do we need to retry?
-        '''
-        if self._done_attempts < self.attempts:
-            self._done_attempts += 1
-            return True
-        return False

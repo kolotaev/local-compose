@@ -146,9 +146,7 @@ class Supervisor(object):
         '''
         The actual supervision method.
         '''
-        while True:
-            if self._stop:
-                break
+        while not self._stop:
             for executor in self.exec_pool.all():
                 if executor.needs_restart():
                     self._event.wait(10)

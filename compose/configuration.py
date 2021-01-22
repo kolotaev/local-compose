@@ -100,8 +100,8 @@ class Config(object):
                 params['color'] = srv_conf['color']
             if 'shell' in srv_conf:
                 params['shell'] = srv_conf['shell']
-            if 'readyProbe' in srv_conf:
-                params['readiness'] = srv_conf['readyProbe']
+            if 'readiness' in srv_conf:
+                params['readiness'] = srv_conf['readiness']
             s = Service(name, srv_conf.get('run'), **params)
             services.append(s)
         return services
