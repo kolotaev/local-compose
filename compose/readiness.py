@@ -24,7 +24,7 @@ class RetryLogic(object):
             wait = 5
         self.wait = wait
 
-    def do_retry(self):
+    def needs_retry(self):
         '''
         Do we need to retry?
         '''
