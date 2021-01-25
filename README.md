@@ -29,3 +29,13 @@ pip install ./${RELEASE_VERSION}.tar.gz
 tar -zxvf ${RELEASE_VERSION}.tar.gz
 python local-compose-${RELEASE_VERSION}/setup.py install
 ```
+
+## Milestones
+
+- [] Configurable restarts for failed services
+- [] Configurable Cron restarts for services/jobs
+- [] Log output configuration
+- [] Watch file changes AKA dev-mode
+- [] Detached mode
+- [] More flexible ENV variables support
+- [] Env-files support
