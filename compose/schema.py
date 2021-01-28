@@ -109,7 +109,7 @@ JSON_SCHEMA = {
                     'description': 'Color that is associated with service output',
                     'type': 'string',
                 },
-                'readinessProbe': {
+                'readiness': {
                     'description': 'Method that can determine if service has started successfully. \
                         Currently it uses only service exit code as a probe',
                     'type': 'object',
