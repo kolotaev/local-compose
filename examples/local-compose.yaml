@@ -13,12 +13,16 @@ services:
     cwd: examples
     color: cyan
   cat:
-    run: cat /etc/hosts
+    run: head /etc/hosts
     color: yellow_2
   folly:
     run: echo "Gogo" && exit 1
     color: magenta
     shell: yes
+    readiness:
+      retry:
+        attempts: 2
+        wait: 1
 
 # jobs:
 #   cat:

@@ -35,9 +35,9 @@ def test_retry_logic_defaults():
     assert r.wait == 5
 
 
-def test_retry_logic_needs_retry():
-    r = RetryLogic(2, 5)
-    assert r.needs_retry()
-    assert r.needs_retry()
-    assert not r.needs_retry()
-    assert not r.needs_retry()
+def test_retry_logic_finished():
+    r = RetryLogic(attempts=2)
+    assert not r.finished
+    assert not r.finished
+    assert r.finished
+    assert r.finished

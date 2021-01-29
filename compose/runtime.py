@@ -40,7 +40,8 @@ class Executor(object):
         '''
         Must underlying service be restarted?
         '''
-        return self.returncode is not None and self.returncode != 0
+        self._srv.readiness.update_service_state(self.returncode)
+        return self._srv.readiness.needs_retry()
 
     def reset(self):
         '''
@@ -148,8 +149,9 @@ class Supervisor(object):
         '''
         while not self._stop:
             for executor in self.exec_pool.all():
-                if executor.needs_restart():
-                    self._event.wait(10)
+                needs_restart, wait_sec = executor.needs_restart()
+                if needs_restart:
+                    self._event.wait(wait_sec)
                     executor.reset()
                     self.eb.send_system({'name': executor.name}, Restart)
 
