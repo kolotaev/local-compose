@@ -3,7 +3,7 @@ import sys
 
 import colored
 
-from .messaging import Line
+from .messaging import Line, SYSTEM_LABEL
 
 
 class SimplePrintWriter(object):
@@ -51,7 +51,7 @@ class Printer(object):
             self.time_format = '%H:%M:%S'
         else:
             self.time_format = time_format
-        self.width = 0
+        self.width = max(0, len(SYSTEM_LABEL))
         self.use_prefix = use_prefix
 
     def write(self, message):

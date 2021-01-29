@@ -7,6 +7,10 @@ except ImportError:
 from .utils import now
 
 
+# Name that is used for system-wide messages output
+SYSTEM_LABEL = 'system'
+
+
 class Message(object):
     '''
     Represents a basic messaging entity in the system.
@@ -68,7 +72,7 @@ class EventBus():
         try:
             return self._bus.get(timeout=timeout)
         except queue.Empty:
-            return EmptyBus(data='No messages in queue', name='system')
+            return EmptyBus(data='No messages in queue', name=SYSTEM_LABEL)
 
     def send(self, message):
         '''
@@ -81,4 +85,4 @@ class EventBus():
         Send a system-type message to this event bus.
         message_class - represents class of the message you want to send.
         '''
-        self._bus.put(message_class(data=data, name='system'))
+        self._bus.put(message_class(data=data, name=SYSTEM_LABEL))
