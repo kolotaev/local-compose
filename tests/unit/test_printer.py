@@ -5,7 +5,7 @@ import os
 import pytest
 
 from compose.printing import Printer
-from compose.messaging import Stop, Line
+from compose.messaging import Stop, Line, SYSTEM_LABEL
 from compose.service import Service
 
 
@@ -43,15 +43,18 @@ def test_adjust_width():
     s1 = Service(name='web1', cmd='cat')
     s2 = Service(name='web_1234567890', cmd='cat')
     s3 = Service(name='web_2', cmd='cat')
-    assert p.width == 0
+    s4 = Service(name='web_12345678901', cmd='cat')
+    assert p.width == len(SYSTEM_LABEL)
     p.adjust_width(s1)
-    assert p.width == 4
+    assert p.width == 6
     p.adjust_width(s1)
-    assert p.width == 4
+    assert p.width == 6
     p.adjust_width(s2)
     assert p.width == 14
     p.adjust_width(s3)
     assert p.width == 14
+    p.adjust_width(s4)
+    assert p.width == 15
 
 
 @pytest.mark.parametrize('message, time_format, use_prefix, expect', [

@@ -51,7 +51,8 @@ class Printer(object):
             self.time_format = '%H:%M:%S'
         else:
             self.time_format = time_format
-        self.width = max(0, len(SYSTEM_LABEL))
+        # The only known 'service' name that we know for sure at the begining
+        self.width = len(SYSTEM_LABEL)
         self.use_prefix = use_prefix
 
     def write(self, message):
