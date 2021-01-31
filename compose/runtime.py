@@ -40,7 +40,8 @@ class Executor(object):
         '''
         Must underlying service be restarted?
         '''
-        self._srv.readiness.update_service_state(self.returncode)
+        # todo - remove side-effect
+        self._update_service_state()
         return self._srv.readiness.needs_retry()
 
     def reset(self):
@@ -48,6 +49,11 @@ class Executor(object):
         Reset return code of the service.
         '''
         self.returncode = None
+        self._update_service_state()
+        self._srv.readiness.retry.do_retry()
+
+    def _update_service_state(self):
+        self._srv.readiness.update_service_state(self.returncode)
 
     def _run_service(self):
         child = self._srv.run()
@@ -111,6 +117,12 @@ class ExecutorsPool(object):
         '''
         return all(e.child_pid is not None for e in self.all())
 
+    def any_needs_restart(self):
+        '''
+        Does any of the executors need to be retried?
+        '''
+        return any(e.needs_restart()[0] for e in self.all())
+
     def all_stopped(self):
         '''
         Are all executors stopped?
@@ -151,8 +163,8 @@ class Supervisor(object):
             for executor in self.exec_pool.all():
                 needs_restart, wait_sec = executor.needs_restart()
                 if needs_restart:
-                    self._event.wait(wait_sec)
                     executor.reset()
+                    self._event.wait(wait_sec)
                     self.eb.send_system({'name': executor.name}, Restart)
 
 
@@ -225,7 +237,7 @@ class Scheduler(object):
                 if self.returncode is None:
                     self.returncode = rc
 
-            if self._pool.all_started() and self._pool.all_stopped():
+            if self._pool.all_started() and self._pool.all_stopped() and not self._pool.any_needs_restart():
                 do_exit = True
                 # It will be our guard against hanging executors
                 if exit_start is None:

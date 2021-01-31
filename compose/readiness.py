@@ -42,12 +42,12 @@ class RetryLogic(object):
             wait = 5
         self.wait = wait
 
+    def do_retry(self):
+        self._done_attempts += 1
+
     @property
     def finished(self):
         '''
         Did we exceeded attempts and thus finished retrying?
         '''
-        if self._done_attempts < self.attempts:
-            self._done_attempts += 1
-            return False
-        return True
+        return self._done_attempts >= self.attempts
