@@ -114,6 +114,13 @@ class Config(object):
         return self._conf.get('settings', {})
 
     @property
+    def logging(self):
+        '''
+        Get logging settings.
+        '''
+        return self.settings.get('logging', {})
+
+    @property
     def version(self):
         '''
         Get config file version.

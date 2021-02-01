@@ -19,14 +19,8 @@ JSON_SCHEMA = {
             'description': 'Global configuration for the tool',
             'type': 'object',
             'properties': {
-                'time-format': {
-                    'description': 'Time format for service output in console. Accepts strftime format',
-                    'type': 'string',
-                },
-                'use-prefix': {
-                    'description': 'Use prefix with info for service output in console?',
-                    'type': 'boolean',
-                    'default': True,
+                'logging': {
+                    '$ref': '#/definitions/logging',
                 },
             },
         },
@@ -42,6 +36,21 @@ JSON_SCHEMA = {
     },
 
     'definitions': {
+        'logging': {
+            'description': 'Logging configuration',
+            'type': 'object',
+            'properties': {
+                'time-format': {
+                    'description': 'Time format for service output in console. Accepts strftime format',
+                    'type': 'string',
+                },
+                'use-prefix': {
+                    'description': 'Use prefix with info for service output in console?',
+                    'type': 'boolean',
+                    'default': True,
+                },
+            },
+        },
         'retry': {
             'description': 'Retry logic for re-runs, health-checks, etc.',
             'type': 'object',

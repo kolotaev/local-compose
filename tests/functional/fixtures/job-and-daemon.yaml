@@ -1,7 +1,8 @@
 version: '0.1'
 
 settings:
-  use-prefix: no
+  logging:
+    use-prefix: no
 
 services:
   echo1:

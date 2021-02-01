@@ -59,8 +59,8 @@ def up(file, color):
     else:
         writer = SimplePrintWriter()
     printer = Printer(writer,
-                      time_format=conf.settings.get('time-format'),
-                      use_prefix=conf.settings.get('use-prefix', True))
+                      time_format=conf.logging.get('time-format'),
+                      use_prefix=conf.logging.get('use-prefix', True))
     rt = Scheduler(printer=printer)
     for s in conf.services:
         rt.register_service(s)
