@@ -32,7 +32,7 @@ python local-compose-${RELEASE_VERSION}/setup.py install
 
 ## Milestones
 
-- [ ] Configurable restarts for failed services
+- [x] Configurable restarts for failed services/jobs
 - [ ] Configurable Cron restarts for services/jobs
 - [ ] Log output configuration
 - [ ] Watch file changes AKA dev-mode

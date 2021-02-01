@@ -47,11 +47,8 @@ class Executor(object):
         Reset return code of the service.
         '''
         self.returncode = None
-        self._update_service_state()
+        self._update_readiness()
         self._srv.readiness.retry.do_retry()
-
-    def _update_service_state(self):
-        self._srv.readiness.update_service_state(self.returncode)
 
     def _run_service(self):
         child = self._srv.run()
@@ -64,7 +61,10 @@ class Executor(object):
         child.wait()
         self._send_message({'returncode': child.returncode}, Stop)
         self.returncode = child.returncode
-        self._update_service_state()
+        self._update_readiness()
+
+    def _update_readiness(self):
+        self._srv.readiness.update_service_state(self.returncode)
 
     def _send_message(self, data, message_class):
         self.event_bus.send(message_class(data=data, name=self._srv.name, color=self._srv.color))
