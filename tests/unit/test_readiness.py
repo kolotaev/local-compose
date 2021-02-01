@@ -15,6 +15,28 @@ def test_readiness_empty_config_create_defaults(config):
     assert r.retry.attempts == float('inf')
     assert r.retry.wait == 5
 
+def test_readiness_needs_retry_no_retry_config():
+    r = Readiness({})
+    assert r.needs_retry() == (False, 0)
+
+
+def test_readiness_needs_retry():
+    r = Readiness({
+        'retry': {
+            'attempts': 3,
+            'wait': 7,
+        },
+    })
+    assert r.needs_retry() == (False, 7)
+    r.update_service_state(-1)
+    assert r.needs_retry() == (True, 7)
+    r.retry.do_retry()
+    assert r.needs_retry() == (True, 7)
+    r.retry.do_retry()
+    assert r.needs_retry() == (True, 7)
+    r.retry.do_retry()
+    assert r.needs_retry() == (False, 7)
+
 
 def test_readiness():
     conf = {
