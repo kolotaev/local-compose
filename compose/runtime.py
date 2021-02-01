@@ -237,7 +237,10 @@ class Scheduler(object):
                 if self.returncode is None:
                     self.returncode = rc
 
-            if self._pool.all_started() and self._pool.all_stopped() and not self._pool.any_needs_restart():
+            if self._pool.all_started() and \
+                self._pool.all_stopped() and \
+                (not self._pool.any_needs_restart() or self._terminating):
+
                 do_exit = True
                 # It will be our guard against hanging executors
                 if exit_start is None:
