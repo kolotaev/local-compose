@@ -39,5 +39,8 @@ def test_retry_logic_finished():
     r = RetryLogic(attempts=2)
     assert not r.finished
     assert not r.finished
+    r.do_retry()
+    assert not r.finished
+    r.do_retry()
     assert r.finished
     assert r.finished
