@@ -40,8 +40,6 @@ class Executor(object):
         '''
         Must underlying service be restarted?
         '''
-        # todo - remove side-effect
-        self._update_service_state()
         return self._srv.readiness.needs_retry()
 
     def reset(self):
@@ -66,6 +64,7 @@ class Executor(object):
         child.wait()
         self._send_message({'returncode': child.returncode}, Stop)
         self.returncode = child.returncode
+        self._update_service_state()
 
     def _send_message(self, data, message_class):
         self.event_bus.send(message_class(data=data, name=self._srv.name, color=self._srv.color))
