@@ -20,7 +20,7 @@ def test_readiness_needs_retry_no_retry_config():
     assert r.needs_retry() == (False, 0)
 
 
-def test_readiness_needs_retry():
+def test_readiness_needs_retry_only_retries_exceed():
     r = Readiness({
         'retry': {
             'attempts': 3,
@@ -33,6 +33,35 @@ def test_readiness_needs_retry():
     r.retry.do_retry()
     assert r.needs_retry() == (True, 7)
     r.retry.do_retry()
+    assert r.needs_retry() == (True, 7)
+    r.retry.do_retry()
+    assert r.needs_retry() == (False, 7)
+
+
+def test_readiness_needs_retry_with_update_state_interlude():
+    r = Readiness({
+        'retry': {
+            'attempts': 3,
+            'wait': 7,
+        },
+    })
+    assert r.needs_retry() == (False, 7)
+    r.update_service_state(-1)
+    assert r.needs_retry() == (True, 7)
+    r.retry.do_retry()
+    assert r.needs_retry() == (True, 7)
+    r.update_service_state(0)
+    assert r.needs_retry() == (False, 7)
+    r.update_service_state(-9)
+    assert r.needs_retry() == (True, 7)
+    r.retry.do_retry()
+    assert r.needs_retry() == (True, 7)
+    r.update_service_state(None)
+    assert r.needs_retry() == (False, 7)
+    r.update_service_state(-3)
+    assert r.needs_retry() == (True, 7)
+    r.update_service_state(-40)
+    r.update_service_state(-50)
     assert r.needs_retry() == (True, 7)
     r.retry.do_retry()
     assert r.needs_retry() == (False, 7)
