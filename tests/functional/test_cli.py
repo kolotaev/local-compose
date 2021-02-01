@@ -158,7 +158,7 @@ def test_up_with_job_retries():
     result = runner.invoke(cli.root, ['up', '-f', file])
     assert result.exit_code == 0
     out = re.sub(r'pid=\d+', 'pid=22580', result.output)
-    assert \
+    assert out == \
 '''starting service my-job1
 my-job1 started (pid=22580)
 Hello world
@@ -178,4 +178,4 @@ starting service my-job1
 my-job1 started (pid=22580)
 Hello world
 my-job1 stopped (rc=1)
-''' == out
+'''
