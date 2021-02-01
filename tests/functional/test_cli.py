@@ -150,3 +150,32 @@ echo1 stopped (rc=0)
 Long running says I'm done
 web1 stopped (rc=0)
 ''' in out
+
+
+def test_up_with_job_retries():
+    runner = CliRunner()
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'one-job-retries.yaml')
+    result = runner.invoke(cli.root, ['up', '-f', file])
+    assert result.exit_code == 0
+    out = re.sub(r'pid=\d+', 'pid=22580', result.output)
+    assert \
+'''starting service my-job1
+my-job1 started (pid=22580)
+Hello world
+my-job1 stopped (rc=1)
+my-job1 is restarting
+starting service my-job1
+my-job1 started (pid=22580)
+Hello world
+my-job1 stopped (rc=1)
+my-job1 is restarting
+starting service my-job1
+my-job1 started (pid=22580)
+Hello world
+my-job1 stopped (rc=1)
+my-job1 is restarting
+starting service my-job1
+my-job1 started (pid=22580)
+Hello world
+my-job1 stopped (rc=1)
+''' == out

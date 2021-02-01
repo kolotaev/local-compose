@@ -1,0 +1,13 @@
+version: '0.1'
+
+settings:
+  use-prefix: no
+
+services:
+  my-job1:
+    run: sleep 0.1 && echo "Hello world" && exit 1
+    shell: yes
+    readiness:
+      retry:
+        attempts: 3
+        wait: 0.2
