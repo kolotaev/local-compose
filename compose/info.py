@@ -2,6 +2,8 @@ NAME = 'local-compose'
 
 VERSION = '0.3.0'
 
+CONFIG_FILE_NAME = 'local-compose.yaml'
+
 CONFIG_EXAMPLE = '''
 # Specify version of the local-compose yaml schema.
 version: '1'

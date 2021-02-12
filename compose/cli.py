@@ -3,7 +3,7 @@ import click
 from .configuration import Config
 from .runtime import Scheduler
 from .printing import Printer, SimplePrintWriter, ColoredPrintWriter
-from .info import VERSION
+from .info import VERSION, CONFIG_FILE_NAME
 
 
 @click.group()
@@ -45,15 +45,14 @@ def example():
 
 
 @root.command()
-@click.option('-f', '--file', show_default=True, default='local-compose.yaml', help='Configuration file.')
-# @click.option('-b', '--build', is_flag=True, show_default=True, help='Build services before run.')
+@click.option('-f', '--file', show_default=True, default=CONFIG_FILE_NAME, help='Configuration file')
+@click.option('-w', '--workdir', show_default=True, default='.', help='Work dir')
 @click.option('--color/--no-color', default=True, show_default=True, help='Use colored output?')
-# @click.pass_context
-def up(file, color):
+def up(file, workdir, color):
     '''
     Start services
     '''
-    conf = Config(file).try_parse()
+    conf = Config(file, workdir).try_parse()
     if color:
         writer = ColoredPrintWriter()
     else:

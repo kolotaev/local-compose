@@ -17,8 +17,11 @@ class Config(object):
     '''
     Main and only class that is responsible for configuration.
     '''
-    def __init__(self, filename):
-        self._filename = filename
+    def __init__(self, filename, workdir=None):
+        if workdir is None:
+            workdir = '.'
+        self._workdir = workdir
+        self._config_filename = filename
         self._conf = None
 
     @staticmethod
@@ -48,7 +51,7 @@ class Config(object):
             self.validate(data)
             return self
         except Exception as e:
-            raise ConfigurationError('Configuration file "%s" is invalid.\nErrors found:\n%s' % (self._filename, e))
+            raise ConfigurationError('Configuration file "%s" is invalid.\nErrors found:\n%s' % (self._filename(), e))
 
     def try_parse(self):
         '''
@@ -73,9 +76,10 @@ class Config(object):
         '''
         Read configuration from file.
         '''
-        if not os.path.isfile(self._filename):
-            raise ConfigurationError('File is not found.')
-        with open(self._filename) as file:
+        conf_file = self._filename()
+        if not os.path.isfile(conf_file):
+            raise ConfigurationError('File was not found.')
+        with open(conf_file) as file:
             return file.read()
 
     @property
@@ -141,6 +145,9 @@ class Config(object):
                 if suggested_colors:
                     msg += '\nMaybe you meant: %s' % suggested_colors[0]
                 raise ConfigurationError(msg)
+
+    def _filename(self):
+         return os.path.realpath(os.path.expanduser(os.path.join(self._workdir, self._config_filename)))
 
 
 class ConfigurationError(ValueError):
