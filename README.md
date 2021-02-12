@@ -33,9 +33,10 @@ python local-compose-${RELEASE_VERSION}/setup.py install
 ## Milestones
 
 - [x] Configurable restarts for failed services/jobs
-- [ ] Configurable Cron restarts for services/jobs
 - [ ] Log output configuration
-- [ ] Watch file changes AKA dev-mode
+- [ ] Watch file changes a.k.a. dev-mode
+- [ ] Better `up` command experience
+- [ ] Configurable Cron restarts for services/jobs
 - [ ] Detached mode
 - [ ] More flexible ENV variables support
 - [ ] Env-files support
