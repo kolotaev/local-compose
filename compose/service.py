@@ -31,6 +31,7 @@ class Service(object):
             command = shlex.split(self.cmd)
         else:
             command = self.cmd
+        # todo - fix when env is not a string
         proc = subprocess.Popen(command,
                                 env=self.env,
                                 cwd=self.cwd,

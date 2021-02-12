@@ -133,10 +133,13 @@ class Supervisor(object):
     '''
     Supervises status, execution, readiness of services and jobs.
     '''
-    def __init__(self, event_bus, exec_pool):
+    def __init__(self, event_bus, exec_pool, check_interval_sec=None):
         self.name = 'local_compose_supervisor'
         self.eb = event_bus
         self.exec_pool = exec_pool
+        if check_interval_sec is None:
+            check_interval_sec = 10
+        self._check_interval_sec = check_interval_sec
         self._event = threading.Event()
         self._stop = False
 
@@ -159,6 +162,9 @@ class Supervisor(object):
         The actual supervision method.
         '''
         while not self._stop:
+            # todo - without this sleep constant fast loop consumes CPU drastically!
+            # we fixed it, but we need to decide on setting it correctly
+            self._event.wait(self._check_interval_sec)
             for executor in self.exec_pool.all():
                 needs_restart, wait_sec = executor.needs_restart()
                 if needs_restart:
