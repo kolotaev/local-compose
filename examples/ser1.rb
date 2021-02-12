@@ -1,18 +1,23 @@
-require 'socket'
+
+require 'webrick'
 
 $stdout.sync = true
 
-server = TCPServer.new 9010
-puts "started on 9010"
-
-while session = server.accept
-  request = session.gets
-  puts request + "proc ûü 1"
-
-  session.print "HTTP/1.1 200\r\n" # 1
-  session.print "Content-Type: text/html\r\n" # 2
-  session.print "\r\n" # 3
-  session.print "Hello world! The time is #{Time.now}" #4
-
-  session.close
+class Echo < WEBrick::HTTPServlet::AbstractServlet
+  def do_GET(request, response)
+    puts request
+    response.status = 200
+    response.body = "From GET: Hello world! The time is #{Time.now}"
+  end
+  def do_POST(request, response)
+    puts request
+    response.status = 200
+    response.body = "From POST: Hello world! The time is #{Time.now}"
+  end
 end
+
+server = WEBrick::HTTPServer.new(:Port => 9010)
+server.mount "/", Echo
+trap "INT" do server.shutdown end
+# puts 'started on 9010'
+server.start
