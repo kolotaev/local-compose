@@ -16,7 +16,7 @@ class Service(object):
         self.cmd = cmd
         self.color = color
         self.quiet = quiet
-        self.env = env
+        self.env = self._stringify_env(env)
         self.cwd = self._calculate_work_dir(cwd)
         self.in_shell = shell
         self._os = OS()
@@ -58,6 +58,15 @@ class Service(object):
         if work_dir is None:
             return os.getcwd()
         return os.path.realpath(os.path.expanduser(work_dir))
+
+    @staticmethod
+    def _stringify_env(env):
+        stringed_env = {}
+        if env is None:
+            return None
+        for k, v in env.items():
+            stringed_env[k] = str(v)
+        return stringed_env
 
 
 class Job(Service):

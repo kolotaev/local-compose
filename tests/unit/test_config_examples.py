@@ -31,7 +31,8 @@ def test_services_all_items_are_passed(mock_read):
     assert web1.color == 'red'
     assert web1.cwd == '/path/to/your/dir'
     assert 'FOO' in web1.env
-    assert web1.env['FOO'] == 123
+    # check that everything is converted into string for valid shell ENV
+    assert web1.env['FOO'] == '123'
     assert 'BAR' in web1.env
     assert web1.env['BAR'] == 'asdf'
     assert web1.quiet
