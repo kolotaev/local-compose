@@ -47,6 +47,7 @@ def example():
 @root.command()
 @click.option('-f', '--file', show_default=True, default=CONFIG_FILE_NAME, help='Configuration file')
 @click.option('-w', '--workdir', show_default=True, default='.', help='Work dir')
+@click.option('-d', '--detached', default=False, help='Detached mode: Run services in the background')
 @click.option('--color/--no-color', default=True, show_default=True, help='Use colored output?')
 def up(file, workdir, color):
     '''
