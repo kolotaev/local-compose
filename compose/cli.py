@@ -1,3 +1,5 @@
+from multiprocessing import Process
+
 import click
 
 from .configuration import Config
@@ -49,7 +51,7 @@ def example():
 @click.option('-w', '--workdir', show_default=True, default='.', help='Work dir')
 @click.option('-d', '--detached', default=False, help='Detached mode: Run services in the background')
 @click.option('--color/--no-color', default=True, show_default=True, help='Use colored output?')
-def up(file, workdir, color):
+def up(file, workdir, detached, color):
     '''
     Start services
     '''
@@ -64,4 +66,9 @@ def up(file, workdir, color):
     rt = Scheduler(printer=printer)
     for s in conf.services:
         rt.register_service(s)
-    rt.start()
+    def run_me():
+        rt.start()
+    # p = Process(target=run_me, args=('bob',))
+    # p.start()
+    # p.join()
+    run_me()
