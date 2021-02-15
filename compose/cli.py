@@ -1,4 +1,5 @@
-from multiprocessing import Process
+import subprocess
+import sys
 
 import click
 
@@ -49,7 +50,7 @@ def example():
 @root.command()
 @click.option('-f', '--file', show_default=True, default=CONFIG_FILE_NAME, help='Configuration file')
 @click.option('-w', '--workdir', show_default=True, default='.', help='Work dir')
-@click.option('-d', '--detached', default=False, help='Detached mode: Run services in the background')
+@click.option('--detached/--no-detached', default=False, help='Detached mode: Run services in the background')
 @click.option('--color/--no-color', default=True, show_default=True, help='Use colored output?')
 def up(file, workdir, detached, color):
     '''
@@ -66,9 +67,10 @@ def up(file, workdir, detached, color):
     rt = Scheduler(printer=printer)
     for s in conf.services:
         rt.register_service(s)
-    def run_me():
+    if not detached:
         rt.start()
-    # p = Process(target=run_me, args=('bob',))
-    # p.start()
-    # p.join()
-    run_me()
+    else:
+        mod_args = sys.argv
+        mod_args.insert(0, 'python3')
+        bg = subprocess.Popen(mod_args[:-1], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        print('Started background process with pid = %d' % bg.pid)
