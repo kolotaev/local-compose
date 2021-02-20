@@ -44,10 +44,10 @@ def test_parse_with_non_existent_file(mock_read):
     conf = None
     mock_read.side_effect = IOError('File is missing in OS')
     with pytest.raises(Exception) as execinfo:
-        conf = Config(FILE_NAME).parse()
+        conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is None
     assert str(execinfo.value) == \
-        'Configuration file "unit-test-config-file.yaml" is invalid.\nErrors found:\nFile is missing in OS'
+        'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\nFile is missing in OS'
 
 
 @mock.patch.object(Config, 'read')
@@ -56,7 +56,7 @@ def test_parse_minimal_required(mock_read):
     version: '123.0'
     '''
     mock_read.return_value = config_contents
-    conf = Config(FILE_NAME).parse()
+    conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is not None
     assert conf.version == '123.0'
     assert conf.settings == {}
@@ -68,10 +68,10 @@ def test_parse_fails_with_empty_file(mock_read):
     conf = None
     mock_read.return_value = ''
     with pytest.raises(Exception) as execinfo:
-        conf = Config(FILE_NAME).parse()
+        conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is None
     assert str(execinfo.value) == \
-        'Configuration file "unit-test-config-file.yaml" is invalid.\nErrors found:\nFile is empty.'
+        'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\nFile is empty.'
 
 
 @mock.patch.object(Config, 'read')
@@ -79,9 +79,10 @@ def test_parse_fails_with_malformed_yaml_file(mock_read):
     mock_read.return_value = 'foo: {{{'
     conf = None
     with pytest.raises(Exception) as execinfo:
-        conf = Config(FILE_NAME).parse()
+        conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is None
-    assert 'Configuration file "unit-test-config-file.yaml" is invalid.\nErrors found:\n' in str(execinfo.value)
+    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' in \
+        str(execinfo.value)
     assert 'while parsing' in str(execinfo.value)
 
 
@@ -93,9 +94,10 @@ def test_parse_fails_with_no_version_specified(mock_read):
     mock_read.return_value = config_contents
     conf = None
     with pytest.raises(Exception) as execinfo:
-        conf = Config(FILE_NAME).parse()
+        conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is None
-    assert 'Configuration file "unit-test-config-file.yaml" is invalid.\nErrors found:\n' in str(execinfo.value)
+    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' in \
+        str(execinfo.value)
     assert "'version' is a required property" in str(execinfo.value)
 
 
@@ -111,9 +113,10 @@ def test_validate_wrong_color(mock_read):
     mock_read.return_value = config_contents
     conf = None
     with pytest.raises(Exception) as execinfo:
-        conf = Config(FILE_NAME).parse()
+        conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is None
-    assert 'Configuration file "unit-test-config-file.yaml" is invalid.\nErrors found:\n' in str(execinfo.value)
+    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' in \
+        str(execinfo.value)
     assert "Color 'fancy-color' for service 'cat' is not allowed." in str(execinfo.value)
 
 
@@ -129,9 +132,10 @@ def test_validate_wrong_color_suggestion(mock_read):
     mock_read.return_value = config_contents
     conf = None
     with pytest.raises(Exception) as execinfo:
-        conf = Config(FILE_NAME).parse()
+        conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is None
-    assert 'Configuration file "unit-test-config-file.yaml" is invalid.\nErrors found:\n' in str(execinfo.value)
+    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' in \
+        str(execinfo.value)
     assert "Color 'grennnn' for service 'cat' is not allowed." in str(execinfo.value)
     assert "Maybe you meant: green" in str(execinfo.value)
 
@@ -145,7 +149,7 @@ def test_settings_property(mock_read):
         bar: asdf
     '''
     mock_read.return_value = config_contents
-    conf = Config(FILE_NAME).parse()
+    conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is not None
     assert conf.settings == {'bar': 'asdf', 'foo': 123}
 
@@ -161,7 +165,7 @@ def test_services_property(mock_read):
             run: java -jar /path/to/server.jar
     '''
     mock_read.return_value = config_contents
-    conf = Config(FILE_NAME).parse()
+    conf = Config(FILE_NAME, '/path/workdir').parse()
     assert len(conf.services) == 2
     assert 'web1' in list([s.name for s in conf.services])
     assert 'web2' in list([s.name for s in conf.services])

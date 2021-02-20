@@ -59,11 +59,11 @@ magenta
 
 def test_up_no_file():
     runner = CliRunner()
-    result = runner.invoke(cli.root, ['up'])
+    result = runner.invoke(cli.root, ['up', '-w', '/path/to/workdir'])
     assert result.exit_code == 1
-    assert result.output == '''Configuration file "local-compose.yaml" is invalid.
+    assert result.output == '''Configuration file "/path/to/workdir/local-compose.yaml" is invalid.
 Errors found:
-File is not found.
+File was not found.
 '''
 
 
