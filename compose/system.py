@@ -2,6 +2,10 @@ import os
 import errno
 import signal
 import subprocess
+import tempfile
+import shutil
+
+from .info import NAME
 
 
 class OS(object):
@@ -39,3 +43,21 @@ class OS(object):
         except OSError as e:
             if e.errno not in [errno.EPERM, errno.ESRCH]:
                 raise
+
+    @staticmethod
+    def maybe_create_program_tempdir():
+        '''
+        Possible create temp directory for this program.
+        We'll ue it to store PIDs, logs, etc.
+        '''
+        tmp = os.path.join(tempfile.gettempdir(), NAME)
+        os.makedirs(tmp)
+
+    @staticmethod
+    def get_program_tempdir():
+        '''
+        '''
+        return os.path.join(tempfile.gettempdir(), NAME)
+
+    def clean_program_tempdir(self):
+        shutil.rmtree(self.get_program_tempdir(), ignore_errors=True)
