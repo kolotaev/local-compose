@@ -44,8 +44,14 @@ class OS(object):
             if e.errno not in [errno.EPERM, errno.ESRCH]:
                 raise
 
+
+class Storage(object):
+    def __init__(self):
+        self._tempdir = self.maybe_create_tempdir()
+        self._pidfile = os.path.join(self.tempdir(), 'run.pid')
+
     @staticmethod
-    def maybe_create_program_tempdir():
+    def maybe_create_tempdir():
         '''
         Possible create temp directory for this program.
         We'll ue it to store PIDs, logs, etc.
@@ -54,10 +60,17 @@ class OS(object):
         os.makedirs(tmp)
 
     @staticmethod
-    def get_program_tempdir():
+    def tempdir():
         '''
         '''
         return os.path.join(tempfile.gettempdir(), NAME)
 
-    def clean_program_tempdir(self):
-        shutil.rmtree(self.get_program_tempdir(), ignore_errors=True)
+    def clean_tempdir(self):
+        shutil.rmtree(self.tempdir(), ignore_errors=True)
+
+    def pid_exists(self):
+        return os.path.isfile(self._pidfile)
+
+    def pid_create(self, pid):
+        with open(self._pidfile, 'w') as file:
+            file.write(pid)

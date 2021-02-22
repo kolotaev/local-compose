@@ -71,7 +71,6 @@ def up(file, workdir, detached, color):
     for s in conf.services:
         rt.register_service(s)
     if not detached:
-        # OS().maybe_create_program_tempdir()
         rt.start()
     else:
         new_args = [sys.executable] + [a for a in sys.argv if a not in UP_DETACHED_FLAGS]
@@ -89,3 +88,10 @@ def down(file, workdir, pid):
     '''
     OS().terminate_pid(pid=int(pid))
     click.echo('Stopped %s with pid = %s' % (NAME, pid))
+
+
+@root.command()
+def test():
+    '''
+    test services
+    '''
