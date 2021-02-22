@@ -4,6 +4,7 @@ import datetime
 
 from .messaging import EventBus, Line, Start, Restart, Stop, EmptyBus
 from .utils import now
+from .system import OS
 
 
 class Executor(object):
@@ -271,3 +272,16 @@ class Scheduler(object):
 
     def _kill(self):
         self._pool.stop_all(force=True)
+
+
+class Runner(object):
+    def __init__(self, scheduler):
+        self._scheduler = scheduler
+        self._os = OS()
+
+    def up(self):
+        self._scheduler.start()
+
+    def down(self):
+        pid = 890
+        OS().terminate_pid(pid=pid)
