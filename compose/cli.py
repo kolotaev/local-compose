@@ -6,8 +6,10 @@ import click
 from .configuration import Config
 from .runtime import Scheduler
 from .printing import Printer, SimplePrintWriter, ColoredPrintWriter
-from .info import VERSION, CONFIG_FILE_NAME
+from .info import VERSION, CONFIG_FILE_NAME, NAME
 
+
+UP_DETACHED_FLAGS = ['-d', '--detached']
 
 @click.group()
 def root():
@@ -49,8 +51,8 @@ def example():
 
 @root.command()
 @click.option('-f', '--file', show_default=True, default=CONFIG_FILE_NAME, help='Configuration file')
-@click.option('-w', '--workdir', show_default=True, default='.', help='Work dir')
-@click.option('--detached/--no-detached', default=False, help='Detached mode: Run services in the background')
+@click.option('-w', '--workdir', show_default=True, default='/your/current/working/dir', help='Work dir')
+@click.option(*UP_DETACHED_FLAGS, is_flag=True, show_default=True, help='Detached mode: Run services in the background')
 @click.option('--color/--no-color', default=True, show_default=True, help='Use colored output?')
 def up(file, workdir, detached, color):
     '''
@@ -70,7 +72,6 @@ def up(file, workdir, detached, color):
     if not detached:
         rt.start()
     else:
-        mod_args = sys.argv
-        mod_args.insert(0, 'python3')
-        bg = subprocess.Popen(mod_args[:-1], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        print('Started background process with pid = %d' % bg.pid)
+        new_args = [sys.executable] + [a for a in sys.argv if a not in UP_DETACHED_FLAGS]
+        bg = subprocess.Popen(new_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        click.echo('Started %s background with pid = %d' % (NAME, bg.pid))
