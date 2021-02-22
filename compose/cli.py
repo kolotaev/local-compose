@@ -6,6 +6,7 @@ import click
 from .configuration import Config
 from .runtime import Scheduler
 from .printing import Printer, SimplePrintWriter, ColoredPrintWriter
+from .system import OS
 from .info import VERSION, CONFIG_FILE_NAME, NAME
 
 
@@ -75,3 +76,15 @@ def up(file, workdir, detached, color):
         new_args = [sys.executable] + [a for a in sys.argv if a not in UP_DETACHED_FLAGS]
         bg = subprocess.Popen(new_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         click.echo('Started %s background with pid = %d' % (NAME, bg.pid))
+
+
+@root.command()
+@click.option('-f', '--file', show_default=True, default=CONFIG_FILE_NAME, help='Configuration file')
+@click.option('-w', '--workdir', show_default=True, default='/your/current/working/dir', help='Work dir')
+@click.option('-p', '--pid', show_default=True, help='PID')
+def down(file, workdir, pid):
+    '''
+    Stop services
+    '''
+    OS().terminate_pid(pid=int(pid))
+    click.echo('Stopped %s with pid = %s' % (NAME, pid))
