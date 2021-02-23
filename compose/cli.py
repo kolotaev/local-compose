@@ -7,7 +7,6 @@ import click
 from .configuration import Config
 from .runtime import Scheduler, Runner
 from .printing import Printer, SimplePrintWriter, ColoredPrintWriter
-from .system import OS
 from .info import VERSION, CONFIG_FILE_NAME, NAME
 
 
@@ -99,10 +98,3 @@ def down(file, workdir):
     runner = Runner(None)
     runner.down()
     click.echo('Stopped %s' % (NAME,))
-
-
-@root.command()
-def test():
-    '''
-    test services
-    '''
