@@ -4,6 +4,7 @@ import signal
 import subprocess
 import tempfile
 import shutil
+import hashlib
 
 from .info import NAME
 
@@ -46,19 +47,21 @@ class OS(object):
 
 
 class Storage(object):
-    def __init__(self, subpath=''):
-        # todo - hash real subpath
-        self._subpath = subpath
+    def __init__(self, workdir, filename):
+        box = hashlib.md5()
+        box.update(workdir.encode('utf-8') + filename.encode('utf-8'))
+        self._subpath = box.hexdigest()
         self._tempdir = self.maybe_create_tempdir()
         self._pidfile = os.path.join(self.tempdir(), 'run.pid')
 
     def maybe_create_tempdir(self):
         '''
         Possible create temp directory for this program.
-        We'll ue it to store PIDs, logs, etc.
+        We'll use it to store PIDs, logs, etc.
         '''
         name = os.path.join(tempfile.gettempdir(), NAME, self._subpath)
         try:
+            # todo - fix
             os.makedirs(name)
         except Exception:
             pass

@@ -8,6 +8,7 @@ from .configuration import Config
 from .runtime import Scheduler, Runner
 from .printing import Printer, SimplePrintWriter, ColoredPrintWriter
 from .info import VERSION, CONFIG_FILE_NAME, NAME
+from .system import Storage
 
 
 UP_DETACHED_FLAGS = ['-d', '--detached']
@@ -75,7 +76,7 @@ def up(file, workdir, detached, color):
     scheduler = Scheduler(printer=printer)
     for s in conf.services:
         scheduler.register_service(s)
-    runner = Runner(scheduler)
+    runner = Runner(Storage(workdir, file), scheduler)
     if not detached:
         try:
             runner.up()
@@ -95,6 +96,6 @@ def down(file, workdir):
     '''
     Stop services
     '''
-    runner = Runner(None)
+    runner = Runner(Storage(workdir, file), None)
     runner.down()
     click.echo('Stopped %s' % (NAME,))

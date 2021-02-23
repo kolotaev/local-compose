@@ -4,7 +4,7 @@ import datetime
 
 from .messaging import EventBus, Line, Start, Restart, Stop, EmptyBus
 from .utils import now
-from .system import OS, Storage
+from .system import OS
 
 
 class Executor(object):
@@ -277,9 +277,9 @@ class Runner(object):
     Runner of the whole runtime.
     Stores its state in files on host machine.
     '''
-    def __init__(self, scheduler):
+    def __init__(self, storage, scheduler):
         self._scheduler = scheduler
-        self._storage = Storage()
+        self._storage = storage
         self._os = OS()
 
     def up(self):
