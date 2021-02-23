@@ -271,6 +271,7 @@ class Scheduler(object):
         self._pool.stop_all()
 
     def _kill(self):
+        self._supervisor.stop()
         self._pool.stop_all(force=True)
 
 
