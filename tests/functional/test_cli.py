@@ -32,7 +32,7 @@ def test_version():
     runner = CliRunner()
     result = runner.invoke(cli.root, ['version'])
     assert result.exit_code == 0
-    assert result.output == '0.3.0\n'
+    assert result.output == '0.4.0\n'
 
 
 def test_example():

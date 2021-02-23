@@ -1,6 +1,6 @@
 NAME = 'local-compose'
 
-VERSION = '0.3.0'
+VERSION = '0.4.0'
 
 CONFIG_FILE_NAME = 'local-compose.yaml'
 
