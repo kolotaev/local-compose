@@ -57,7 +57,7 @@ def example():
 
 @root.command()
 @click.option('-f', '--file', show_default=True, default=CONFIG_FILE_NAME, help='Configuration file')
-@click.option('-w', '--workdir', show_default=True, default='/your/current/working/dir', help='Work dir')
+@click.option('-w', '--workdir', show_default=True, default='.', help='Work dir')
 @click.option(*UP_DETACHED_FLAGS, is_flag=True, show_default=True, help='Detached mode: Run services in the background')
 @click.option('--color/--no-color', default=True, show_default=True, help='Use colored output?')
 def up(file, workdir, detached, color):
@@ -90,7 +90,7 @@ def up(file, workdir, detached, color):
 
 @root.command()
 @click.option('-f', '--file', show_default=True, default=CONFIG_FILE_NAME, help='Configuration file')
-@click.option('-w', '--workdir', show_default=True, default='/your/current/working/dir', help='Work dir')
+@click.option('-w', '--workdir', show_default=True, default='.', help='Work dir')
 def down(file, workdir):
     '''
     Stop services

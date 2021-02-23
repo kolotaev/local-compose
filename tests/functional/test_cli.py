@@ -55,6 +55,20 @@ magenta
 ''' in result.output
 
 
+@pytest.mark.parametrize(
+    'command',
+    [
+        'up',
+        'down',
+    ]
+)
+def test_workdir_defaults(command):
+    runner = CliRunner()
+    result = runner.invoke(cli.root, [command, '--help'])
+    # We need it to be '.' so that later it's expanded into current
+    assert 'Work dir  [default: .]' in result.output
+
+
 def test_up_no_file():
     runner = CliRunner()
     result = runner.invoke(cli.root, ['up', '-w', '/path/to/workdir'])
