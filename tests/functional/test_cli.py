@@ -19,10 +19,8 @@ def test_banner():
     runner = CliRunner()
     result = runner.invoke(cli.root, [])
     assert result.exit_code == 0
-    assert r'''
-        __   __                __   __         __   __   __   ___
-  |    /  \ /  `  /\  |    __ /  ` /  \  |\/| |__) /  \ /__` |__
-  |___ \__/ \__, /~~\ |___    \__, \__/  |  | |    \__/ .__/ |___
+    # we temporarily omitted the banner itself
+    assert '''
 
   Tool for running and managing your services.
 ''' in result.output
