@@ -46,31 +46,39 @@ class OS(object):
 
 
 class Storage(object):
-    def __init__(self):
+    def __init__(self, subpath=''):
+        # todo - hash real subpath
+        self._subpath = subpath
         self._tempdir = self.maybe_create_tempdir()
         self._pidfile = os.path.join(self.tempdir(), 'run.pid')
 
-    @staticmethod
-    def maybe_create_tempdir():
+    def maybe_create_tempdir(self):
         '''
         Possible create temp directory for this program.
         We'll ue it to store PIDs, logs, etc.
         '''
-        tmp = os.path.join(tempfile.gettempdir(), NAME)
-        os.makedirs(tmp)
+        name = os.path.join(tempfile.gettempdir(), NAME, self._subpath)
+        try:
+            os.makedirs(name)
+        except Exception:
+            pass
+        return name
 
-    @staticmethod
-    def tempdir():
-        '''
-        '''
-        return os.path.join(tempfile.gettempdir(), NAME)
+    def tempdir(self):
+        return self._tempdir
 
     def clean_tempdir(self):
-        shutil.rmtree(self.tempdir(), ignore_errors=True)
+        shutil.rmtree(self._tempdir, ignore_errors=True)
 
     def pid_exists(self):
         return os.path.isfile(self._pidfile)
 
-    def pid_create(self, pid):
+    def pid_create(self):
+        own_pid = os.getpid()
         with open(self._pidfile, 'w') as file:
-            file.write(pid)
+            file.write(str(own_pid))
+
+    def pid_read(self):
+        with open(self._pidfile, 'r') as file:
+            data = file.read()
+            return int(data)

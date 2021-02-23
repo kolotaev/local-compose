@@ -72,7 +72,11 @@ def up(file, workdir, detached, color):
         scheduler.register_service(s)
     runner = Runner(scheduler)
     if not detached:
-        runner.up()
+        try:
+            runner.up()
+        except RuntimeError as e:
+            click.echo(e)
+            sys.exit(1)
     else:
         new_args = [sys.executable] + [a for a in sys.argv if a not in UP_DETACHED_FLAGS]
         bg = subprocess.Popen(new_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

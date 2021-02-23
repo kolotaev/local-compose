@@ -4,7 +4,7 @@ import datetime
 
 from .messaging import EventBus, Line, Start, Restart, Stop, EmptyBus
 from .utils import now
-from .system import OS
+from .system import OS, Storage
 
 
 class Executor(object):
@@ -210,14 +210,6 @@ class Scheduler(object):
         '''
         Start the main managing and execution logic of the Scheduler.
         '''
-        def _terminate(signum, _frame):
-            self.event_bus.send_system('%s received\n' % self.signals[signum]['name'])
-            self.returncode = self.signals[signum]['rc']
-            self.terminate()
-
-        signal.signal(signal.SIGTERM, _terminate)
-        signal.signal(signal.SIGINT, _terminate)
-
         self._pool.start_all()
         self._supervisor.launch()
 
@@ -270,19 +262,45 @@ class Scheduler(object):
         self._supervisor.stop()
         self._pool.stop_all()
 
+    def terminate_by_signal(self, signum):
+        self.event_bus.send_system('%s received\n' % self.signals[signum]['name'])
+        self.returncode = self.signals[signum]['rc']
+        self.terminate()
+
     def _kill(self):
         self._supervisor.stop()
         self._pool.stop_all(force=True)
 
 
 class Runner(object):
+    '''
+    Runner of the whole runtime.
+    Stores its state in files on host machine.
+    '''
     def __init__(self, scheduler):
         self._scheduler = scheduler
+        self._storage = Storage()
         self._os = OS()
 
     def up(self):
+        if self._storage.pid_exists():
+            raise RuntimeError('System has been already started')
+        def stop(signum, _frame):
+            self._scheduler.terminate_by_signal(signum)
+            # todo fix
+            self._cleanup()
+        signal.signal(signal.SIGTERM, stop)
+        signal.signal(signal.SIGINT, stop)
+        self._storage.maybe_create_tempdir()
+        self._storage.pid_create()
         self._scheduler.start()
+        self._cleanup()
 
     def down(self):
-        pid = 890
-        OS().terminate_pid(pid=pid)
+        if self._storage.pid_exists():
+            pid = self._storage.pid_read()
+            OS().terminate_pid(pid=pid)
+        self._cleanup()
+
+    def _cleanup(self):
+        self._storage.clean_tempdir()
