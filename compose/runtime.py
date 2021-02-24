@@ -283,12 +283,11 @@ class Runner(object):
         self._os = OS()
 
     def up(self):
-        if self._storage.pid_exists():
-            raise RuntimeError('System has been already started')
         def stop(signum, _frame):
             self._scheduler.terminate_by_signal(signum)
             # todo fix
             self._cleanup()
+        self.check_can_start()
         signal.signal(signal.SIGTERM, stop)
         signal.signal(signal.SIGINT, stop)
         self._storage.maybe_create_tempdir()
@@ -301,6 +300,10 @@ class Runner(object):
             pid = self._storage.pid_read()
             OS().terminate_pid(pid=pid)
         self._cleanup()
+
+    def check_can_start(self):
+        if self._storage.pid_exists():
+            raise RuntimeError('System has been already started')
 
     def _cleanup(self):
         self._storage.clean_tempdir()

@@ -212,10 +212,10 @@ def test_up_same_several_times():
     file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'web-daemon.yaml')
     try:
         result = runner.invoke(cli.root, ['up', '-f', file, '--detached'])
-        assert result.exit_code == 0
+        assert 'Started local-compose with pid = ' in result.output
+        import pdb; pdb.set_trace()
         result = runner.invoke(cli.root, ['up', '-f', file, '--detached'])
-        assert result.exit_code == 1
-        # assert result.output == 'oo'
+        assert result.output == 'oo'
     finally:
         result = runner.invoke(cli.root, ['down', '-f', file])
-        assert result.exit_code == 0
+        assert 'Stopped local-compose' in result.output
