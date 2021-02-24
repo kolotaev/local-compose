@@ -1,0 +1,10 @@
+version: '0.1'
+
+settings:
+  logging:
+    use-prefix: no
+
+services:
+  web1:
+    run: nc -l 9999
+    shell: yes

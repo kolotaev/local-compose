@@ -86,7 +86,7 @@ def up(file, workdir, detached, color):
     else:
         new_args = [sys.executable] + [a for a in sys.argv if a not in UP_DETACHED_FLAGS]
         bg = subprocess.Popen(new_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        click.echo('Started %s background with pid = %d' % (NAME, bg.pid))
+        click.echo('Started %s with pid = %d' % (NAME, bg.pid))
 
 
 @root.command()

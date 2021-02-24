@@ -4,7 +4,7 @@ import datetime
 
 from .messaging import EventBus, Line, Start, Restart, Stop, EmptyBus
 from .utils import now
-from .system import OS
+from .system import OS, Storage
 
 
 class Executor(object):

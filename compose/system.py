@@ -49,26 +49,21 @@ class OS(object):
 class Storage(object):
     def __init__(self, workdir, filename):
         box = hashlib.md5()
+        # todo - fix trailing slashes
         box.update(workdir.encode('utf-8') + filename.encode('utf-8'))
-        self._subpath = box.hexdigest()
-        self._tempdir = self.maybe_create_tempdir()
-        self._pidfile = os.path.join(self.tempdir(), 'run.pid')
+        self._tempdir = os.path.join(tempfile.gettempdir(), NAME, box.hexdigest())
+        self._pidfile = os.path.join(self._tempdir, 'run.pid')
 
     def maybe_create_tempdir(self):
         '''
         Possible create temp directory for this program.
         We'll use it to store PIDs, logs, etc.
         '''
-        name = os.path.join(tempfile.gettempdir(), NAME, self._subpath)
         try:
             # todo - fix
-            os.makedirs(name)
+            os.makedirs(self._tempdir)
         except Exception:
             pass
-        return name
-
-    def tempdir(self):
-        return self._tempdir
 
     def clean_tempdir(self):
         shutil.rmtree(self._tempdir, ignore_errors=True)

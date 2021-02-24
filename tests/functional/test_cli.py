@@ -191,3 +191,31 @@ my-job1 started (pid=22580)
 Hello world
 my-job1 stopped (rc=1)
 '''
+
+
+def test_up_down_detached():
+    runner = CliRunner()
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'web-daemon.yaml')
+    try:
+        result = runner.invoke(cli.root, ['up', '-f', file, '--detached'])
+        assert result.exit_code == 0
+        out = re.sub(r'pid = \d+', 'pid = 22580', result.output)
+        assert out == 'Started local-compose with pid = 22580\n'
+    finally:
+        result = runner.invoke(cli.root, ['down', '-f', file])
+        assert result.exit_code == 0
+        assert result.output == 'Stopped local-compose\n'
+
+
+def test_up_same_several_times():
+    runner = CliRunner()
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'web-daemon.yaml')
+    try:
+        result = runner.invoke(cli.root, ['up', '-f', file, '--detached'])
+        assert result.exit_code == 0
+        result = runner.invoke(cli.root, ['up', '-f', file, '--detached'])
+        assert result.exit_code == 1
+        # assert result.output == 'oo'
+    finally:
+        result = runner.invoke(cli.root, ['down', '-f', file])
+        assert result.exit_code == 0
