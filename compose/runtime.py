@@ -303,7 +303,7 @@ class Runner(object):
 
     def check_can_start(self):
         if self._storage.pid_exists():
-            raise RuntimeError('System has been already started')
+            raise RuntimeError('System is already running')
 
     def _cleanup(self):
         self._storage.clean_tempdir()
