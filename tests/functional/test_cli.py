@@ -1,5 +1,6 @@
 import os
 import re
+import time
 
 import pytest
 from click.testing import CliRunner
@@ -298,6 +299,8 @@ my-defaults stopped (rc=0)
 
 
 def test_up_down_when_the_workdir_is_specified_and_filename_given():
+    # we need to add it for slow CI runs where cleanup doesn't catchup
+    time.sleep(10)
     runner = CliRunner()
     fixtures_work_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures')
     result = runner.invoke(cli.root, ['up', '-w', fixtures_work_dir, '-f', 'no-prefix.yaml'])
