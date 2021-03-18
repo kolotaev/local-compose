@@ -39,6 +39,37 @@ def test_services_all_items_are_passed(mock_read):
     assert not web1.in_shell
 
 
+@mock.patch.object(Config, 'read')
+def test_env_values_are_converted_to_string_before_run(mock_read):
+    config_contents = '''
+    version: '1.0'
+    services:
+        web1:
+            run: java -jar /path/to/server.jar
+            env:
+                FOO: 123
+                BAR: asdf
+                BAR_ONE: "asdf"
+                BAR_TWO: >
+                  i am a long text
+                BAZ: 77.95
+                # kinda silly, but anyway
+                QUIX:
+                  - g
+                  - n
+    '''
+    mock_read.return_value = config_contents
+    conf = Config(FILE_NAME).parse()
+    web1 = conf.services[0]
+    assert len(conf.services) == 1
+    assert web1.env['FOO'] == '123'
+    assert web1.env['BAR'] == 'asdf'
+    assert web1.env['BAR_ONE'] == 'asdf'
+    assert web1.env['BAR_TWO'] == 'i am a long text\n'
+    assert web1.env['BAZ'] == '77.95'
+    assert web1.env['QUIX'] == "['g', 'n']"
+
+
 @pytest.mark.skip
 @mock.patch.object(Config, 'read')
 def test_ready_probe(mock_read):
