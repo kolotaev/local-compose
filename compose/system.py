@@ -46,12 +46,25 @@ class OS(object):
                 raise
 
 
-class Storage(object):
+class  Storage(object):
+    '''
+    Manages data related to compose invocation:
+    - Creates/removes a temporary directory
+    - Creates/removes file with the invocation's PID
+    - Related data retrieval
+    Each Storage object is bound to a specific config file name (and thus invocation).
+    '''
     def __init__(self, config_filepath):
         box = hashlib.md5()
         box.update(config_filepath.encode('utf-8'))
         self._tempdir = os.path.join(tempfile.gettempdir(), NAME, box.hexdigest())
         self._pidfile = os.path.join(self._tempdir, 'run.pid')
+
+    def get_tempdir_name(self):
+        '''
+        Get name of the tempdir this storage is bound to.
+        '''
+        return self._tempdir
 
     def maybe_create_tempdir(self):
         '''
@@ -61,21 +74,33 @@ class Storage(object):
         try:
             # todo - fix
             os.makedirs(self._tempdir)
-        except Exception:
+        except FileExistsError:
             pass
 
     def clean_tempdir(self):
+        '''
+        Delete a temp directory for this compose run.
+        '''
         shutil.rmtree(self._tempdir, ignore_errors=True)
 
     def pid_exists(self):
+        '''
+        Does file with PID exist?
+        '''
         return os.path.isfile(self._pidfile)
 
     def pid_create(self):
+        '''
+        Create file with the invocation's PID.
+        '''
         own_pid = os.getpid()
         with open(self._pidfile, 'w') as file:
             file.write(str(own_pid))
 
     def pid_read(self):
+        '''
+        Read invocation's PID from file.
+        '''
         with open(self._pidfile, 'r') as file:
             data = file.read()
             return int(data)
