@@ -1,0 +1,7 @@
+version: '0.1'
+
+services:
+  web1:
+    run: ruby ser1.rb
+    cwd: examples
+    color: blue
