@@ -7,29 +7,20 @@ settings:
 services:
   web1:
     run: ruby ser1.rb
-    # todo - fix -> this fails:
-    # cd local-compose/examples && local-compose up
     cwd: examples
-    color: green
+    color: blue
   web2_my_ruby_code:
     run: ruby ser2.rb
     cwd: examples
-    color: cyan
+    color: green
   cat:
     run: head /etc/hosts
     color: yellow_2
   folly:
     run: echo "Gogo" && exit 1
-    color: magenta
+    color: red_1
     shell: yes
     readiness:
       retry:
         attempts: 2
         wait: 1
-
-# jobs:
-#   cat:
-#     run: cat /etc/hosts
-#     color: blue
-#   echo:
-#     run: echo 'OK'

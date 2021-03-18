@@ -5,6 +5,6 @@ settings:
     use-prefix: no
 
 services:
-  web1:
-    run: echo "I'm started" && sleep 20 && echo "I'm finished"
+  my-defaults:
+    run: sleep 0.5 && echo "I am a default name"
     shell: yes

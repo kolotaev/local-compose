@@ -234,3 +234,81 @@ def test_up_several_times_different_config_files_is_allowed():
     result = runner.invoke(cli.root, ['up', '-f', file2])
     assert result.exit_code == 0
     assert 'Started local-compose with pid = ' in result.output
+
+
+def test_up_down_in_the_workdir_with_default_filename():
+    runner = CliRunner()
+    current_work_dir = os.getcwd()
+    fixtures_work_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures')
+    try:
+        os.chdir(fixtures_work_dir)
+        result = runner.invoke(cli.root, ['up'])
+        assert result.exit_code == 0
+        out = re.sub(r'pid=\d+', 'pid=22580', result.output)
+        assert out == \
+'''starting service my-defaults
+my-defaults started (pid=22580)
+I am a default name
+my-defaults stopped (rc=0)
+'''
+        result = runner.invoke(cli.root, ['down'])
+        assert result.exit_code == 0
+        assert result.output == 'Stopped local-compose\n'
+    finally:
+        os.chdir(current_work_dir)
+
+
+def test_up_down_in_the_workdir_with_specific_filename():
+    runner = CliRunner()
+    current_work_dir = os.getcwd()
+    fixtures_work_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures')
+    try:
+        os.chdir(fixtures_work_dir)
+        result = runner.invoke(cli.root, ['up', '-f', 'no-prefix.yaml'])
+        assert result.exit_code == 0
+        out = re.sub(r'pid=\d+', 'pid=22580', result.output)
+        assert out == \
+'''starting service my-job1
+my-job1 started (pid=22580)
+Hello world
+my-job1 stopped (rc=0)
+'''
+        result = runner.invoke(cli.root, ['down', '-f', 'no-prefix.yaml'])
+        assert result.exit_code == 0
+        assert result.output == 'Stopped local-compose\n'
+    finally:
+        os.chdir(current_work_dir)
+
+
+def test_up_down_when_the_workdir_is_specified_and_no_filename_given():
+    runner = CliRunner()
+    fixtures_work_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures')
+    result = runner.invoke(cli.root, ['up', '-w', fixtures_work_dir])
+    assert result.exit_code == 0
+    out = re.sub(r'pid=\d+', 'pid=22580', result.output)
+    assert out == \
+'''starting service my-defaults
+my-defaults started (pid=22580)
+I am a default name
+my-defaults stopped (rc=0)
+'''
+    result = runner.invoke(cli.root, ['down', '-w', fixtures_work_dir])
+    assert result.exit_code == 0
+    assert result.output == 'Stopped local-compose\n'
+
+
+def test_up_down_when_the_workdir_is_specified_and_filename_given():
+    runner = CliRunner()
+    fixtures_work_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures')
+    result = runner.invoke(cli.root, ['up', '-w', fixtures_work_dir, '-f', 'no-prefix.yaml'])
+    assert result.exit_code == 0
+    out = re.sub(r'pid=\d+', 'pid=22580', result.output)
+    assert out == \
+'''starting service my-job1
+my-job1 started (pid=22580)
+Hello world
+my-job1 stopped (rc=0)
+'''
+    result = runner.invoke(cli.root, ['down', '-w', fixtures_work_dir, '-f', 'no-prefix.yaml'])
+    assert result.exit_code == 0
+    assert result.output == 'Stopped local-compose\n'
