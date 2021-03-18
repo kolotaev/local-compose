@@ -55,7 +55,7 @@ class Storage(object):
 
     def maybe_create_tempdir(self):
         '''
-        Possible create temp directory for this program.
+        Possibly create a temp directory for this compose run.
         We'll use it to store PIDs, logs, etc.
         '''
         try:
