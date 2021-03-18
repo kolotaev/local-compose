@@ -20,8 +20,7 @@ class Config(object):
     def __init__(self, filename, workdir=None):
         if workdir is None:
             workdir = '.'
-        self._workdir = workdir
-        self._config_filename = filename
+        self._full_config_file_path = os.path.realpath(os.path.expanduser(os.path.join(workdir, filename)))
         self._conf = None
 
     @staticmethod
@@ -51,7 +50,8 @@ class Config(object):
             self.validate(data)
             return self
         except Exception as e:
-            raise ConfigurationError('Configuration file "%s" is invalid.\nErrors found:\n%s' % (self._filename(), e))
+            raise ConfigurationError('Configuration file "%s" is invalid.\nErrors found:\n%s' % \
+                 (self.config_file_path, e))
 
     def try_parse(self):
         '''
@@ -76,7 +76,7 @@ class Config(object):
         '''
         Read configuration from file.
         '''
-        conf_file = self._filename()
+        conf_file = self.config_file_path
         if not os.path.isfile(conf_file):
             raise ConfigurationError('File was not found.')
         with open(conf_file) as file:
@@ -131,6 +131,13 @@ class Config(object):
         '''
         return self._conf.get('version')
 
+    @property
+    def config_file_path(self):
+        '''
+        Get full path to the current config file.
+        '''
+        return self._full_config_file_path
+
     def _validate_services(self):
         '''
         Validate each service config properties
@@ -145,9 +152,6 @@ class Config(object):
                 if suggested_colors:
                     msg += '\nMaybe you meant: %s' % suggested_colors[0]
                 raise ConfigurationError(msg)
-
-    def _filename(self):
-         return os.path.realpath(os.path.expanduser(os.path.join(self._workdir, self._config_filename)))
 
 
 class ConfigurationError(ValueError):

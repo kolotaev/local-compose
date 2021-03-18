@@ -47,10 +47,9 @@ class OS(object):
 
 
 class Storage(object):
-    def __init__(self, workdir, filename):
+    def __init__(self, config_filepath):
         box = hashlib.md5()
-        # todo - fix trailing slashes
-        box.update(workdir.encode('utf-8') + filename.encode('utf-8'))
+        box.update(config_filepath.encode('utf-8'))
         self._tempdir = os.path.join(tempfile.gettempdir(), NAME, box.hexdigest())
         self._pidfile = os.path.join(self._tempdir, 'run.pid')
 

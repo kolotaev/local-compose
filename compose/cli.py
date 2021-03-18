@@ -76,7 +76,7 @@ def up(file, workdir, detached, color):
     scheduler = Scheduler(printer=printer)
     for s in conf.services:
         scheduler.register_service(s)
-    runner = Runner(Storage(workdir, file), scheduler)
+    runner = Runner(Storage(conf.config_file_path), scheduler)
     try:
         runner.check_can_start()
     except RuntimeError as e:
@@ -97,6 +97,7 @@ def down(file, workdir):
     '''
     Stop services
     '''
-    runner = Runner(Storage(workdir, file), None)
+    conf = Config(file, workdir).try_parse()
+    runner = Runner(Storage(conf.config_file_path), None)
     runner.down()
     click.echo('Stopped %s' % (NAME,))
