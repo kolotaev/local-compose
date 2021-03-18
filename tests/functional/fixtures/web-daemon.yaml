@@ -6,5 +6,5 @@ settings:
 
 services:
   web1:
-    run: nc -l 9999
+    run: echo "I'm started" && sleep 200000 && echo "I'm finished"
     shell: yes
