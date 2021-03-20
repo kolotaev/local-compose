@@ -89,15 +89,15 @@ class Config(object):
         '''
         services = []
         for name, srv_conf in self._conf.get('services', {}).items():
-            # if srv.get('cwd'):
-            #     cwd = os.path.join(os.getcwd(), srv.get('cwd'))
-            # else:
-            #     cwd = None
             params = {}
             if 'env' in srv_conf:
                 params['env'] = srv_conf['env']
+            # todo - rename to wd?
             if 'cwd' in srv_conf:
-                params['cwd'] = srv_conf['cwd']
+                cwd = self.compute_work_dir(srv_conf['cwd'])
+                # if not os.path.exists(cwd):
+                #     raise Exception('Directory "%s" for service "%s" not found' % (cwd, name))
+                params['cwd'] = cwd
             if 'silent' in srv_conf:
                 params['quiet'] = srv_conf['silent']
             if 'color' in srv_conf:
@@ -152,6 +152,16 @@ class Config(object):
                 if suggested_colors:
                     msg += '\nMaybe you meant: %s' % suggested_colors[0]
                 raise ConfigurationError(msg)
+
+    def compute_work_dir(self, work_dir):
+        '''
+        Compute work directory (cwd) for service based on config property and this run current directory.
+        '''
+        work_dir = os.path.expanduser(os.path.normpath(work_dir))
+        if os.path.isabs(work_dir):
+            return work_dir
+        current_dir_of_run = os.path.dirname(self.config_file_path)
+        return os.path.realpath(os.path.join(current_dir_of_run, work_dir))
 
 
 class ConfigurationError(ValueError):

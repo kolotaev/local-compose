@@ -1,8 +1,11 @@
+import os
+
 import pytest
 import mock
 
 from compose.configuration import Config
 from compose.service import Service
+from .helpers import TMP_DIR, set_current_dir_fixture
 
 
 FILE_NAME = 'unit-test-config-file.yaml'
@@ -171,3 +174,41 @@ def test_services_property(mock_read):
     assert 'web2' in list([s.name for s in conf.services])
     assert isinstance(conf.services[0], Service)
     assert isinstance(conf.services[1], Service)
+
+
+@mock.patch.object(Config, 'read')
+@pytest.mark.parametrize('cwd_in_config, run_in_dir, expected', [
+    ('cwd: /usr/bar/baz', TMP_DIR, '/usr/bar/baz'),
+    ('cwd: /usr/bar/baz', '/some/dir/with/config', '/usr/bar/baz'),
+
+    ('cwd: ' + TMP_DIR, TMP_DIR, TMP_DIR),
+    ('cwd: ' + TMP_DIR, '/some/dir/with/config', TMP_DIR),
+
+    ('', TMP_DIR, TMP_DIR),
+    ('', '/some/dir/with/config', TMP_DIR),
+
+    ('cwd: my/dir', TMP_DIR, TMP_DIR + '/my/dir'),
+    ('cwd: my/dir', '/some/dir/with/config', '/some/dir/with/config/my/dir'),
+
+    ('cwd: ./bar/baz', TMP_DIR, TMP_DIR + '/bar/baz'),
+    ('cwd: ./bar/baz', '/some/dir/with/config', '/some/dir/with/config/bar/baz'),
+
+    ('cwd: ./bar/../', TMP_DIR, TMP_DIR),
+    ('cwd: ./bar/../', '/some/dir/with/config', '/some/dir/with/config'),
+
+    ('cwd: ~/my/dir', TMP_DIR, os.path.expanduser('~/my/dir')),
+    ('cwd: ~/my/dir', '/some/dir/with/config', os.path.expanduser('~/my/dir')),
+])
+def test_services_work_dir(mock_read, set_current_dir_fixture, cwd_in_config, run_in_dir,expected):
+    assert os.getcwd() == TMP_DIR
+    config = '''
+    version: '1.0'
+    services:
+      web:
+        run: ls .
+        %s
+    ''' % cwd_in_config
+    mock_read.return_value = config
+    conf = Config(filename=FILE_NAME, workdir=run_in_dir).parse()
+    srv = conf.services[0]
+    assert srv.cwd == expected

@@ -17,7 +17,10 @@ class Service(object):
         self.color = color
         self.quiet = quiet
         self.env = self._stringify_env(env)
-        self.cwd = self._compute_work_dir(cwd)
+        if cwd is None:
+            # todo - move to config
+            cwd = os.getcwd()
+        self.cwd = cwd
         self.in_shell = shell
         self._os = OS()
         self.pid = None
@@ -51,12 +54,6 @@ class Service(object):
             self._os.kill_pid(self.pid)
         else:
             self._os.terminate_pid(self.pid)
-
-    @staticmethod
-    def _compute_work_dir(work_dir):
-        if work_dir is None:
-            return os.getcwd()
-        return os.path.realpath(os.path.expanduser(work_dir))
 
     @staticmethod
     def _stringify_env(env):
