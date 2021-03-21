@@ -90,8 +90,7 @@ class Config(object):
         services = []
         for name, srv_conf in self._conf.get('services', {}).items():
             params = {}
-            if 'env' in srv_conf:
-                params['env'] = srv_conf['env']
+            params['env'] = self._merge_env_values(srv_conf.get('env', {}), srv_conf.get('envFromMap', []))
             # todo - rename to wd?
             if 'cwd' in srv_conf:
                 params['cwd'] = self._compute_work_dir(srv_conf['cwd'])
@@ -138,7 +137,7 @@ class Config(object):
     @property
     def env_maps(self):
         '''
-        Get full path to the current config file.
+        Get environment variables maps.
         '''
         return self._conf.get('envMaps', {})
 
@@ -170,6 +169,18 @@ class Config(object):
             return work_dir
         current_dir_of_run = os.path.dirname(self.config_file_path)
         return os.path.realpath(os.path.join(current_dir_of_run, work_dir))
+
+    def _merge_env_values(self, env_from_env, lookup_env_maps):
+        '''
+        Merge env values from all sources.
+        '''
+        all_maps = self.env_maps
+        final = env_from_env
+        for m in lookup_env_maps:
+            if m not in all_maps:
+                raise ConfigurationError('EnvMap "%s" is unknown and is missing in the envMaps' % m)
+            final.update(all_maps[m])
+        return final
 
 
 class ConfigurationError(ValueError):

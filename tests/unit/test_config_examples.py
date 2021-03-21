@@ -84,3 +84,34 @@ def test_ready_probe(mock_read):
     mock_read.return_value = config_contents
     conf = Config(FILE_NAME).parse()
     assert len(conf.services) == 1
+
+
+@mock.patch.object(Config, 'read')
+def test_env_from_env_maps(mock_read):
+    config_contents = '''
+    version: '1.0'
+    envMaps:
+      dbs:
+        DSN: mysql://some_dsn
+      webs:
+        SECRET: verysecret
+        USER: jerry
+    services:
+      web1:
+        run: java -jar /path/to/server.jar
+        env:
+          BAR: asdf
+          SECRET: this-will-be-overridden
+        envFromMap:
+          - dbs
+          - webs
+    '''
+    mock_read.return_value = config_contents
+    conf = Config(FILE_NAME).parse()
+    assert len(conf.services) == 1
+    assert conf.services[0].env == {
+        'DSN': 'mysql://some_dsn',
+        'SECRET': 'verysecret',
+        'BAR': 'asdf',
+        'USER': 'jerry',
+    }
