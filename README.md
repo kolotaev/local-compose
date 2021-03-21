@@ -35,7 +35,7 @@ python local-compose-${RELEASE_VERSION}/setup.py install
 - [x] Configurable restarts for failed services/jobs
 - [ ] Log output configuration
 - [ ] Watch file changes a.k.a. dev-mode
-- [ ] Running `up` command with file / current working directory / defaults
+- [x] Running `up` command with file / current working directory / defaults
 - [ ] Configurable Cron restarts for services/jobs
 - [x] Detached mode
 - [ ] More flexible ENV variables support
