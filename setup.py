@@ -32,6 +32,7 @@ if __name__ == '__main__':
             'PyYAML~=5.3',
             'click~=7.0',
             'colored~=1.4',
+            'python-dotenv~=0.15',
             # transitive dependencies fixes:
             'pyrsistent==0.16.0', # see https://github.com/Julian/jsonschema/issues/741
             "importlib_metadata~=2.0;python_version<'3.8'", # to fix issue with importlib_metadata>=3 on py2.7

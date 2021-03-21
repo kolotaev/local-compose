@@ -6,6 +6,7 @@ import difflib
 
 import yaml
 import jsonschema
+from dotenv import load_dotenv
 
 from .schema import JSON_SCHEMA
 from .service import Service
@@ -90,7 +91,7 @@ class Config(object):
         services = []
         for name, srv_conf in self._conf.get('services', {}).items():
             params = {}
-            params['env'] = self._merge_env_values(srv_conf.get('env', {}), srv_conf.get('envFromMap', []))
+            params['env'] = self._merge_env_values(srv_conf)
             # todo - rename to wd?
             if 'cwd' in srv_conf:
                 params['cwd'] = self._compute_work_dir(srv_conf['cwd'])
@@ -170,20 +171,35 @@ class Config(object):
         current_dir_of_run = os.path.dirname(self.config_file_path)
         return os.path.realpath(os.path.join(current_dir_of_run, work_dir))
 
-    def _merge_env_values(self, env_from_env, lookup_env_maps):
+    def _merge_env_values(self, srv_conf):
         '''
         Merge env values from all sources.
         Precedence (last wins):
-        - EnvMaps (in the order of declaration in envFromMap)
+        - envFromMap (in the order of declaration in envFromMap)
         - env property in the service
+        - envFromDotenv from the .env file in the service's working directory
+        - envFromOS from the OS current session
         '''
+        env_from_env = srv_conf.get('env', {})
+        lookup_env_maps = srv_conf.get('envFromMap', [])
+        from_dot_env = srv_conf.get('envFromDotenv', False)
+        from_os = srv_conf.get('envFromOS', False)
         all_maps = self.env_maps
         final = {}
+        # envFromMap goes first
         for m in lookup_env_maps:
             if m not in all_maps:
                 raise ConfigurationError('EnvMap "%s" is unknown and is missing in the envMaps' % m)
             final.update(all_maps[m])
+        # env goes next
         final.update(env_from_env)
+        # .env files from the current dir goes next
+        if from_dot_env:
+            cwd = self._compute_work_dir(srv_conf.get('envFromDotenv', False))
+            final.update(load_dotenv(cwd))
+        # OS current session env variables go next
+        if from_os:
+            final.update(os.environ)
         return final
 
 

@@ -114,6 +114,14 @@ JSON_SCHEMA = {
                     'description': 'Names of the maps with the environment variables for command run',
                     'type': 'array',
                 },
+                'envFromDotenv': {
+                    'description': 'Use env variables from the .env file located in the current workdir of the service',
+                    'type': 'boolean',
+                },
+                'envFromOS': {
+                    'description': 'Use env variables from the current OS session',
+                    'type': 'boolean',
+                },
                 'watch': {
                     'description': 'Watch files by patterns and if anything changes re-run build and run',
                     'type': 'array',
