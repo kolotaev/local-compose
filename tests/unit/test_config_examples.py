@@ -15,7 +15,7 @@ def test_services_all_items_are_passed(mock_read):
         web1:
             run: java -jar /path/to/server.jar
             color: red
-            cwd: /path/to/your/dir
+            cwd: /usr/bin
             env:
                 FOO: 123
                 BAR: asdf
@@ -29,7 +29,7 @@ def test_services_all_items_are_passed(mock_read):
     assert web1.name == 'web1'
     assert web1.cmd == 'java -jar /path/to/server.jar'
     assert web1.color == 'red'
-    assert web1.cwd == '/path/to/your/dir'
+    assert web1.cwd == '/usr/bin'
     assert 'FOO' in web1.env
     # check that everything is converted into string for valid shell ENV
     assert web1.env['FOO'] == '123'

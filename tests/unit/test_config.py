@@ -3,7 +3,7 @@ import os
 import pytest
 import mock
 
-from compose.configuration import Config
+from compose.configuration import Config, ConfigurationError
 from compose.service import Service
 from .helpers import TMP_DIR, set_current_dir_fixture
 
@@ -178,28 +178,28 @@ def test_services_property(mock_read):
 
 @mock.patch.object(Config, 'read')
 @pytest.mark.parametrize('cwd_in_config, run_in_dir, expected', [
-    ('cwd: /usr/bar/baz', TMP_DIR, '/usr/bar/baz'),
-    ('cwd: /usr/bar/baz', '/some/dir/with/config', '/usr/bar/baz'),
+    ('cwd: /usr/bin', TMP_DIR, '/usr/bin'),
+    ('cwd: /usr/bin', '/var/log', '/usr/bin'),
 
     ('cwd: ' + TMP_DIR, TMP_DIR, TMP_DIR),
-    ('cwd: ' + TMP_DIR, '/some/dir/with/config', TMP_DIR),
+    ('cwd: ' + TMP_DIR, '/var/log', TMP_DIR),
 
     ('', TMP_DIR, TMP_DIR),
-    ('', '/some/dir/with/config', TMP_DIR),
+    ('', '/var/log', TMP_DIR),
 
-    ('cwd: my/dir', TMP_DIR, TMP_DIR + '/my/dir'),
-    ('cwd: my/dir', '/some/dir/with/config', '/some/dir/with/config/my/dir'),
+    ('cwd: bin', TMP_DIR, TMP_DIR + '/bin'),
+    ('cwd: bin', '/usr', '/usr/bin'),
 
-    ('cwd: ./bar/baz', TMP_DIR, TMP_DIR + '/bar/baz'),
-    ('cwd: ./bar/baz', '/some/dir/with/config', '/some/dir/with/config/bar/baz'),
+    ('cwd: ./bin', TMP_DIR, TMP_DIR + '/bin'),
+    ('cwd: ./bin', '/usr', '/usr/bin'),
 
-    ('cwd: ./bar/../', TMP_DIR, TMP_DIR),
-    ('cwd: ./bar/../', '/some/dir/with/config', '/some/dir/with/config'),
+    ('cwd: ./bin/../', TMP_DIR, TMP_DIR),
+    ('cwd: ./bin/../', '/usr', '/usr'),
 
-    ('cwd: ~/my/dir', TMP_DIR, os.path.expanduser('~/my/dir')),
-    ('cwd: ~/my/dir', '/some/dir/with/config', os.path.expanduser('~/my/dir')),
+    ('cwd: ~/', TMP_DIR, os.path.expanduser('~')),
+    ('cwd: ~/', '/var', os.path.expanduser('~')),
 ])
-def test_services_work_dir(mock_read, set_current_dir_fixture, cwd_in_config, run_in_dir,expected):
+def test_services_work_dir(mock_read, set_current_dir_fixture, cwd_in_config, run_in_dir, expected):
     assert os.getcwd() == TMP_DIR
     config = '''
     version: '1.0'
@@ -212,3 +212,34 @@ def test_services_work_dir(mock_read, set_current_dir_fixture, cwd_in_config, ru
     conf = Config(filename=FILE_NAME, workdir=run_in_dir).parse()
     srv = conf.services[0]
     assert srv.cwd == expected
+
+
+@mock.patch.object(Config, 'read')
+def test_services_validate_cwd_inexistent(mock_read):
+    config = '''
+    version: '1.0'
+    services:
+      web:
+        run: ls .
+        cwd: /some/unknown/path
+    '''
+    mock_read.return_value = config
+    with pytest.raises(ConfigurationError) as execinfo:
+        conf = Config(FILE_NAME, '/path/workdir').parse()
+        # conf.services
+    assert str(execinfo.value) == \
+        'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' + \
+            'Directory "/some/unknown/path" for service "web" not found'
+
+
+@mock.patch.object(Config, 'read')
+def test_services_validate_cwd_not_specified(mock_read):
+    config = '''
+    version: '1.0'
+    services:
+      web:
+        run: ls .
+    '''
+    mock_read.return_value = config
+    conf = Config(FILE_NAME, '/path/workdir').parse()
+    assert len(conf.services) == 1

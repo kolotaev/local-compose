@@ -94,10 +94,7 @@ class Config(object):
                 params['env'] = srv_conf['env']
             # todo - rename to wd?
             if 'cwd' in srv_conf:
-                cwd = self.compute_work_dir(srv_conf['cwd'])
-                # if not os.path.exists(cwd):
-                #     raise Exception('Directory "%s" for service "%s" not found' % (cwd, name))
-                params['cwd'] = cwd
+                params['cwd'] = self._compute_work_dir(srv_conf['cwd'])
             if 'silent' in srv_conf:
                 params['quiet'] = srv_conf['silent']
             if 'color' in srv_conf:
@@ -144,16 +141,20 @@ class Config(object):
         '''
         allowed_colors = self.available_colors()
         for srv in self.services:
-            if srv.color is None:
-                continue
-            if srv.color not in allowed_colors:
-                suggested_colors = difflib.get_close_matches(srv.color, allowed_colors, n=1)
-                msg = "Color '%s' for service '%s' is not allowed." % (srv.color, srv.name)
-                if suggested_colors:
-                    msg += '\nMaybe you meant: %s' % suggested_colors[0]
-                raise ConfigurationError(msg)
+            # color
+            if srv.color is not None:
+                if srv.color not in allowed_colors:
+                    suggested_colors = difflib.get_close_matches(srv.color, allowed_colors, n=1)
+                    msg = "Color '%s' for service '%s' is not allowed." % (srv.color, srv.name)
+                    if suggested_colors:
+                        msg += '\nMaybe you meant: %s' % suggested_colors[0]
+                    raise ConfigurationError(msg)
+            # cwd
+            if srv.cwd is not None:
+                if not os.path.exists(srv.cwd):
+                    raise ConfigurationError('Directory "%s" for service "%s" not found' % (srv.cwd, srv.name))
 
-    def compute_work_dir(self, work_dir):
+    def _compute_work_dir(self, work_dir):
         '''
         Compute work directory (cwd) for service based on config property and this run current directory.
         '''
