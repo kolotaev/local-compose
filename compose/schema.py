@@ -22,6 +22,9 @@ JSON_SCHEMA = {
                 'logging': {
                     '$ref': '#/definitions/logging',
                 },
+                'envMaps': {
+                    'type': 'object'
+                },
             },
         },
         'services': {
@@ -67,6 +70,16 @@ JSON_SCHEMA = {
                 },
             },
         },
+        'envValuesGroup': {
+            'description': 'Environment variables and their corresponding values',
+            'type': 'object',
+            'patternProperties': {
+                '.+': {
+                    'type': ['string', 'number', 'null']
+                },
+            },
+            'additionalProperties': False,
+        },
         'service': {
             'type': 'object',
             'required': ['run'],
@@ -89,13 +102,7 @@ JSON_SCHEMA = {
                 },
                 'environment': {
                     'description': 'Environment variables for command run',
-                    'type': 'object',
-                    'patternProperties': {
-                        '.+': {
-                            'type': ['string', 'number', 'null']
-                        },
-                    },
-                    'additionalProperties': False,
+                    '$ref': '#/definitions/envValuesGroup',
                 },
                 'watch': {
                     'description': 'Watch files by patterns and if anything changes re-run build and run',
