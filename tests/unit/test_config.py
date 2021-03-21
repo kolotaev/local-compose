@@ -264,3 +264,22 @@ def test_bad_env(mock_read):
     assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' in ex_msg
     assert 'On instance' in ex_msg
     assert "['the', 'array']" in ex_msg
+
+
+@mock.patch.object(Config, 'read')
+def test_env_from_missing_map(mock_read):
+    config = '''
+    version: '1.0'
+    services:
+      web:
+        run: cat /etc/hosts
+        envFromMap:
+          - dbs
+          - webs
+    '''
+    mock_read.return_value = config
+    with pytest.raises(ConfigurationError) as execinfo:
+        Config(FILE_NAME, '/path/workdir').parse()
+    ex_msg = str(execinfo.value)
+    assert ex_msg == 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' + \
+        'EnvMap "dbs" is unknown and is missing in the envMaps'
