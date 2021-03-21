@@ -36,9 +36,9 @@ python local-compose-${RELEASE_VERSION}/setup.py install
 - [ ] Log output configuration
 - [ ] Watch file changes a.k.a. dev-mode
 - [x] Running `up` command with file / current working directory / defaults
-- [ ] Configurable Cron restarts for services/jobs
 - [x] Detached mode
-- [ ] More flexible ENV variables support
+- [x] More flexible ENV variables support
 - [ ] Env-files support
-- [ ] Config files merge
 - [ ] Add docs
+- [ ] Config files merge
+- [ ] Configurable Cron restarts for services/jobs
