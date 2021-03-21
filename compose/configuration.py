@@ -135,6 +135,13 @@ class Config(object):
         '''
         return self._full_config_file_path
 
+    @property
+    def env_maps(self):
+        '''
+        Get full path to the current config file.
+        '''
+        return self._conf.get('envMaps', {})
+
     def _validate_services(self):
         '''
         Validate each service config properties

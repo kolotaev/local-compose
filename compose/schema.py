@@ -23,7 +23,12 @@ JSON_SCHEMA = {
                     '$ref': '#/definitions/logging',
                 },
                 'envMaps': {
-                    'type': 'object'
+                    'type': 'object',
+                    'patternProperties': {
+                        '^[a-zA-Z0-9._-]+$': {
+                            '$ref': '#/definitions/envValuesGroup'
+                        },
+                    },
                 },
             },
         },
@@ -91,6 +96,7 @@ JSON_SCHEMA = {
                 'run': {
                     'description': 'Command to run the service',
                     'type': 'string',
+                    # 'required': True,
                 },
                 'build': {
                     'description': 'Command to build the service',
@@ -100,9 +106,13 @@ JSON_SCHEMA = {
                     'description': 'Current working directory to run inside',
                     'type': 'string',
                 },
-                'environment': {
+                'env': {
                     'description': 'Environment variables for command run',
                     '$ref': '#/definitions/envValuesGroup',
+                },
+                'envFromMap': {
+                    'description': 'Names of the maps with the environment variables for command run',
+                    'type': 'array',
                 },
                 'watch': {
                     'description': 'Watch files by patterns and if anything changes re-run build and run',

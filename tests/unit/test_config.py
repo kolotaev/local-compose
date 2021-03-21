@@ -243,3 +243,24 @@ def test_services_validate_cwd_not_specified(mock_read):
     mock_read.return_value = config
     conf = Config(FILE_NAME, '/path/workdir').parse()
     assert len(conf.services) == 1
+
+
+@mock.patch.object(Config, 'read')
+def test_bad_env(mock_read):
+    config = '''
+    version: '1.0'
+    services:
+      web:
+        run: cat /etc/hosts
+        env:
+          FOO:
+            - the
+            - array
+    '''
+    mock_read.return_value = config
+    with pytest.raises(ConfigurationError) as execinfo:
+        Config(FILE_NAME, '/path/workdir').parse()
+    ex_msg = str(execinfo.value)
+    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' in ex_msg
+    assert 'On instance' in ex_msg
+    assert "['the', 'array']" in ex_msg

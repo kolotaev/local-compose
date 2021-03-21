@@ -53,10 +53,6 @@ def test_env_values_are_converted_to_string_before_run(mock_read):
                 BAR_TWO: >
                   i am a long text
                 BAZ: 77.95
-                # kinda silly, but anyway
-                QUIX:
-                  - g
-                  - n
     '''
     mock_read.return_value = config_contents
     conf = Config(FILE_NAME).parse()
@@ -67,7 +63,6 @@ def test_env_values_are_converted_to_string_before_run(mock_read):
     assert web1.env['BAR_ONE'] == 'asdf'
     assert web1.env['BAR_TWO'] == 'i am a long text\n'
     assert web1.env['BAZ'] == '77.95'
-    assert web1.env['QUIX'] == "['g', 'n']"
 
 
 @pytest.mark.skip
