@@ -173,13 +173,17 @@ class Config(object):
     def _merge_env_values(self, env_from_env, lookup_env_maps):
         '''
         Merge env values from all sources.
+        Precedence (last wins):
+        - EnvMaps (in the order of declaration in envFromMap)
+        - env property in the service
         '''
         all_maps = self.env_maps
-        final = env_from_env
+        final = {}
         for m in lookup_env_maps:
             if m not in all_maps:
                 raise ConfigurationError('EnvMap "%s" is unknown and is missing in the envMaps' % m)
             final.update(all_maps[m])
+        final.update(env_from_env)
         return final
 
 

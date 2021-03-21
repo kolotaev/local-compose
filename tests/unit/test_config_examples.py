@@ -94,14 +94,14 @@ def test_env_from_env_maps(mock_read):
       dbs:
         DSN: mysql://some_dsn
       webs:
-        SECRET: verysecret
+        SECRET: this-will-be-overridden
         USER: jerry
     services:
       web1:
         run: java -jar /path/to/server.jar
         env:
           BAR: asdf
-          SECRET: this-will-be-overridden
+          SECRET: verysecret
         envFromMap:
           - dbs
           - webs
