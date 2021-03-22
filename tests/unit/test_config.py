@@ -292,7 +292,12 @@ def test_env_from_all_sources(mock_read, set_current_dir_fixture):
     envMaps:
       db:
         DB_USER: jim
-        BAR: 'from map'
+        MAP_VAL: 'val in map db'
+        BAR: 'from map db'
+      smtp:
+        SMTP_USER: Cory
+        MAP_VAL: 'val in map smtp'
+        BAR: 'from map smtp'
     services:
       web:
         run: cat /etc/hosts
@@ -302,6 +307,7 @@ def test_env_from_all_sources(mock_read, set_current_dir_fixture):
           BAR: "from env"
         envFromMap:
           - db
+          - smtp
         envFromDotenv: true
         envFromOS: true
     ''' % TMP_DIR
@@ -320,6 +326,30 @@ def test_env_from_all_sources(mock_read, set_current_dir_fixture):
         assert envs['FOO'] == "it's me"
         assert envs['COMPOSE_PASSWORD'] == 'secret'
         assert envs['DB_USER'] == 'jim'
+        assert envs['SMTP_USER'] == 'Cory'
+        assert envs['MAP_VAL'] == 'val in map smtp'
     finally:
         os.remove(env_file)
         del os.environ['COMPOSE_TEST']
+
+
+@mock.patch.object(Config, 'read')
+def test_env_from_map_uses_array_order(mock_read, set_current_dir_fixture):
+    config = '''
+    version: '1.0'
+    envMaps:
+      db:
+        MAP_VAL: 'val in map db'
+      smtp:
+        MAP_VAL: 'val in map smtp'
+    services:
+      web:
+        run: cat /etc/hosts
+        envFromMap:
+          - smtp
+          - db
+    '''
+    mock_read.return_value = config
+    conf = Config(FILE_NAME, '/path/workdir').parse()
+    envs = conf.services[0].env
+    assert envs['MAP_VAL'] == 'val in map db'
