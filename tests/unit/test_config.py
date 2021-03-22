@@ -283,3 +283,43 @@ def test_env_from_missing_map(mock_read):
     ex_msg = str(execinfo.value)
     assert ex_msg == 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' + \
         'EnvMap "dbs" is unknown and is missing in the envMaps'
+
+
+@mock.patch.object(Config, 'read')
+def test_env_from_all_sources(mock_read, set_current_dir_fixture):
+    config = '''
+    version: '1.0'
+    envMaps:
+      db:
+        DB_USER: jim
+        BAR: 'from map'
+    services:
+      web:
+        run: cat /etc/hosts
+        cwd: %s
+        env:
+          FOO: "it's me"
+          BAR: "from env"
+        envFromMap:
+          - db
+        envFromDotenv: true
+        envFromOS: true
+    ''' % TMP_DIR
+    try:
+        env_file = os.path.join(TMP_DIR, '.env')
+        mock_read.return_value = config
+        with open(env_file, 'w') as f:
+            f.write('COMPOSE_PASSWORD=secret\n')
+            f.write('BAR=from dotfile\n')
+        os.environ['COMPOSE_TEST'] = 'hey'
+        os.environ['BAR'] = 'from os'
+        conf = Config(FILE_NAME, '/path/workdir').parse()
+        envs = conf.services[0].env
+        assert envs['BAR'] == 'from os'
+        assert envs['COMPOSE_TEST'] == 'hey'
+        assert envs['FOO'] == "it's me"
+        assert envs['COMPOSE_PASSWORD'] == 'secret'
+        assert envs['DB_USER'] == 'jim'
+    finally:
+        os.remove(env_file)
+        del os.environ['COMPOSE_TEST']

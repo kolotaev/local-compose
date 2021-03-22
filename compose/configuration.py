@@ -6,7 +6,7 @@ import difflib
 
 import yaml
 import jsonschema
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 
 from .schema import JSON_SCHEMA
 from .service import Service
@@ -165,6 +165,7 @@ class Config(object):
         '''
         Compute work directory (cwd) for service based on config property and this run current directory.
         '''
+        # todo - handle defult current dir here
         work_dir = os.path.expanduser(os.path.normpath(work_dir))
         if os.path.isabs(work_dir):
             return work_dir
@@ -195,8 +196,9 @@ class Config(object):
         final.update(env_from_env)
         # .env files from the current dir goes next
         if from_dot_env:
-            cwd = self._compute_work_dir(srv_conf.get('envFromDotenv', False))
-            final.update(load_dotenv(cwd))
+            cwd = self._compute_work_dir(srv_conf.get('cwd', ''))
+            loaded_envs = dotenv_values(dotenv_path=os.path.join(cwd, '.env'))
+            final.update(loaded_envs)
         # OS current session env variables go next
         if from_os:
             final.update(os.environ)

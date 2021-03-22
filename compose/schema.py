@@ -117,10 +117,12 @@ JSON_SCHEMA = {
                 'envFromDotenv': {
                     'description': 'Use env variables from the .env file located in the current workdir of the service',
                     'type': 'boolean',
+                    'default': False,
                 },
                 'envFromOS': {
                     'description': 'Use env variables from the current OS session',
                     'type': 'boolean',
+                    'default': False,
                 },
                 'watch': {
                     'description': 'Watch files by patterns and if anything changes re-run build and run',
