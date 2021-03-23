@@ -32,14 +32,14 @@ class StoreWriter(object):
 
 
 def test_printer_does_not_allow_other_mesage_types():
-    p = Printer(StoreWriter())
+    p = Printer([StoreWriter()])
     with pytest.raises(RuntimeError) as execinfo:
         p.write(Stop(data='bye...', name='web1'))
     assert str(execinfo.value) == 'Printer can only process messages of type "Line"'
 
 
 def test_adjust_width():
-    p = Printer(StoreWriter())
+    p = Printer([StoreWriter()])
     s1 = Service(name='web1', cmd='cat')
     s2 = Service(name='web_1234567890', cmd='cat')
     s3 = Service(name='web_2', cmd='cat')
@@ -105,7 +105,7 @@ def test_write(timezone_fixture, message, time_format, use_prefix, expect):
     # Adjust message time here to use timezone_fixture settings
     message.time = datetime.fromtimestamp(1547730073)
     w = StoreWriter()
-    p = Printer(w, time_format=time_format, use_prefix=use_prefix)
+    p = Printer([w], time_format=time_format, use_prefix=use_prefix)
     s1 = Service(name='123456', cmd='cat')
     p.adjust_width(s1)
     p.write(message)

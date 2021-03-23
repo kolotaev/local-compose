@@ -70,8 +70,8 @@ class Printer(object):
     Prints messages. For this it uses a specific writer for this purpose.
     In general, it's a smart facade for a Writer.
     '''
-    def __init__(self, writer, time_format=None, use_prefix=True):
-        self.writer = writer
+    def __init__(self, writers, time_format=None, use_prefix=True):
+        self.writers = writers
         if time_format is None:
             self.time_format = '%H:%M:%S'
         else:
@@ -110,7 +110,8 @@ class Printer(object):
             if self.use_prefix:
                 time_formatted = message.time.strftime(self.time_format)
                 prefix = '{time} {name}| '.format(time=time_formatted, name=name)
-            self.writer.write(prefix + line, color=message.color)
+            for w in self.writers:
+                w.write(prefix + line, color=message.color)
 
     def adjust_width(self, service):
         '''
