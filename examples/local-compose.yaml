@@ -9,11 +9,11 @@ services:
     run: ruby ser1.rb
     # todo - fix -> this fails:
     # cd local-compose/examples && local-compose up
-    cwd: examples
+    cwd: .
     color: green
   web2_my_ruby_code:
     run: ruby ser2.rb
-    cwd: examples
+    cwd: .
     color: cyan
   cat:
     run: head /etc/hosts

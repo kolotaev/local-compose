@@ -101,3 +101,17 @@ def down(file, workdir):
     runner = Runner(Storage(conf.config_file_path), None)
     runner.down()
     click.echo('Stopped %s' % (NAME,))
+
+
+@root.command()
+@click.argument('service')
+@click.option('-f', '--file', show_default=True, default=CONFIG_FILE_NAME, help='Configuration file')
+@click.option('-w', '--workdir', show_default=True, default='.', help='Work dir')
+@click.option('--color/--no-color', default=True, show_default=True, help='Use colored output?')
+def logs(service, file, workdir, color):
+    '''
+    Stop services
+    '''
+    conf = Config(file, workdir).try_parse()
+    st = Storage(conf.config_file_path)
+    click.echo('to be done')
