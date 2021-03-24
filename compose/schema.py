@@ -59,16 +59,26 @@ JSON_SCHEMA = {
                     # todo - take defaults from this schema
                     'default': True,
                 },
-                'destinations': {
-                   'description': "Log services' output to file as well as to stdout?",
-                    'type': 'array',
-                    'items': {
-                        'type': 'string',
-                        'enum': ['stdout', 'logfile']
+                'toStdout': {
+                    'description': "Do log services' output to stdout?",
+                    'type': 'boolean',
+                    'default': True,
+                },
+                'toFile': {
+                    'description': "Do log services' output to file?",
+                    'type': 'object',
+                    'properties': {
+                        'maxSize': {
+                            'description': 'How many attempts to perform before giving up',
+                            'type': 'integer',
+                            'default': 'Infinite',
+                        },
+                        'backupCount': {
+                            'description': 'How many seconds to wait before the next attempt',
+                            'type': 'number',
+                            'default': 5,
+                        },
                     },
-                    'default': ['stdout'],
-                    'minItems': 1,
-                    'uniqueItems': True,
                 },
             },
         },
@@ -164,7 +174,7 @@ JSON_SCHEMA = {
                     'type': 'string',
                 },
                 'logToFile': {
-                    'description': "Log service's output to this file",
+                    'description': "Service outputs are streamed to this file",
                     'type': 'string',
                 },
                 'readiness': {
