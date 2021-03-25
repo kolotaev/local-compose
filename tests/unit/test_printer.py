@@ -27,7 +27,7 @@ class StoreWriter(object):
     def __init__(self):
         self.data = ''
 
-    def write(self, msg, color=None):
+    def write(self, msg, color=None, service=None):
         self.data = msg
 
 

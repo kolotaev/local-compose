@@ -1,29 +1,33 @@
 from __future__ import print_function
 import sys
 import logging
-from logging.handlers import TimedRotatingFileHandler
+from logging.handlers import RotatingFileHandler
 
 import colored
 
 from .messaging import Line, SYSTEM_LABEL
 
 
-class RotatingFileWriter(object):
+class RotatingFileLogWriter(object):
     '''
     Writer that writes data in the log files of a specified size, that are rotating on size exceed.
     '''
-    def __init__(self):
-        path = 'some-path-to-log-file.log'
-        self.logger = logging.getLogger('Rotating Log')
-        self.logger.setLevel(logging.INFO)
-        handler = TimedRotatingFileHandler(path, when="m", interval=1, backupCount=5)
-        self.logger.addHandler(handler)
+    def __init__(self, store, services, max_bytes=0, backup_count=0):
+        self._loggers = {}
+        for s in services:
+            path = 'some-path-to-log-file.log'
+            handler = RotatingFileHandler(path, maxBytes=max_bytes, backupCount=backup_count)
+            logger = logging.getLogger('Rotating Log')
+            logger.setLevel(logging.INFO)
+            logger.addHandler(handler)
+            self._loggers[s] = logger
 
-    def write(self, message, color=None):
+    def write(self, message, color=None, service=None):
         '''
         Write a message
         '''
-        self.logger.info(message)
+        if service in self._loggers:
+            self._loggers[service].info(message)
 
 
 class SimplePrintWriter(object):
@@ -32,7 +36,7 @@ class SimplePrintWriter(object):
     Doesn't use colors.
     '''
     @staticmethod
-    def write(message, color=None):
+    def write(message, color=None, service=None):
         'Write a message'
         print(message)
 
@@ -43,7 +47,7 @@ class ColoredPrintWriter(object):
     Can use 8-bit palette: 256 colors.
     '''
     @staticmethod
-    def write(message, color=None):
+    def write(message, color=None, service=None):
         '''
         Write a message
         '''
@@ -107,7 +111,7 @@ class Printer(object):
                 time_formatted = message.time.strftime(self.time_format)
                 prefix = '{time} {name}| '.format(time=time_formatted, name=name)
             for w in self.writers:
-                w.write(prefix + line, color=message.color)
+                w.write(prefix + line, color=message.color, service=name)
 
     def adjust_width(self, service):
         '''
