@@ -5,6 +5,7 @@ from logging.handlers import RotatingFileHandler
 
 import colored
 
+from .info import NAME
 from .messaging import Line, SYSTEM_LABEL
 
 
@@ -17,7 +18,7 @@ class RotatingFileLogWriter(object):
         for s in services:
             path = 'some-path-to-log-file.log'
             handler = RotatingFileHandler(path, maxBytes=max_bytes, backupCount=backup_count)
-            logger = logging.getLogger('Rotating Log')
+            logger = logging.getLogger('%s-%s' % (NAME, s.name))
             logger.setLevel(logging.INFO)
             logger.addHandler(handler)
             self._loggers[s] = logger
