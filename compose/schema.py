@@ -6,6 +6,7 @@ JSON_SCHEMA = {
 
     'required': [
         'version',
+        # todo - define
         # 'settings',
         # 'services',
     ],
@@ -48,6 +49,7 @@ JSON_SCHEMA = {
             'description': 'Logging configuration',
             'type': 'object',
             'properties': {
+                # todo - use camelcase
                 'time-format': {
                     'description': 'Time format for service output in console. Accepts strftime format',
                     'type': 'string',
@@ -55,7 +57,19 @@ JSON_SCHEMA = {
                 'use-prefix': {
                     'description': 'Use prefix with info for service output in console?',
                     'type': 'boolean',
+                    # todo - take defaults from this schema
                     'default': True,
+                },
+                'destinations': {
+                   'description': "Log services' output to file as well as to stdout?",
+                    'type': 'array',
+                    'items': {
+                        'type': 'string',
+                        'enum': ['stdout', 'logfile']
+                    },
+                    'default': ['stdout'],
+                    'minItems': 1,
+                    'uniqueItems': True,
                 },
             },
         },
@@ -98,10 +112,10 @@ JSON_SCHEMA = {
                     'type': 'string',
                     # 'required': True,
                 },
-                'build': {
-                    'description': 'Command to build the service',
-                    'type': 'string',
-                },
+                # 'build': {
+                #     'description': 'Command to build the service',
+                #     'type': 'string',
+                # },
                 'cwd': {
                     'description': 'Current working directory to run inside',
                     'type': 'string',
@@ -113,6 +127,11 @@ JSON_SCHEMA = {
                 'envFromMap': {
                     'description': 'Names of the maps with the environment variables for command run',
                     'type': 'array',
+                    'items': {
+                        'type': 'string'
+                    },
+                    'minItems': 1,
+                    'uniqueItems': True,
                 },
                 'envFromDotenv': {
                     'description': 'Use env variables from the .env file located in the current workdir of the service',
@@ -143,6 +162,10 @@ JSON_SCHEMA = {
                 },
                 'color': {
                     'description': 'Color that is associated with service output',
+                    'type': 'string',
+                },
+                'logToFile': {
+                    'description': "Log service's output to this file",
                     'type': 'string',
                 },
                 'readiness': {
