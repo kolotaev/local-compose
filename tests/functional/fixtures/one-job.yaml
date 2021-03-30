@@ -2,7 +2,7 @@ version: '0.1'
 
 settings:
   logging:
-    time-format: ''
+    timeFormat: ''
 
 services:
   my-job1:

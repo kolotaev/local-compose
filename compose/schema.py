@@ -49,12 +49,11 @@ JSON_SCHEMA = {
             'description': 'Logging configuration',
             'type': 'object',
             'properties': {
-                # todo - use camelcase
-                'time-format': {
+                'timeFormat': {
                     'description': 'Time format for service output in console. Accepts strftime format',
                     'type': 'string',
                 },
-                'use-prefix': {
+                'usePrefix': {
                     'description': 'Use prefix with info for service output in console?',
                     'type': 'boolean',
                     # todo - take defaults from this schema

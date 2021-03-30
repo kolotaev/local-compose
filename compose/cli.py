@@ -71,8 +71,8 @@ def up(file, workdir, detached, color):
     else:
         writer = SimplePrintWriter()
     printer = Printer([writer],
-                      time_format=conf.logging.get('time-format'),
-                      use_prefix=conf.logging.get('use-prefix', True))
+                      time_format=conf.logging.get('timeFormat'),
+                      use_prefix=conf.logging.get('usePrefix', True))
     scheduler = Scheduler(printer=printer)
     for s in conf.services:
         scheduler.register_service(s)

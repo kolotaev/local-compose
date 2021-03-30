@@ -11,7 +11,7 @@ version: '1'
 # All global settings.
 settings:
     logging:
-        time-format: '%c'
+        timeFormat: '%c'
 
 # All services you want to run.
 services:

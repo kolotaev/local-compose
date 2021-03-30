@@ -2,7 +2,7 @@ version: '0.1'
 
 settings:
   logging:
-    use-prefix: no
+    usePrefix: no
 
 services:
   my-defaults:
