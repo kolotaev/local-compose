@@ -36,27 +36,32 @@ class SimplePrintWriter(object):
     Basic writer that uses `print` function.
     Doesn't use colors.
     '''
-    @staticmethod
-    def write(message, color=None, service=None):
-        'Write a message'
+    def __init__(self, do_log=True):
+        self._do_log = do_log
+
+    def write(self, message, color=None, service=None):
+        '''
+        Write a message
+        '''
+        if not self._do_log:
+            return
         print(message)
 
 
-class ColoredPrintWriter(object):
+class ColoredPrintWriter(SimplePrintWriter):
     '''
     Writer that uses `colored` lib functionality.
     Can use 8-bit palette: 256 colors.
     '''
-    @staticmethod
-    def write(message, color=None, service=None):
+    def write(self, message, color=None, service=None):
         '''
         Write a message
         '''
-        # todo - color only
         if color is None or not sys.stdout.isatty():
-            print(message)
+            msg = message
         else:
-            print(colored.stylize(message, colored.fg(color)))
+            msg = colored.stylize(message, colored.fg(color))
+        super(ColoredPrintWriter, self).write(message=msg, color=color, service=service)
 
     @staticmethod
     def supported_colors():
