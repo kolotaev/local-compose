@@ -66,10 +66,11 @@ def up(file, workdir, detached, color):
     Start services
     '''
     conf = Config(file, workdir).try_parse()
+    log_to_stdout = conf.logging.get('toStdout', True)
     if color:
-        writer = ColoredPrintWriter()
+        writer = ColoredPrintWriter(log_to_stdout)
     else:
-        writer = SimplePrintWriter()
+        writer = SimplePrintWriter(log_to_stdout)
     printer = Printer([writer],
                       time_format=conf.logging.get('timeFormat'),
                       use_prefix=conf.logging.get('usePrefix', True))
