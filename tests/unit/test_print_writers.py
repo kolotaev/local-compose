@@ -27,7 +27,14 @@ def test_simple_print_writer_color(mock_stdout):
 
 
 @mock.patch('sys.stdout', new_callable=StringIO, create=True)
-def test_click_echo_writer(mock_stdout):
+def test_simple_print_writer_no_do_log(mock_stdout):
+    w = SimplePrintWriter(do_log=False)
+    w.write('hey i must not be printed')
+    assert mock_stdout.getvalue() == ''
+
+
+@mock.patch('sys.stdout', new_callable=StringIO, create=True)
+def test_colored_print_writer(mock_stdout):
     mock_stdout.isatty = lambda: True
     w = ColoredPrintWriter()
     w.write('hello it is û')
@@ -35,7 +42,7 @@ def test_click_echo_writer(mock_stdout):
 
 
 @mock.patch('sys.stdout', new_callable=StringIO, create=True)
-def test_click_echo_writer_color(mock_stdout):
+def test_colored_print_writer_color(mock_stdout):
     mock_stdout.isatty = lambda: True
     w = ColoredPrintWriter()
     w.write('is there a color?', color='red')
@@ -43,8 +50,15 @@ def test_click_echo_writer_color(mock_stdout):
 
 
 @mock.patch('sys.stdout', new_callable=StringIO, create=True)
-def test_click_echo_writer_color_no_tty(mock_stdout):
+def test_colored_print_writer_color_no_tty(mock_stdout):
     mock_stdout.isatty = lambda: False
     w = ColoredPrintWriter()
     w.write('is there a color?', color='red')
     assert mock_stdout.getvalue() == 'is there a color?\n'
+
+
+@mock.patch('sys.stdout', new_callable=StringIO, create=True)
+def test_colored_print_writer_no_do_log(mock_stdout):
+    w = ColoredPrintWriter(do_log=False)
+    w.write('hey i must not be printed')
+    assert mock_stdout.getvalue() == ''
