@@ -9,6 +9,30 @@ from .info import NAME
 from .messaging import Line, SYSTEM_LABEL
 
 
+class WritersFactory(object):
+    '''
+    Constructs a set of writers based on the global logging config.
+    '''
+    def __init__(self, logging_config, use_color):
+        self.conf = logging_config
+        self.use_color = use_color
+
+    def create(self):
+        '''
+        Create writers
+        '''
+        writers = []
+        if self.use_color:
+            stdout_writer = ColoredPrintWriter()
+        else:
+            stdout_writer = SimplePrintWriter()
+        if self.conf.get('toStdout', True):
+            writers.append(stdout_writer)
+        # if loggin_config.get('toFile', {}):
+        #     writers.append()
+        return writers
+
+
 class RotatingFileLogWriter(object):
     '''
     Writer that writes data in the log files of a specified size, that are rotating on size exceed.
@@ -36,15 +60,10 @@ class SimplePrintWriter(object):
     Basic writer that uses `print` function.
     Doesn't use colors.
     '''
-    def __init__(self, do_log=True):
-        self._do_log = do_log
-
     def write(self, message, color=None, service=None):
         '''
         Write a message
         '''
-        if not self._do_log:
-            return
         print(message)
 
 

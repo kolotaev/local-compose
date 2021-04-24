@@ -6,7 +6,7 @@ import click
 
 from .configuration import Config
 from .runtime import Scheduler, Runner
-from .printing import Printer, SimplePrintWriter, ColoredPrintWriter
+from .printing import Printer, WritersFactory
 from .info import VERSION, CONFIG_FILE_NAME, NAME
 from .system import Storage
 
@@ -66,12 +66,7 @@ def up(file, workdir, detached, color):
     Start services
     '''
     conf = Config(file, workdir).try_parse()
-    log_to_stdout = conf.logging.get('toStdout', True)
-    if color:
-        writer = ColoredPrintWriter(log_to_stdout)
-    else:
-        writer = SimplePrintWriter(log_to_stdout)
-    printer = Printer([writer],
+    printer = Printer(WritersFactory(conf.logging, color).create(),
                       time_format=conf.logging.get('timeFormat'),
                       use_prefix=conf.logging.get('usePrefix', True))
     scheduler = Scheduler(printer=printer)

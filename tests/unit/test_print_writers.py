@@ -7,7 +7,7 @@ except ImportError:
 
 import mock
 
-from compose.printing import SimplePrintWriter, ColoredPrintWriter
+from compose.printing import SimplePrintWriter, ColoredPrintWriter, WritersFactory
 
 
 @mock.patch('sys.stdout', new_callable=StringIO, create=True)
@@ -24,13 +24,6 @@ def test_simple_print_writer_color(mock_stdout):
     w = SimplePrintWriter()
     w.write('is there a color?', color='red')
     assert mock_stdout.getvalue() == 'is there a color?\n'
-
-
-@mock.patch('sys.stdout', new_callable=StringIO, create=True)
-def test_simple_print_writer_no_do_log(mock_stdout):
-    w = SimplePrintWriter(do_log=False)
-    w.write('hey i must not be printed')
-    assert mock_stdout.getvalue() == ''
 
 
 @mock.patch('sys.stdout', new_callable=StringIO, create=True)
@@ -57,8 +50,14 @@ def test_colored_print_writer_color_no_tty(mock_stdout):
     assert mock_stdout.getvalue() == 'is there a color?\n'
 
 
-@mock.patch('sys.stdout', new_callable=StringIO, create=True)
-def test_colored_print_writer_no_do_log(mock_stdout):
-    w = ColoredPrintWriter(do_log=False)
-    w.write('hey i must not be printed')
-    assert mock_stdout.getvalue() == ''
+def test_writers_factory():
+    ws = WritersFactory({}, True).create()
+    assert len(ws) == 1
+    assert isinstance(ws[0], ColoredPrintWriter)
+    ws = WritersFactory({}, False).create()
+    assert len(ws) == 1
+    assert isinstance(ws[0], SimplePrintWriter)
+    ws = WritersFactory({'toStdout': False}, True).create()
+    assert len(ws) == 0
+    ws = WritersFactory({'toStdout': False}, False).create()
+    assert len(ws) == 0
