@@ -66,13 +66,14 @@ def up(file, workdir, detached, color):
     Start services
     '''
     conf = Config(file, workdir).try_parse()
-    printer = Printer(WritersFactory(conf.logging, color).create(),
+    storage = Storage(conf.config_file_path)
+    printer = Printer(WritersFactory(conf, storage.get_tempdir_name(), color).create(),
                       time_format=conf.logging.get('timeFormat'),
                       use_prefix=conf.logging.get('usePrefix', True))
     scheduler = Scheduler(printer=printer)
     for s in conf.services:
         scheduler.register_service(s)
-    runner = Runner(Storage(conf.config_file_path), scheduler)
+    runner = Runner(storage, scheduler)
     try:
         runner.check_can_start()
     except RuntimeError as e:

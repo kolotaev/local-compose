@@ -1,7 +1,8 @@
 from __future__ import print_function
 import sys
+import os
 import logging
-from logging.handlers import RotatingFileHandler
+import logging.handlers
 
 import colored
 
@@ -13,9 +14,10 @@ class WritersFactory(object):
     '''
     Constructs a set of writers based on the global logging config.
     '''
-    def __init__(self, logging_config, use_color):
-        self.conf = logging_config
+    def __init__(self, config, store_temp_dir, use_color):
+        self.conf = config
         self.use_color = use_color
+        self.store_temp_dir = store_temp_dir
 
     def create(self):
         '''
@@ -26,10 +28,17 @@ class WritersFactory(object):
             stdout_writer = ColoredPrintWriter()
         else:
             stdout_writer = SimplePrintWriter()
-        if self.conf.get('toStdout', True):
+        if self.conf.logging.get('toStdout', True):
             writers.append(stdout_writer)
-        # if loggin_config.get('toFile', {}):
-        #     writers.append()
+        to_file_config = self.conf.logging.get('toFile', {})
+        if to_file_config:
+            fw = RotatingFileLogWriter(
+                self.store_temp_dir,
+                self.conf.services,
+                to_file_config.get('maxSize', 0),
+                to_file_config.get('backupCount', 0),
+            )
+            writers.append(fw)
         return writers
 
 
@@ -37,11 +46,14 @@ class RotatingFileLogWriter(object):
     '''
     Writer that writes data in the log files of a specified size, that are rotating on size exceed.
     '''
-    def __init__(self, store, services, max_bytes=0, backup_count=0):
+    def __init__(self, store_temp_dir, services, max_bytes, backup_count):
         self._loggers = {}
         for s in services:
-            path = 'some-path-to-log-file.log'
-            handler = RotatingFileHandler(path, maxBytes=max_bytes, backupCount=backup_count)
+            if s.log_to_file:
+                file_path = s.log_to_file
+            else:
+                file_path = os.path.join(store_temp_dir, '%s.log' % s)
+            handler = logging.handlers.RotatingFileHandler(file_path, maxBytes=max_bytes, backupCount=backup_count)
             logger = logging.getLogger('%s-%s' % (NAME, s.name))
             logger.setLevel(logging.INFO)
             logger.addHandler(handler)

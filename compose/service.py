@@ -11,7 +11,8 @@ class Service(object):
     Long running (daemon) process that is not expected to exit by itself.
     '''
     def __init__(self, name, cmd, color=None, quiet=False,
-                 env=None, cwd=None, shell=False, readiness=None):
+                 env=None, cwd=None, shell=False,
+                 readiness=None, log_to_file=None):
         self.name = name
         self.cmd = cmd
         self.color = color
@@ -21,6 +22,7 @@ class Service(object):
             # todo - move to config
             cwd = os.getcwd()
         self.cwd = cwd
+        self.log_to_file = log_to_file
         self.in_shell = shell
         self._os = OS()
         self.pid = None

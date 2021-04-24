@@ -103,6 +103,8 @@ class Config(object):
                 params['shell'] = srv_conf['shell']
             if 'readiness' in srv_conf:
                 params['readiness'] = srv_conf['readiness']
+            if 'logToFile' in srv_conf:
+                params['log_to_file'] = srv_conf['logToFile']
             s = Service(name, srv_conf.get('run'), **params)
             services.append(s)
         return services

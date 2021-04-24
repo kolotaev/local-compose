@@ -8,6 +8,7 @@ except ImportError:
 import mock
 
 from compose.printing import SimplePrintWriter, ColoredPrintWriter, WritersFactory
+from compose.configuration import Config
 
 
 @mock.patch('sys.stdout', new_callable=StringIO, create=True)
@@ -50,14 +51,24 @@ def test_colored_print_writer_color_no_tty(mock_stdout):
     assert mock_stdout.getvalue() == 'is there a color?\n'
 
 
-def test_writers_factory():
-    ws = WritersFactory({}, True).create()
+def test_writers_factory_no_file_out():
+    config = mock.Mock()
+    config.logging = {}
+    ws = WritersFactory(config, '/path/to/store', True).create()
     assert len(ws) == 1
     assert isinstance(ws[0], ColoredPrintWriter)
-    ws = WritersFactory({}, False).create()
+    ws = WritersFactory(config, '', False).create()
     assert len(ws) == 1
     assert isinstance(ws[0], SimplePrintWriter)
-    ws = WritersFactory({'toStdout': False}, True).create()
-    assert len(ws) == 0
-    ws = WritersFactory({'toStdout': False}, False).create()
-    assert len(ws) == 0
+
+
+def test_writers_factory_file_out():
+    config = mock.Mock()
+    config.logging = {
+        'toFile': {
+            'maxSize': 5000,
+        },
+    }
+    config.services = {}
+    ws = WritersFactory(config, '/path/to/store', True).create()
+    assert len(ws) == 2

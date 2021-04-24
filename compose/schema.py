@@ -69,14 +69,14 @@ JSON_SCHEMA = {
                     'type': 'object',
                     'properties': {
                         'maxSize': {
-                            'description': 'How many attempts to perform before giving up',
+                            'description': 'Maximum size in bytes file can be',
                             'type': 'integer',
-                            'default': 'Infinite',
+                            'default': 0,
                         },
                         'backupCount': {
-                            'description': 'How many seconds to wait before the next attempt',
+                            'description': 'How many files to keep in rotating manner',
                             'type': 'number',
-                            'default': 5,
+                            'default': 0,
                         },
                     },
                 },
