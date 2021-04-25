@@ -1,0 +1,10 @@
+version: '0.1'
+
+settings:
+  logging:
+    timeFormat: ''
+
+services:
+  job1:
+    run: sleep 0.1 && eeeee "Hello world"
+    shell: yes

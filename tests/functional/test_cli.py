@@ -94,6 +94,20 @@ def test_up_one_job():
 '''
 
 
+def test_up_one_malformed_job_command():
+    runner = CliRunner()
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'malformed-job.yaml')
+    result = runner.invoke(cli.root, ['up', '-f', file])
+    assert result.exit_code == 0
+    out = re.sub(r'pid=\d+', 'pid=22580', result.output)
+    assert out == \
+''' system | starting service job1
+ system | job1 started (pid=22580)
+ job1   | /bin/sh: eeeee: command not found
+ system | job1 stopped (rc=127)
+'''
+
+
 def test_up_silent():
     runner = CliRunner()
     file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'silent.yaml')
