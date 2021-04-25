@@ -2,6 +2,8 @@ import threading
 import signal
 import datetime
 
+from attr import s
+
 from .messaging import EventBus, Line, Start, Restart, Stop, EmptyBus
 from .utils import now
 from .system import OS, Storage
@@ -52,7 +54,12 @@ class Executor(object):
         self._srv.readiness.retry.do_retry()
 
     def _run_service(self):
-        child = self._srv.run()
+        try:
+            # todo - add tests for failed service run
+            child = self._srv.run()
+        except Exception as e:
+            self._send_message('Failed to start service %s with error: %s' % (self._srv.name, e), Stop)
+            return
         self.child_pid = child.pid
         self._send_message({'pid': self.child_pid}, Start)
         for line in iter(child.stdout.readline, b''):
