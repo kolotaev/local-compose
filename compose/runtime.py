@@ -2,11 +2,9 @@ import threading
 import signal
 import datetime
 
-from attr import s
-
 from .messaging import EventBus, Line, Start, Restart, Stop, EmptyBus
 from .utils import now
-from .system import OS, Storage
+from .system import OS
 
 
 class Executor(object):
