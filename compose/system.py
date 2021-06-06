@@ -89,7 +89,7 @@ class  Storage(object):
         '''
         return os.path.isfile(self._pidfile)
 
-    def pid_create(self):
+    def create_pid(self):
         '''
         Create file with the invocation's PID.
         '''

@@ -53,10 +53,9 @@ class Executor(object):
 
     def _run_service(self):
         try:
-            # todo - add tests for failed service run
             child = self._srv.run()
         except Exception as e:
-            self._send_message('Failed to start service %s with error: %s' % (self._srv.name, e), Stop)
+            self._send_message({}, Stop)  # Don't send any data - all available
             return
         self.child_pid = child.pid
         self._send_message({'pid': self.child_pid}, Start)
@@ -296,7 +295,7 @@ class Runner(object):
         signal.signal(signal.SIGTERM, stop)
         signal.signal(signal.SIGINT, stop)
         self._storage.maybe_create_tempdir()
-        self._storage.pid_create()
+        self._storage.create_pid()
         self._scheduler.start()
         self._cleanup()
 

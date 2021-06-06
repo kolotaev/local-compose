@@ -44,6 +44,6 @@ class TestStorage(object):
         s = Storage('/tmp/foo/config.yaml')
         self.mark_dir(s.get_tempdir_name())
         s.maybe_create_tempdir()
-        s.pid_create()
+        s.create_pid()
         assert s.pid_exists()
         assert s.pid_read() > 0
