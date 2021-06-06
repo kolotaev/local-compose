@@ -100,12 +100,10 @@ def test_up_one_malformed_job_command():
     result = runner.invoke(cli.root, ['up', '-f', file])
     assert result.exit_code == 0
     out = re.sub(r'pid=\d+', 'pid=22580', result.output)
-    assert out == \
-''' system | starting service job1
- system | job1 started (pid=22580)
- job1   | /bin/sh: eeeee: command not found
- system | job1 stopped (rc=127)
-'''
+    assert 'system | starting service job1' in out
+    assert 'system | job1 started (pid=22580)' in out
+    assert 'eeeee: command not found' in out
+    assert 'system | job1 stopped (rc=127)' in out
 
 
 def test_up_silent():
