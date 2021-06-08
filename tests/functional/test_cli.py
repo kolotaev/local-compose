@@ -102,8 +102,8 @@ def test_up_one_malformed_job_command():
     out = re.sub(r'pid=\d+', 'pid=22580', result.output)
     assert 'system | starting service job1' in out
     assert 'system | job1 started (pid=22580)' in out
-    assert 'eeeee: command not found' in out
-    assert 'system | job1 stopped (rc=127)' in out
+    assert 'expr: division by zero' in out
+    assert 'system | job1 stopped (rc=2)' in out
 
 
 def test_up_silent():
