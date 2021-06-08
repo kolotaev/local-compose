@@ -294,7 +294,7 @@ class Runner(object):
         self.check_can_start()
         signal.signal(signal.SIGTERM, stop)
         signal.signal(signal.SIGINT, stop)
-        self._storage.maybe_create_tempdir()
+        self._storage.prepare_tempdir()
         self._storage.create_pid()
         self._scheduler.start()
         self._cleanup()

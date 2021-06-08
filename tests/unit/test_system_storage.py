@@ -26,16 +26,16 @@ class TestStorage(object):
         assert n2.endswith('local-compose/6977a6747ea71afccd5aa23a3bea7b78')
         assert n2.startswith('/')
 
-    def test_maybe_create_tempdir(self):
+    def test_prepare_tempdir(self):
         s = Storage('/tmp/foo/config.yaml')
         self.mark_dir(s.get_tempdir_name())
-        s.maybe_create_tempdir()
+        s.prepare_tempdir()
         assert os.path.exists(s.get_tempdir_name())
 
     def test_clean_tempdir(self):
         s = Storage('/tmp/foo/config.yaml')
         self.mark_dir(s.get_tempdir_name())
-        s.maybe_create_tempdir()
+        s.prepare_tempdir()
         assert os.path.exists(s.get_tempdir_name())
         s.clean_tempdir()
         assert not os.path.exists(s.get_tempdir_name())
@@ -43,7 +43,7 @@ class TestStorage(object):
     def test_pid_creation(self):
         s = Storage('/tmp/foo/config.yaml')
         self.mark_dir(s.get_tempdir_name())
-        s.maybe_create_tempdir()
+        s.prepare_tempdir()
         s.create_pid()
         assert s.pid_exists()
         assert s.pid_read() > 0

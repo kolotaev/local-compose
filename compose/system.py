@@ -66,7 +66,7 @@ class  Storage(object):
         '''
         return self._tempdir
 
-    def maybe_create_tempdir(self):
+    def prepare_tempdir(self):
         '''
         Possibly create a temp directory for this compose run.
         We'll use it to store PIDs, logs, etc.
