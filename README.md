@@ -3,11 +3,12 @@
 [![Coverage](https://codecov.io/github/kolotaev/local-compose/coverage.svg?branch=master)](https://codecov.io/github/kolotaev/local-compose?branch=master)
 <!-- [![Supported Versions](https://img.shields.io/pypi/pyversions/local-compose.svg)](https://pypi.org/project/local-compose) -->
 
-> Like docker-compose but for locally installed executables.
+> Like docker-compose, but for locally installed executables.
+
 
 ## Rationale
 
-For some environments (especially development) it's quite tedious to use containerization (e.g. docker) all the time. Nowadays microservices development has become ubiquitous and when you need to run application as a whole you'll likely end up with a bunch of services running. From the other hand, while developing services you likely already have all the execution environment for your services installed on your host OS (to run REPL, unit tests, etc. right?). This tool tries to build a bridge between declarative definition of your services and running them on the host OS. Some might argue, that it doesn't conform to the principle of a uniform environment, and that's true, but you don't always need that, so having a choice is a good option.
+For some environments (especially development) it's quite tedious to use containerization (e.g. docker) all the time. Nowadays microservices development has become ubiquitous and when you need to run application as a whole you'll likely end up with a bunch of services running. From the other hand, while developing services you likely already have all the execution environment(s) for your services installed on the host OS (to run REPL, unit tests, etc. right?). This tool tries to build a bridge between declarative definition of your services (akin docker-compose) and running them on the host OS. Some might argue, that it doesn't conform to the principle of a uniform environment, and that's true, but you don't always need that, so having a choice is always a good option.
 
 
 ## Supported versions
@@ -18,6 +19,7 @@ Python:
 OS:
 - Linux
 - MacOS
+- If you use local-compose on Windows and have issues with it, let us know. Currently we don't support this OS.
 
 
 ## Install
