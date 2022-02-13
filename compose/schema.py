@@ -60,14 +60,19 @@ JSON_SCHEMA = {
                     'default': True,
                 },
                 'toStdout': {
-                    'description': "Do log services' output to stdout?",
+                    'description': "Do log service's output to stdout?",
                     'type': 'boolean',
                     'default': True,
                 },
                 'toFile': {
-                    'description': "Do log services' output to file?",
+                    'description': "Output to file configuration",
                     'type': 'object',
                     'properties': {
+                        'enabled': {
+                            'description': "Do log service's output to file?",
+                            'type': 'boolean',
+                            'default': False,
+                        },
                         'maxSize': {
                             'description': 'Maximum size in bytes file can be',
                             'type': 'integer',
@@ -126,7 +131,7 @@ JSON_SCHEMA = {
                 #     'type': 'string',
                 # },
                 'cwd': {
-                    'description': 'Current working directory to run inside',
+                    'description': 'Current working directory to run command in',
                     'type': 'string',
                 },
                 'env': {
