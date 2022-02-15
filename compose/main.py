@@ -1,9 +1,9 @@
 from compose.cli import root
 
 
-def run():
+def execute():
     root()
 
 
 if __name__ == '__main__':
-    run()
+    execute()

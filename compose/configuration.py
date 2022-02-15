@@ -211,3 +211,4 @@ class ConfigurationError(ValueError):
     '''
     Configuration error.
     '''
+    pass

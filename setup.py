@@ -21,10 +21,9 @@ if __name__ == '__main__':
         long_description='Like docker-compose but for locally installed services',
         entry_points={
             'console_scripts': [
-                '%s = main:run' % info['NAME'],
+                '%s = compose.main:execute' % info['NAME'],
             ],
         },
-        py_modules=['app', 'main'],
         python_requires='>=2.7',
         install_requires=[
             'watchdog~=0.10',
