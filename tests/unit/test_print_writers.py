@@ -40,7 +40,7 @@ def test_colored_print_writer_color(mock_stdout):
     mock_stdout.isatty = lambda: True
     w = ColoredPrintWriter()
     w.write('is there a color?', color='red')
-    assert mock_stdout.getvalue() == '\033[38;5;1mis there a color?\033[0m\n'
+    assert mock_stdout.getvalue() == '\x1b[38;5;1mis there a color?\x1b[0m\n'
 
 
 @mock.patch('sys.stdout', new_callable=StringIO, create=True)
