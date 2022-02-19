@@ -1,5 +1,4 @@
 from __future__ import print_function
-import sys
 import os
 import logging
 import logging.handlers
@@ -88,7 +87,7 @@ class ColoredPrintWriter(SimplePrintWriter):
         '''
         Write a message
         '''
-        if color is None or not sys.stdout.isatty():
+        if color is None:
             msg = message
         else:
             msg = colored.stylize(message, colored.fg(color))
