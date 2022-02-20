@@ -40,6 +40,7 @@ if __name__ == '__main__':
             'dev': [
                 'pytest~=4.6',
                 'mock==3.0.5',
+                'pytest-cov'
             ],
         },
         packages=find_packages(exclude='tests'),
