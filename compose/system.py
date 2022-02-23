@@ -1,5 +1,6 @@
 import os
 import errno
+import sys
 import signal
 import subprocess
 import tempfile
@@ -7,6 +8,13 @@ import shutil
 import hashlib
 
 from .info import NAME
+
+
+if sys.version_info[0] == 2:
+    import errno
+    class FileExistsError(OSError):
+        def __init__(self, msg):
+            super(FileExistsError, self).__init__(errno.EEXIST, msg)
 
 
 class OS(object):
