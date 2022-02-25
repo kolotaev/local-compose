@@ -107,8 +107,8 @@ def down(file, workdir):
 @click.option('--color/--no-color', default=True, show_default=True, help='Use colored output?')
 def logs(service, file, workdir, color):
     '''
-    Stop services
+    Get service logs
     '''
     conf = Config(file, workdir).try_parse()
-    st = Storage(conf.config_file_path)
-    click.echo('to be done')
+    _ = Storage(conf.config_file_path)
+    click.echo('Not implemented yet')
