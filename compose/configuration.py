@@ -36,7 +36,7 @@ class Config(object):
         '''
         List of colors allowed for usage in service output.
         '''
-        return list(map(lambda x: x.lower(), ColoredPrintWriter.supported_colors()))
+        return [x.lower() for x in ColoredPrintWriter.supported_colors()]
 
     def parse(self):
         '''
@@ -80,8 +80,8 @@ class Config(object):
         conf_file = self.config_file_path
         if not os.path.isfile(conf_file):
             raise ConfigurationError('File was not found.')
-        with open(conf_file) as file:
-            return file.read()
+        with open(conf_file) as f:
+            return f.read()
 
     @property
     def services(self):

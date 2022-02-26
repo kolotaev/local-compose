@@ -11,7 +11,6 @@ from .info import NAME
 
 
 if sys.version_info[0] == 2:
-    import errno
     class FileExistsError(OSError):
         def __init__(self, msg):
             super(FileExistsError, self).__init__(errno.EEXIST, msg)
@@ -102,13 +101,13 @@ class  Storage(object):
         Create file with the invocation's PID.
         '''
         own_pid = os.getpid()
-        with open(self._pidfile, 'w') as file:
-            file.write(str(own_pid))
+        with open(self._pidfile, 'w') as f:
+            f.write(str(own_pid))
 
     def pid_read(self):
         '''
         Read invocation's PID from file.
         '''
-        with open(self._pidfile, 'r') as file:
-            data = file.read()
+        with open(self._pidfile, 'r') as f:
+            data = f.read()
             return int(data)

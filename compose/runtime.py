@@ -54,7 +54,7 @@ class Executor(object):
     def _run_service(self):
         try:
             child = self._srv.run()
-        except Exception as e:
+        except Exception:
             self._send_message({}, Stop)  # Don't send any data - all available
             return
         self.child_pid = child.pid
