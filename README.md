@@ -56,6 +56,7 @@ python local-compose-${RELEASE_VERSION}/setup.py install
 
 - Create a fork and clone the repository
 - Make updates to the code
-- Run `tox -e py27-test-all` # as an example, to run all tests against Python 2.7
+- Run `tox -e py27-lint-errors` (example, to run linting check for errors against Python 2.7)
+- Run `tox -e py27-test-all` (example, to run all tests against Python 2.7)
 - Commit changes
 - Make a pull request
