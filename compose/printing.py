@@ -31,19 +31,19 @@ class WritersFactory(object):
             writers.append(stdout_writer)
         to_file_config = self.conf.logging.get('toFile', {})
         if to_file_config:
-            fw = RotatingFileLogWriter(
+            file_writer = RotatingFileLogWriter(
                 self.store_temp_dir,
                 self.conf.services,
                 to_file_config.get('maxSize', 0),
                 to_file_config.get('backupCount', 0),
             )
-            writers.append(fw)
+            writers.append(file_writer)
         return writers
 
 
 class RotatingFileLogWriter(object):
     '''
-    Writer that writes data in the log files of a specified size, that are rotating on size exceed.
+    Writer that writes data into the log files of a specified size, that are rotating when size exceeds.
     '''
     def __init__(self, store_temp_dir, services, max_bytes, backup_count):
         self._loggers = {}
