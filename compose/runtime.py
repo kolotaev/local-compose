@@ -138,12 +138,10 @@ class Supervisor(object):
     '''
     Supervises status, execution, readiness of services and jobs.
     '''
-    def __init__(self, event_bus, exec_pool, check_interval_sec=None):
+    def __init__(self, event_bus, exec_pool, check_interval_sec=10):
         self.name = 'local_compose_supervisor'
         self.eb = event_bus
         self.exec_pool = exec_pool
-        if check_interval_sec is None:
-            check_interval_sec = 10
         self._check_interval_sec = check_interval_sec
         self._event = threading.Event()
         self._stop = False
