@@ -50,7 +50,7 @@ def test_parse_with_non_existent_file(mock_read):
         conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is None
     assert str(execinfo.value) == \
-        'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\nFile is missing in OS'
+        'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors:\nFile is missing in OS'
 
 
 @mock.patch.object(Config, 'read')
@@ -74,7 +74,7 @@ def test_parse_fails_with_empty_file(mock_read):
         conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is None
     assert str(execinfo.value) == \
-        'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\nFile is empty.'
+        'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors:\nFile is empty.'
 
 
 @mock.patch.object(Config, 'read')
@@ -84,7 +84,7 @@ def test_parse_fails_with_malformed_yaml_file(mock_read):
     with pytest.raises(Exception) as execinfo:
         conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is None
-    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' in \
+    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors:\n' in \
         str(execinfo.value)
     assert 'while parsing' in str(execinfo.value)
 
@@ -99,7 +99,7 @@ def test_parse_fails_with_no_version_specified(mock_read):
     with pytest.raises(Exception) as execinfo:
         conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is None
-    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' in \
+    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors:\n' in \
         str(execinfo.value)
     assert "'version' is a required property" in str(execinfo.value)
 
@@ -118,7 +118,7 @@ def test_validate_wrong_color(mock_read):
     with pytest.raises(Exception) as execinfo:
         conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is None
-    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' in \
+    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors:\n' in \
         str(execinfo.value)
     assert "Color 'fancy-color' for service 'cat' is not allowed." in str(execinfo.value)
 
@@ -137,7 +137,7 @@ def test_validate_wrong_color_suggestion(mock_read):
     with pytest.raises(Exception) as execinfo:
         conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is None
-    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' in \
+    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors:\n' in \
         str(execinfo.value)
     assert "Color 'grennnn' for service 'cat' is not allowed." in str(execinfo.value)
     assert "Maybe you meant: green" in str(execinfo.value)
@@ -228,7 +228,7 @@ def test_services_validate_cwd_inexistent(mock_read):
         conf = Config(FILE_NAME, '/path/workdir').parse()
         # conf.services
     assert str(execinfo.value) == \
-        'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' + \
+        'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors:\n' + \
             'Directory "/some/unknown/path" for service "web" not found'
 
 
@@ -261,7 +261,7 @@ def test_bad_env(mock_read):
     with pytest.raises(ConfigurationError) as execinfo:
         Config(FILE_NAME, '/path/workdir').parse()
     ex_msg = str(execinfo.value)
-    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' in ex_msg
+    assert 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors:\n' in ex_msg
     assert 'On instance' in ex_msg
     assert "['the', 'array']" in ex_msg
 
@@ -281,7 +281,7 @@ def test_env_from_missing_map(mock_read):
     with pytest.raises(ConfigurationError) as execinfo:
         Config(FILE_NAME, '/path/workdir').parse()
     ex_msg = str(execinfo.value)
-    assert ex_msg == 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors found:\n' + \
+    assert ex_msg == 'Configuration file "/path/workdir/unit-test-config-file.yaml" is invalid.\nErrors:\n' + \
         'EnvMap "dbs" is unknown and is missing in the envMaps'
 
 

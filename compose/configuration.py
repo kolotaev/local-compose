@@ -51,7 +51,7 @@ class Config(object):
             self.validate(data)
             return self
         except Exception as e:
-            raise ConfigurationError('Configuration file "%s" is invalid.\nErrors found:\n%s' % \
+            raise ConfigurationError('Configuration file "%s" is invalid.\nErrors:\n%s' % \
                  (self.config_file_path, e))
 
     def try_parse(self):

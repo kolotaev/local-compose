@@ -75,7 +75,7 @@ def test_up_no_file():
     result = runner.invoke(cli.root, ['up', '-w', '/path/to/workdir'])
     assert result.exit_code == 1
     assert result.output == '''Configuration file "/path/to/workdir/local-compose.yaml" is invalid.
-Errors found:
+Errors:
 File was not found.
 '''
 
