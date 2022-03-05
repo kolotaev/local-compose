@@ -27,7 +27,7 @@ def root():
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━┃━━━━━━━━━━━
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛━━━━━━━━━━━
 
-    Tool for running and managing your services.
+    Tool for running and managing your services locally.
     """
 
 

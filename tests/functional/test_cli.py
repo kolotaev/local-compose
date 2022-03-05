@@ -23,7 +23,7 @@ def test_banner():
     # we temporarily omitted the banner itself
     assert '''
 
-  Tool for running and managing your services.
+  Tool for running and managing your services locally.
 ''' in result.output
 
 

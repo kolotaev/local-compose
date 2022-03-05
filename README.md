@@ -11,7 +11,7 @@
 For some environments (especially development) it's quite tedious to use containerization (e.g. docker) all the time. Nowadays microservices development has become ubiquitous and when you need to run application as a whole you'll likely end up with a bunch of services running. From the other hand, while developing services you already likely have all the execution environment(s) for your services installed on the host OS (to run REPL, unit tests, etc. right?). This tool tries to build a bridge between declarative definition of your services (akin docker-compose) and running them on the host OS. Some might argue, that it doesn't conform to the principle of a uniform environment, and that's true, but you don't always need that, so having a choice is always a good thing.
 
 
-## Supported versions
+## Supported versions and hosts
 
 Python:
 - CPython >= 2.7
@@ -54,9 +54,11 @@ python local-compose-${RELEASE_VERSION}/setup.py install
 
 ## Development
 
-- Create a fork and clone the repository
-- Make updates to the code
-- Run `tox -e py27-lint-errors` (example, to run linting check for errors against Python 2.7)
-- Run `tox -e py27-test-all` (example, to run all tests against Python 2.7)
-- Commit changes
-- Make a pull request
+- Create a fork and clone the repository.
+- Run `python3 -m venv venv && source venv/bin/activate` to create a virtual environment.
+- Run `pip install -e .[dev]` to install editable version of local-compose with dev dependencies.
+- Make updates to the code, add tests, etc.
+- Run `tox -e py27-lint-errors` (example, to run linting check for errors against Python 2.7).
+- Run `tox -e py27-test-all` (example, to run all tests against Python 2.7).
+- Commit changes.
+- Make a pull request.
