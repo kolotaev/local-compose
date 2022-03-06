@@ -50,6 +50,7 @@ python local-compose-${RELEASE_VERSION}/setup.py install
 - [ ] Add docs
 - [ ] Config files merge
 - [ ] Configurable Cron restarts for services/jobs
+- [ ] Ability to build services and its corresponding directive
 
 
 ## Development

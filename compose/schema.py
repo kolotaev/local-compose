@@ -34,7 +34,7 @@ JSON_SCHEMA = {
             },
         },
         'services': {
-            'description': 'Services to run list',
+            'description': 'List of services to run',
             'type': 'object',
             'patternProperties': {
                 '^[a-zA-Z0-9._-]+$': {
@@ -179,7 +179,7 @@ JSON_SCHEMA = {
                     'type': 'string',
                 },
                 'logToFile': {
-                    'description': "Service outputs are streamed to this file",
+                    'description': 'Service outputs are streamed into this file',
                     'type': 'string',
                 },
                 'readiness': {
