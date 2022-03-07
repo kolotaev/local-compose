@@ -65,20 +65,24 @@ JSON_SCHEMA = {
                     'default': True,
                 },
                 'toFile': {
-                    'description': "Output to file configuration",
+                    'description': 'Output to file configuration',
                     'type': 'object',
                     'properties': {
+                        'name': {
+                            'description': 'Name of the file to write into',
+                            'type': 'string',
+                        },
                         'enabled': {
-                            'description': "Do log service's output to file?",
+                            'description': "Enable service's output to file?",
                             'type': 'boolean',
-                            'default': False,
+                            'default': True,
                         },
                         'maxSize': {
                             'description': 'Maximum size in bytes file can be',
                             'type': 'integer',
                             'default': 0,
                         },
-                        'backupCount': {
+                        'count': {
                             'description': 'How many files to keep in rotating manner',
                             'type': 'number',
                             'default': 0,
@@ -115,7 +119,9 @@ JSON_SCHEMA = {
         },
         'service': {
             'type': 'object',
-            'required': ['run'],
+            'required': [
+                'run',
+            ],
             'properties': {
                 'comment': {
                     'description': 'Custom comment of the service',
@@ -124,7 +130,6 @@ JSON_SCHEMA = {
                 'run': {
                     'description': 'Command to run the service',
                     'type': 'string',
-                    # 'required': True,
                 },
                 # 'build': {
                 #     'description': 'Command to build the service',
@@ -157,13 +162,13 @@ JSON_SCHEMA = {
                     'type': 'boolean',
                     'default': False,
                 },
-                'watch': {
-                    'description': 'Watch files by patterns and if anything changes re-run build and run',
-                    'type': 'array',
-                    'items': {
-                        'type': 'string'
-                    },
-                },
+                # 'watch': {
+                #     'description': 'Watch files by patterns and if anything changes re-run build and run',
+                #     'type': 'array',
+                #     'items': {
+                #         'type': 'string'
+                #     },
+                # },
                 'quite': {
                     'description': 'Do not log service output to anywhere?',
                     'type': 'boolean',
