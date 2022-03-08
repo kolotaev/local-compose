@@ -53,7 +53,7 @@ class OS(object):
                 raise
 
 
-class  Storage(object):
+class Storage(object):
     '''
     Manages data related to compose invocation:
     - Creates/removes a temporary directory
