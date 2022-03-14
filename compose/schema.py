@@ -14,7 +14,7 @@ JSON_SCHEMA = {
     'properties': {
         'version': {
             'description': 'Version of the config file format',
-            # 'type': 'float',
+            'type': 'string',
         },
         'settings': {
             'description': 'Global configuration for the tool',
