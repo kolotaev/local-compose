@@ -70,7 +70,18 @@ class Config(object):
         '''
         if data is None:
             raise ConfigurationError('File is empty.')
-        jsonschema.validate(instance=data, schema=JSON_SCHEMA)
+        # Extend jsonschema validator to respect default values in schema.
+        def extend_with_default(validator_class):
+            validate_properties = validator_class.VALIDATORS['properties']
+            def set_defaults(validator, properties, instance, schema):
+                for property, subschema in properties.items():
+                    if 'default' in subschema:
+                        instance.setdefault(property, subschema['default'])
+                for error in validate_properties(validator, properties, instance, schema):
+                    yield error
+            return jsonschema.validators.extend(validator_class, {'properties' : set_defaults})
+        DefaultValidatingDraft7Validator = extend_with_default(jsonschema.Draft7Validator)
+        DefaultValidatingDraft7Validator(JSON_SCHEMA).validate(data)
         self._validate_services()
 
     def read(self):
@@ -165,9 +176,9 @@ class Config(object):
 
     def _compute_work_dir(self, work_dir):
         '''
-        Compute work directory (cwd) for service based on config property and this run current directory.
+        Compute work directory (cwd) for service based on config property and this particular run's current directory.
         '''
-        # todo - handle defult current dir here
+        # todo - handle default current dir here
         work_dir = os.path.expanduser(os.path.normpath(work_dir))
         if os.path.isabs(work_dir):
             return work_dir
@@ -196,7 +207,7 @@ class Config(object):
             final.update(all_maps[m])
         # env goes next
         final.update(env_from_env)
-        # .env files from the current dir goes next
+        # .env files from the working dir goes next
         if from_dot_env:
             cwd = self._compute_work_dir(srv_conf.get('cwd', ''))
             loaded_envs = dotenv_values(dotenv_path=os.path.join(cwd, '.env'))
