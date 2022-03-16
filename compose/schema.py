@@ -16,9 +16,11 @@ JSON_SCHEMA = {
         'settings': {
             'description': 'Global configuration for the tool',
             'type': 'object',
+            'default': {},
             'properties': {
                 'logging': {
                     '$ref': '#/definitions/logging',
+                    'default': {},
                 },
                 'envMaps': {
                     'type': 'object',
@@ -49,6 +51,7 @@ JSON_SCHEMA = {
                 'timeFormat': {
                     'description': 'Time format for service output in console. Accepts strftime format',
                     'type': 'string',
+                    'default': '%H:%M:%S',
                 },
                 'usePrefix': {
                     'description': 'Use prefix with info for service output in console?',
@@ -64,6 +67,7 @@ JSON_SCHEMA = {
                 'toFile': {
                     'description': 'Output to file configuration',
                     'type': 'object',
+                    'default': {},
                     'properties': {
                         'name': {
                             'description': 'Name of the file to write into',
@@ -72,7 +76,7 @@ JSON_SCHEMA = {
                         'enabled': {
                             'description': "Enable service's output to file?",
                             'type': 'boolean',
-                            'default': True,
+                            'default': False,
                         },
                         'maxSize': {
                             'description': 'Maximum size in bytes file can be',
@@ -91,11 +95,12 @@ JSON_SCHEMA = {
         'retry': {
             'description': 'Retry logic for re-runs, health-checks, etc.',
             'type': 'object',
+            'default': {},
             'properties': {
                 'attempts': {
                     'description': 'How many attempts to perform before giving up',
                     'type': 'integer',
-                    'default': 'Infinite',
+                    'default': float('inf'),
                 },
                 'waitSeconds': {
                     'description': 'How many seconds to wait before the next attempt',
@@ -119,6 +124,7 @@ JSON_SCHEMA = {
             'required': [
                 'run',
             ],
+            'default': {},
             'properties': {
                 'comment': {
                     'description': 'Custom comment of the service',

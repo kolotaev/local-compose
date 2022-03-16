@@ -29,8 +29,8 @@ class WritersFactory(object):
             stdout_writer = SimplePrintWriter()
         if self.conf.logging.get('toStdout', True):
             writers.append(stdout_writer)
-        to_file_config = self.conf.logging.get('toFile', {})
-        if to_file_config:
+        to_file_config = self.conf.logging.get('toFile')
+        if to_file_config and to_file_config.get('enabled'):
             file_writer = RotatingFileLogWriter(
                 self.store_temp_dir,
                 self.conf.services,
@@ -51,7 +51,7 @@ class RotatingFileLogWriter(object):
             if s.log_to_file:
                 file_path = s.log_to_file
             else:
-                file_path = os.path.join(store_temp_dir, '%s.log' % s)
+                file_path = os.path.join(store_temp_dir, '%s.log' % s.name)
             handler = logging.handlers.RotatingFileHandler(file_path, maxBytes=max_bytes, backupCount=backup_count)
             logger = logging.getLogger('%s-%s' % (NAME, s.name))
             logger.setLevel(logging.INFO)
@@ -109,6 +109,7 @@ class Printer(object):
     def __init__(self, writers, time_format=None, use_prefix=True):
         self.writers = writers
         if time_format is None:
+            # todo - take from schema
             self.time_format = '%H:%M:%S'
         else:
             self.time_format = time_format

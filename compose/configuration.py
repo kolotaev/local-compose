@@ -125,14 +125,14 @@ class Config(object):
         '''
         Get settings.
         '''
-        return self._conf.get('settings', {})
+        return self._conf.get('settings')
 
     @property
     def logging(self):
         '''
         Get logging settings.
         '''
-        return self.settings.get('logging', {})
+        return self.settings.get('logging')
 
     @property
     def version(self):

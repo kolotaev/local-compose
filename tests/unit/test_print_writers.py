@@ -7,6 +7,7 @@ except ImportError:
     from io import StringIO
 
 import mock
+import pytest
 import colored
 
 from compose.printing import SimplePrintWriter, ColoredPrintWriter, WritersFactory
@@ -77,13 +78,17 @@ def test_writers_factory_no_file_out():
     assert isinstance(ws[0], SimplePrintWriter)
 
 
-def test_writers_factory_file_out():
+@pytest.mark.parametrize('is_enabled, expect_loggers', [
+    (True, 2),
+    (False, 1),
+])
+def test_writers_factory_logging_to_file_with_enabled_flag(is_enabled, expect_loggers):
     config = mock.Mock()
     config.logging = {
         'toFile': {
-            'maxSize': 5000,
+            'enabled': is_enabled,
         },
     }
     config.services = {}
     ws = WritersFactory(config, '/path/to/store', True).create()
-    assert len(ws) == 2
+    assert len(ws) == expect_loggers

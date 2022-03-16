@@ -62,7 +62,7 @@ def test_parse_minimal_required(mock_read):
     conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is not None
     assert conf.version == '123.0'
-    assert conf.settings == {}
+    assert conf.settings != {}
     assert conf.services == []
 
 
@@ -154,7 +154,12 @@ def test_settings_property(mock_read):
     mock_read.return_value = config_contents
     conf = Config(FILE_NAME, '/path/workdir').parse()
     assert conf is not None
-    assert conf.settings == {'bar': 'asdf', 'foo': 123}
+    assert 'bar' in conf.settings
+    assert conf.settings['bar'] == 'asdf'
+    assert 'foo' in conf.settings
+    assert conf.settings['foo'] == 123
+    assert 'logging' in conf.settings
+    assert conf.settings['logging'] != {}
 
 
 @mock.patch.object(Config, 'read')
