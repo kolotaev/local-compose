@@ -6,9 +6,6 @@ JSON_SCHEMA = {
 
     'required': [
         'version',
-        # todo - define
-        # 'settings',
-        # 'services',
     ],
 
     'properties': {
