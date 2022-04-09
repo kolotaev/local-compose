@@ -79,6 +79,7 @@ def up(file, workdir, detached, color):
     except RuntimeError as e:
         click.echo(e)
         sys.exit(1)
+    # ToDo: add catch block for cleanup (e.g. Storage) in case of errors
     if not detached:
         runner.up()
     else:
