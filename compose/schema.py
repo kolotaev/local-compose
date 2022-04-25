@@ -114,7 +114,7 @@ JSON_SCHEMA = {
             'type': 'object',
             'patternProperties': {
                 '.+': {
-                    'type': ['string', 'number', 'null']
+                    'type': ['string', 'number', 'null', 'boolean']
                 },
             },
             'additionalProperties': False,

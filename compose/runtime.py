@@ -232,6 +232,7 @@ class Scheduler(object):
                 self.event_bus.send_system('{name} is restarting\n'.format(name=name))
                 self._pool.get(name).start()
             elif isinstance(msg, Stop):
+                # ToDo: here might be no returncode
                 rc = msg.data['returncode']
                 self.event_bus.send_system('{name} stopped (rc={rc})\n'.format(name=msg.name, rc=rc))
                 if self.returncode is None:
