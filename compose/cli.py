@@ -3,6 +3,7 @@ import subprocess
 import sys
 
 import click
+import colored
 
 from .configuration import Config
 from .runtime import Scheduler, Runner
@@ -45,8 +46,8 @@ def colors():
     Show available colors you can use for services output
     '''
     for c in Config.available_colors():
-        click.echo(c)
-
+        msg = colored.stylize(c, colored.fg(c))
+        click.echo(msg, color=c)
 
 @root.command()
 def example():
