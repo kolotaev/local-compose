@@ -12,7 +12,7 @@ if __name__ == '__main__':
     setup(
         name=info['NAME'],
         description='Like docker-compose but for locally installed services',
-        # keywords='',
+        # TODO: Add `keywords='.......',`
         version=info['VERSION'],
         author='Egor Kolotaev',
         author_email='ekolotaev@gmail.com',
@@ -26,9 +26,9 @@ if __name__ == '__main__':
         },
         python_requires='>=2.7',
         install_requires=[
-            'watchdog~=0.10',
+            # 'watchdog~=0.10', is not used for now, since we don't provide this functionality
             'jsonschema~=3.2',
-            'PyYAML~=5.3',
+            'PyYAML~=6.0',  # todo - make it dependent on python version
             'click~=7.0',
             'colored~=1.4',
             'python-dotenv~=0.15',

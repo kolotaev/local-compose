@@ -31,7 +31,7 @@ def test_version():
     runner = CliRunner()
     result = runner.invoke(cli.root, ['version'])
     assert result.exit_code == 0
-    assert result.output == '0.5.0\n'
+    assert result.output == '0.6.0\n'
 
 
 def test_example():
@@ -175,6 +175,23 @@ echo1 stopped (rc=0)
 Long running says I'm done
 web1 stopped (rc=0)
 ''' in out
+
+
+def test_up_with_selected_service():
+    runner = CliRunner()
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'job-and-daemon.yaml')
+    result = runner.invoke(cli.root, ['up', '-f', file, 'web1'])
+    assert result.exit_code == 0
+    assert "Long running says I'm done" in result.output
+    assert 'echo1' not in result.output
+
+
+def test_up_with_unknown_service():
+    runner = CliRunner()
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'job-and-daemon.yaml')
+    result = runner.invoke(cli.root, ['up', '-f', file, 'unknown'])
+    assert result.exit_code == 1
+    assert result.output == 'Following services are missing in configuration file: unknown\n'
 
 
 def test_up_with_job_retries():

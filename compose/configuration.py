@@ -84,6 +84,27 @@ class Config(object):
         DefaultValidatingDraft7Validator(JSON_SCHEMA).validate(data)
         self._validate_services()
 
+    def check_services_are_allowed(self, services):
+        '''
+        Tells if the list of given services is a valid list based on the configuration.
+        '''
+        configured_services = set(service.name for service in self.services)
+        unknown_services = set(services) - configured_services
+        if unknown_services:
+            raise ConfigurationError('Following services are missing in configuration file: %s' %
+                                     ','.join(sorted(unknown_services)))
+    
+    # todo - move all try_* methods to a helper
+    def try_check_services_are_allowed(self, services):
+        '''
+        Same as check_services_are_allowed but prints on exception.
+        '''
+        try:
+            return self.check_services_are_allowed(services)
+        except ConfigurationError as e:
+            print(e)
+            sys.exit(1)
+
     def read(self):
         '''
         Read configuration from file.

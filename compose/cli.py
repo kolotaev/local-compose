@@ -62,7 +62,8 @@ def example():
 @click.option('-w', '--workdir', show_default=True, default='.', help='Work dir')
 @click.option(*UP_DETACHED_FLAGS, is_flag=True, show_default=True, help='Detached mode: Run services in the background')
 @click.option('--color/--no-color', default=True, show_default=True, help='Use colored output?')
-def up(file, workdir, detached, color):
+@click.argument('services', nargs=-1, type=str)
+def up(file, workdir, detached, color, services):
     '''
     Start services
     '''
@@ -72,7 +73,12 @@ def up(file, workdir, detached, color):
                       time_format=conf.logging.get('timeFormat'),
                       use_prefix=conf.logging.get('usePrefix', True))
     scheduler = Scheduler(printer=printer)
-    for s in conf.services:
+    if services:
+        conf.try_check_services_are_allowed(services)
+        services_to_run = [s for s in conf.services if s.name in services]
+    else:
+        services_to_run = conf.services
+    for s in services_to_run:
         scheduler.register_service(s)
     runner = Runner(storage, scheduler)
     try:
